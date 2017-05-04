@@ -1,0 +1,10 @@
+name: DungeonFighters
+main: de.bergwerklabs.dungeonfighters.Main
+website: http://www.bergwerklabs.de
+author: Freggy
+version: 1.0
+depend: [LABS_Util, LabsFramework]
+
+commands:
+    money:
+       description: money
