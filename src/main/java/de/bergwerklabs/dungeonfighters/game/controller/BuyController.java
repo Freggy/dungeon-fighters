@@ -107,8 +107,6 @@ public class BuyController implements LabsController {
 
         player.setLevel(player.getLevel() - earnedMoney * 2);
         fighter.setEmeralds(money);
-        fighter.getPlayer().sendMessage("§aEmeralds §9erhalten: §a" + earnedMoney);
-        fighter.getPlayer().sendMessage("§9Kontostand: §a" + fighter.getEmeralds());
     }
 
 
@@ -129,7 +127,6 @@ public class BuyController implements LabsController {
         }
         else {
             fighter.setEmeralds(currentMoney);
-            fighter.getPlayer().sendMessage("§9Kontostand: §a" + fighter.getEmeralds());
             return true;
         }
     }

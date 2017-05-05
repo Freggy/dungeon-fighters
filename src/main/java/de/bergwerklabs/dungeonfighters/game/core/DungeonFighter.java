@@ -2,6 +2,7 @@ package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.framework.game.LABSPlayer;
 import de.bergwerklabs.framework.scoreboard.LabsScoreboard;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 /**
@@ -44,5 +45,16 @@ public class DungeonFighter extends LABSPlayer {
         this.player = p;
         this.scoreboard = scoreboard;
         this.scoreboard.apply(p);
+    }
+
+    /**
+     *
+     * @param earnedMoney
+     * @param sound
+     */
+    public void earnMoney(int earnedMoney, Sound sound) {
+        this.setEmeralds(this.getEmeralds() + earnedMoney);
+        Player p = this.getPlayer();
+        p.playSound(p.getLocation(), sound, 2, 2);
     }
 }

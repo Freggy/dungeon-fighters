@@ -3,20 +3,20 @@ package de.bergwerklabs.dungeonfighters.game;
 import de.bergwerklabs.dungeonfighters.Main;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
-import de.bergwerklabs.framework.scoreboard.LabsScoreboard;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -32,8 +32,8 @@ public class DungeonFightersEventHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
-        LabsScoreboard board = Main.getInstance().getScoreboard();
-        Main.game.getPlayerManager().getPlayers().put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(), board));
+        Main.game.getPlayerManager().getPlayers().put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
+                                                                                                      Main.getInstance().getScoreboard().clone()));
     }
 
     @EventHandler
@@ -61,30 +61,30 @@ public class DungeonFightersEventHandler implements Listener {
     @EventHandler
     public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
         DungeonFighter fighter = Main.game.getPlayerManager().getPlayers().get(e.getPlayer().getUniqueId());
-        ItemStack item = e.getItem().getItemStack();
+        ItemStack itemStack = e.getItem().getItemStack();
 
-        if (item.getType() == Material.EMERALD) {
-            this.earnMoney(fighter, item.getAmount(), e.getItem(), Sound.ORB_PICKUP);
-            e.setCancelled(true);
-        }
-        else if (item.getType() == Material.NETHER_STAR) {
-            this.earnMoney(fighter, 50 * item.getAmount(), e.getItem(), Sound.LEVEL_UP);
-            e.setCancelled(true);
-        }
+        if (itemStack.getType() == Material.EMERALD)
+            fighter.earnMoney(itemStack.getAmount(), Sound.ORB_PICKUP);
+
+        else if (itemStack.getType() == Material.NETHER_STAR)
+            this.transferMoneyAndCancelEvent(fighter, itemStack.getAmount() * 50, e.getItem(), e);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        Main.game.getPlayerManager().getPlayers().remove(e.getPlayer().getUniqueId());
     }
 
     /**
      *
      * @param fighter
-     * @param earnedMoney
+     * @param money
      * @param item
-     * @param sound
+     * @param event
      */
-    private void earnMoney(DungeonFighter fighter, int earnedMoney, Item item, Sound sound) {
-        fighter.setEmeralds(fighter.getEmeralds() + earnedMoney);
-        Player p = fighter.getPlayer();
+    private void transferMoneyAndCancelEvent(DungeonFighter fighter, int money, Item item, Cancellable event) {
+        fighter.earnMoney(money, Sound.ORB_PICKUP);
         item.remove();
-        p.playSound(p.getLocation(), sound, 2, 2);
+        event.setCancelled(true);
     }
-
 }
