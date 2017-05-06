@@ -36,6 +36,4 @@ manifest.mf
  
 # other files
 *.log*
- 
-# Ignore config folder for local testing
-config/
+src/test/

@@ -33,7 +33,7 @@ public class Main extends LABSGameMode
     public static Main getInstance() { return instance; }
 
     /**
-     *
+     * Gets the current scoreboard template.
      */
     public LabsScoreboard getScoreboard() { return this.scoreboard; }
 

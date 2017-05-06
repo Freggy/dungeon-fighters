@@ -7,32 +7,30 @@ import org.bukkit.entity.Player;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
- * <p>  </p>
- *
+ * <p> Player object specifically for DungeonFighter therefore providing more specialized functionality </p>
  * @author Yannic Rieger
  */
 public class DungeonFighter extends LABSPlayer {
 
     /**
-     *
+     * Gets the current amount of emeralds.
      */
     public double getEmeralds() {
         return emeralds;
     }
 
     /**
-     *
-     * @return
+     * Gets the Bukkit player object.
      */
     public Player getPlayer() {
         return player;
     }
 
     /**
-     *
-     * @param emeralds
+     * Sets the current amount of emeralds.
+     * @param emeralds Amount of emeralds the player will have.
      */
-    public void setEmeralds(double emeralds) {
+    private void setEmeralds(double emeralds) {
         this.scoreboard.getRowsByContent().get(String.valueOf(this.emeralds)).setText(String.valueOf(emeralds));
         this.emeralds = emeralds;
     }
@@ -41,16 +39,20 @@ public class DungeonFighter extends LABSPlayer {
     private Player player;
     private LabsScoreboard scoreboard;
 
+    /**
+     * @param p Player representing the new DungeonFighter
+     * @param scoreboard Scoreboard that will be displayed.
+     */
     public DungeonFighter(Player p, LabsScoreboard scoreboard) {
         this.player = p;
         this.scoreboard = scoreboard;
-        this.scoreboard.apply(p);
+        p.setScoreboard(scoreboard.getScoreboard());
     }
 
     /**
-     *
-     * @param earnedMoney
-     * @param sound
+     * Transfers money to the fighter.
+     * @param earnedMoney Money earned.
+     * @param sound Sound which should be played.
      */
     public void earnMoney(int earnedMoney, Sound sound) {
         this.setEmeralds(this.getEmeralds() + earnedMoney);

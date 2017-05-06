@@ -3,13 +3,13 @@ package de.bergwerklabs.dungeonfighters.game;
 import de.bergwerklabs.dungeonfighters.Main;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
+import de.bergwerklabs.framework.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -24,16 +24,27 @@ import java.util.Random;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
- * <p>  </p>
- *
+ * <p> Class providing EventHandlers for the following events: </p>
+ * <ul>
+ *     <li> BlockBreakEvent </li>
+ *     <li> PlayerJoinEvent </li>
+ *     <li> PlayerQuitEvent </li>
+ * </ul>
  * @author Yannic Rieger
  */
 public class DungeonFightersEventHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
-        Main.game.getPlayerManager().getPlayers().put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
-                                                                                                      Main.getInstance().getScoreboard().clone()));
+        // NOTE:
+        // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized
+        // from the JSON file, the scoreboard gets applied correctly, but if the player relogs nothing works anymore
+        // because the initial scoreboard we deserialized got modified although we clone it.
+
+        // load it everytime again?
+        Main.game.getPlayerManager().getPlayers()
+                 .put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
+                                                                      LabsScoreboardFactory.createInstance(Main.getInstance().getDataFolder() + "/scoreboard.json")));
     }
 
     @EventHandler
@@ -63,28 +74,20 @@ public class DungeonFightersEventHandler implements Listener {
         DungeonFighter fighter = Main.game.getPlayerManager().getPlayers().get(e.getPlayer().getUniqueId());
         ItemStack itemStack = e.getItem().getItemStack();
 
-        if (itemStack.getType() == Material.EMERALD)
+        if (itemStack.getType() == Material.EMERALD) {
             fighter.earnMoney(itemStack.getAmount(), Sound.ORB_PICKUP);
-
-        else if (itemStack.getType() == Material.NETHER_STAR)
-            this.transferMoneyAndCancelEvent(fighter, itemStack.getAmount() * 50, e.getItem(), e);
+            e.getItem().remove();
+            e.setCancelled(true);
+        }
+        else if (itemStack.getType() == Material.NETHER_STAR) {
+            fighter.earnMoney(itemStack.getAmount() * 50, Sound.ORB_PICKUP);
+            e.getItem().remove();
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Main.game.getPlayerManager().getPlayers().remove(e.getPlayer().getUniqueId());
-    }
-
-    /**
-     *
-     * @param fighter
-     * @param money
-     * @param item
-     * @param event
-     */
-    private void transferMoneyAndCancelEvent(DungeonFighter fighter, int money, Item item, Cancellable event) {
-        fighter.earnMoney(money, Sound.ORB_PICKUP);
-        item.remove();
-        event.setCancelled(true);
     }
 }
