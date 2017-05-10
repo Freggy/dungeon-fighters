@@ -107,8 +107,6 @@ public class BuyController implements LabsController {
         fighter.earnMoney(money, Sound.ORB_PICKUP);
     }
 
-
-
     /**
      *
      * @param fighter
