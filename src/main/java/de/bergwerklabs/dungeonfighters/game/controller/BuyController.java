@@ -7,6 +7,7 @@ import de.bergwerklabs.framework.inventorymenu.InventoryItem;
 import de.bergwerklabs.framework.inventorymenu.InventoryItemClickEvent;
 import de.bergwerklabs.framework.inventorymenu.InventoryMenuManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,15 +34,12 @@ public class BuyController implements LabsController {
         DungeonFighter fighter = Main.game.getPlayerManager().getPlayers().get(event.getEvent().getWhoClicked().getUniqueId());
         Player player = fighter.getPlayer();
 
-        double currentMoney = fighter.getEmeralds();
         double cost = Double.valueOf(args.get(0));
         boolean isEnchantment = false;
 
         if(args.size() >= 2) isEnchantment = Boolean.valueOf(args.get(1));
 
-        if (!this.enoughMoney(fighter, cost)) return;
-
-        fighter.setEmeralds(currentMoney);
+        if (!this.transferEmeralds(fighter, cost)) return;
 
         if (!isEnchantment) {
             ItemStack boughtItem = item.getItemStack();
@@ -72,7 +70,7 @@ public class BuyController implements LabsController {
         int amount = Integer.valueOf(args.get(1));
         double cost = Double.valueOf(args.get(0));
 
-        if (!this.enoughMoney(fighter, cost)) return;
+        if (!this.transferEmeralds(fighter, cost)) return;
 
         ItemStack boughtItem = item.getItemStack();
         boughtItem.setItemMeta(null); // Clear meta so price and stuff won't be displayed after the item has been bought.
@@ -106,7 +104,7 @@ public class BuyController implements LabsController {
         money += earnedMoney;
 
         player.setLevel(player.getLevel() - earnedMoney * 2);
-        fighter.setEmeralds(money);
+        fighter.earnMoney(money, Sound.ORB_PICKUP);
     }
 
 
@@ -117,17 +115,14 @@ public class BuyController implements LabsController {
      * @param cost
      * @return
      */
-    private boolean enoughMoney(DungeonFighter fighter, double cost) {
-        double currentMoney = fighter.getEmeralds();
-        currentMoney -= cost;
+    private boolean transferEmeralds(DungeonFighter fighter, double cost) {
 
-        if (currentMoney < 0) {
-            fighter.getPlayer().sendMessage(ChatColor.RED + "Du hast nicht genügend Geld!"); // TODO: change
+        if (!fighter.hasEnoughMoney(cost)) {
+            fighter.getPlayer().sendMessage("Not enough");
+            fighter.getPlayer().playSound(fighter.getPlayer().getEyeLocation(), Sound.NOTE_BASS, 100, 1);
             return false;
         }
-        else {
-            fighter.setEmeralds(currentMoney);
-            return true;
-        }
+        fighter.spendMoney(cost);
+        return true;
     }
 }

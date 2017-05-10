@@ -54,9 +54,26 @@ public class DungeonFighter extends LABSPlayer {
      * @param earnedMoney Money earned.
      * @param sound Sound which should be played.
      */
-    public void earnMoney(int earnedMoney, Sound sound) {
+    public void earnMoney(double earnedMoney, Sound sound) {
         this.setEmeralds(this.getEmeralds() + earnedMoney);
         Player p = this.getPlayer();
         p.playSound(p.getLocation(), sound, 2, 2);
+    }
+
+    /**
+     *
+     */
+    public void spendMoney(double cost) {
+        this.emeralds -= cost;
+        this.player.playSound(this.player.getEyeLocation(), Sound.CLICK, 100, 1);
+    }
+
+    /**
+     *
+     * @param cost
+     * @return
+     */
+    public boolean hasEnoughMoney(double cost) {
+        return cost < this.emeralds;
     }
 }
