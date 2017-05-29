@@ -32,7 +32,7 @@ manifest.mf
 *.iml
 *.ipr
 *.iws
-.idea/
+.idea
  
 # other files
 *.log*

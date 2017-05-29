@@ -16,6 +16,7 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
 
     @Override
     public DungeonFighterConfig deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+
         return null;
     }
 }
