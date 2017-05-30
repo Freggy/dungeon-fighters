@@ -1,11 +1,12 @@
 package de.bergwerklabs.dungeonfighters;
 
 import com.google.gson.GsonBuilder;
-import de.bergwerklabs.dungeonfighters.game.DungeonFightersEventHandler;
+import de.bergwerklabs.dungeonfighters.game.core.DungeonFightersEventHandler;
 import de.bergwerklabs.dungeonfighters.game.config.ConfigDeserializer;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
-import de.bergwerklabs.framework.file.FileUtil;
+import de.bergwerklabs.dungeonfighters.game.map.Dungeon;
+import de.bergwerklabs.dungeonfighters.game.map.DungeonLoader;
 import de.bergwerklabs.framework.inventorymenu.InventoryMenuFactory;
 import de.bergwerklabs.framework.scoreboard.LabsScoreboard;
 import de.bergwerklabs.framework.scoreboard.LabsScoreboardFactory;
@@ -14,16 +15,14 @@ import de.bergwerklabs.framework.shop.ShopFactory;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PotionSplashEvent;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.security.SecureRandom;
 
 /**
  * Created by Yannic Rieger on 25.04.2017.
@@ -43,6 +42,9 @@ public class Main extends LABSGameMode
      */
     public LabsScoreboard getScoreboard() { return this.scoreboard; }
 
+    /**
+     * Gets the DungeonFighter configuration.
+     */
     public DungeonFighterConfig getDungeonFighterConfig() { return this.config; }
 
     public final static DungeonFighters game = new DungeonFighters();
@@ -59,13 +61,10 @@ public class Main extends LABSGameMode
     public void labsEnable() {
         instance = this;
         this.getServer().getPluginManager().registerEvents(new DungeonFightersEventHandler(), this);
-        try {
-            this.getLogger().info("Creating folders...");
-            FileUtil.createFolderIfNotExistent(this.getDataFolder());
-            FileUtil.createFolderIfNotExistent(menuFolder);
-            FileUtil.createFolderIfNotExistent(shopFolder);
-            FileUtil.createFileIfNotExistent(configFile);
 
+
+
+        try {
             this.config = new GsonBuilder().registerTypeAdapter(DungeonFighterConfig.class, new ConfigDeserializer()).create()
                                            .fromJson(new InputStreamReader(new FileInputStream(configFile), Charset.forName("UTF-8")), DungeonFighterConfig.class);
 
@@ -79,6 +78,11 @@ public class Main extends LABSGameMode
         catch (Exception e) {
             e.printStackTrace();
         }
+
+        DungeonLoader loader = new DungeonLoader(this.config.getGridOrigin());
+
+        loader.prepareMap(this.determineDungeon());
+        // TODO: place modules based on map
     }
 
     @Override
@@ -100,10 +104,12 @@ public class Main extends LABSGameMode
         return false;
     }
 
-    @EventHandler
-    private void onPotionSplash(PotionSplashEvent e) {
-        e.getPotion().getLocation().getBlock().setType(Material.COBBLESTONE);
+    /**
+     * Randomly determines the map that will be played
+     * @return Folder containing the module schematics.
+     */
+    private Dungeon determineDungeon() {
+        File[] maps = new File(this.getDataFolder() + "/maps").listFiles();
+        return new Dungeon(maps[new SecureRandom().nextInt(maps.length)]);
     }
-
-
 }

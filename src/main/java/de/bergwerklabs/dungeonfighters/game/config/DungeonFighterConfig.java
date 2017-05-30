@@ -1,5 +1,8 @@
 package de.bergwerklabs.dungeonfighters.game.config;
 
+import de.bergwerklabs.framework.location.LocationUtil;
+import org.bukkit.Location;
+
 import java.util.HashMap;
 
 /**
@@ -15,8 +18,11 @@ public class DungeonFighterConfig {
     private String joinMessage;
     private String notEnoughMoneyMessage;
     private String cannotEnchatMessage;
+    private Location gridOrigin;
 
-    public DungeonFighterConfig(HashMap<String, String> messages, HashMap<String, Integer> emeraldSettings) {
+    public DungeonFighterConfig(HashMap<String, String> messages, HashMap<String, Integer> emeraldSettings,
+                                Location gridOrigin) {
+
         this.deathMessage = messages.get("death-message");
         this.joinMessage = messages.get("join-message");
         this.notEnoughMoneyMessage = messages.get("not-enough-money-message");
@@ -24,6 +30,8 @@ public class DungeonFighterConfig {
 
         this.maxEmeraldDrop = emeraldSettings.get("max-emerald-drop");
         this.minEmeraldDrop = emeraldSettings.get("min-emerald-drop");
+
+        this.gridOrigin = gridOrigin;
     }
 
     /**
@@ -66,5 +74,9 @@ public class DungeonFighterConfig {
      */
     public String getCannotEnoughEnchatMessage() {
         return cannotEnchatMessage;
+    }
+
+    public Location getGridOrigin() {
+        return gridOrigin;
     }
 }

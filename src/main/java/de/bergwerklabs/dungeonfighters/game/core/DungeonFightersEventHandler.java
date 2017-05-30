@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game;
+package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.Main;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;

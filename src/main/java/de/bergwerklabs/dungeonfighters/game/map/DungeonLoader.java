@@ -1,5 +1,6 @@
-package de.bergwerklabs.dungeonfighters.game.core;
+package de.bergwerklabs.dungeonfighters.game.map;
 
+import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -12,12 +13,37 @@ import org.bukkit.World;
  */
 public class DungeonLoader {
 
+    private Chunk[][] chunks;
+
+    /**
+     *
+     * @param gridOrigin
+     */
+    public DungeonLoader(Location gridOrigin) {
+        this.chunks = this.loadChunks(gridOrigin);
+    }
+
+
+    public void prepareMap(Dungeon dungeon) {
+
+    }
+
+    /**
+     *
+     * @param row
+     * @param column
+     * @param schematic
+     */
+    public void placeModule(int row, int column, LabsSchematic schematic) {
+        schematic.pasteAsync("dungeon", this.chunks[row][column].getBlock(0,0,0).getLocation().toVector());
+    }
+
     /**
      *
      * @param gridOrigin
      * @return
      */
-    public static Chunk[][] loadChunks(Location gridOrigin) {
+    private Chunk[][] loadChunks(Location gridOrigin) {
         Chunk[][] chunks = new Chunk[10][10]; // TODO: use config
         World dungeon = Bukkit.getWorld("dungeon");
 
@@ -30,9 +56,5 @@ public class DungeonLoader {
             }
         }
         return chunks;
-    }
-
-    public static void placeModule(int row, int column) {
-
     }
 }

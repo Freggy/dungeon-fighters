@@ -1,6 +1,8 @@
 package de.bergwerklabs.dungeonfighters.game.config;
 
 import com.google.gson.*;
+import de.bergwerklabs.framework.location.LocationUtil;
+import org.bukkit.Location;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -28,6 +30,8 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
         HashMap<String, Integer> emeraldSettings = new HashMap<>();
         emeraldSettings.put("max-emerald-drop", emeraldObject.get("max-emerald-drop").getAsInt());
         emeraldSettings.put("min-emerald-drop", emeraldObject.get("min-emerald-drop").getAsInt());
+
+        Location gridOrigin = LocationUtil.locationFromJson(json.get("grid-origin").getAsJsonObject());
 
 
 
