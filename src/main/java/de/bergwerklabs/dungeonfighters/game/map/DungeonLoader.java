@@ -25,7 +25,7 @@ public class DungeonLoader {
 
 
     public void prepareMap(Dungeon dungeon) {
-
+        
     }
 
     /**
@@ -34,7 +34,7 @@ public class DungeonLoader {
      * @param column
      * @param schematic
      */
-    public void placeModule(int row, int column, LabsSchematic schematic) {
+    private void placeModule(int row, int column, LabsSchematic schematic) {
         schematic.pasteAsync("dungeon", this.chunks[row][column].getBlock(0,0,0).getLocation().toVector());
     }
 

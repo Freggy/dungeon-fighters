@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
  *     <li> BlockBreakEvent </li>
  *     <li> PlayerJoinEvent </li>
  *     <li> PlayerQuitEvent </li>
+ *     <li> PlayerDeathEvent </li>
  * </ul>
  * @author Yannic Rieger
  */

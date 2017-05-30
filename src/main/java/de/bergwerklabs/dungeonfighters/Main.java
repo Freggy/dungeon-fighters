@@ -79,10 +79,7 @@ public class Main extends LABSGameMode
             e.printStackTrace();
         }
 
-        DungeonLoader loader = new DungeonLoader(this.config.getGridOrigin());
-
-        loader.prepareMap(this.determineDungeon());
-        // TODO: place modules based on map
+         new DungeonLoader(this.config.getGridOrigin()).prepareMap(this.determineDungeon());
     }
 
     @Override

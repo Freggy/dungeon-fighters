@@ -33,8 +33,6 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
 
         Location gridOrigin = LocationUtil.locationFromJson(json.get("grid-origin").getAsJsonObject());
 
-
-
-        return new DungeonFighterConfig(messages, emeraldSettings);
+        return new DungeonFighterConfig(messages, emeraldSettings, gridOrigin);
     }
 }

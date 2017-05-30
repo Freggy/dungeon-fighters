@@ -23,12 +23,19 @@ public class Dungeon {
 
     private HashMap<String, List<LabsSchematic>> modules = new HashMap<>();
 
+    // TODO: add FMGA dungeon layout
+
     /**
      *
      * @param mapFolder
      */
     public Dungeon(File mapFolder) {
         List<File> modules = Arrays.asList(mapFolder.listFiles());
+        this.modules.put("HORIZONTAL_PASSAGE", this.getSchematicList(modules, "HORIZONTAL_PASSAGE"));
+        this.modules.put("HORIZONTAL_PASSAGE", this.getSchematicList(modules, "HORIZONTAL_PASSAGE"));
+        this.modules.put("HORIZONTAL_PASSAGE", this.getSchematicList(modules, "HORIZONTAL_PASSAGE"));
+        this.modules.put("HORIZONTAL_PASSAGE", this.getSchematicList(modules, "HORIZONTAL_PASSAGE"));
+        this.modules.put("HORIZONTAL_PASSAGE", this.getSchematicList(modules, "HORIZONTAL_PASSAGE"));
         this.modules.put("HORIZONTAL_PASSAGE", this.getSchematicList(modules, "HORIZONTAL_PASSAGE"));
         this.modules.put("HORIZONTAL_PASSAGE", this.getSchematicList(modules, "HORIZONTAL_PASSAGE"));
         this.modules.put("HORIZONTAL_PASSAGE", this.getSchematicList(modules, "HORIZONTAL_PASSAGE"));
