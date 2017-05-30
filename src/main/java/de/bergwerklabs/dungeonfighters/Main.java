@@ -1,6 +1,9 @@
 package de.bergwerklabs.dungeonfighters;
 
+import com.google.gson.GsonBuilder;
 import de.bergwerklabs.dungeonfighters.game.DungeonFightersEventHandler;
+import de.bergwerklabs.dungeonfighters.game.config.ConfigDeserializer;
+import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
 import de.bergwerklabs.framework.file.FileUtil;
 import de.bergwerklabs.framework.inventorymenu.InventoryMenuFactory;
@@ -18,6 +21,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PotionSplashEvent;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 /**
  * Created by Yannic Rieger on 25.04.2017.
@@ -37,13 +43,17 @@ public class Main extends LABSGameMode
      */
     public LabsScoreboard getScoreboard() { return this.scoreboard; }
 
-    private File config = new File(this.getDataFolder() + "/config.json");
+    public DungeonFighterConfig getDungeonFighterConfig() { return this.config; }
+
+    public final static DungeonFighters game = new DungeonFighters();
+    private static Main instance;
+
+    private File configFile = new File(this.getDataFolder() + "/config.json");
     private File menuFolder = new File(this.getDataFolder() + "/menus");
     private File shopFolder = new File(this.getDataFolder() + "/shops");
 
-    private static Main instance;
-    public static DungeonFighters game = new DungeonFighters();
     private LabsScoreboard scoreboard;
+    private DungeonFighterConfig config;
 
     @Override
     public void labsEnable() {
@@ -54,7 +64,10 @@ public class Main extends LABSGameMode
             FileUtil.createFolderIfNotExistent(this.getDataFolder());
             FileUtil.createFolderIfNotExistent(menuFolder);
             FileUtil.createFolderIfNotExistent(shopFolder);
-            FileUtil.createFileIfNotExistent(config);
+            FileUtil.createFileIfNotExistent(configFile);
+
+            this.config = new GsonBuilder().registerTypeAdapter(DungeonFighterConfig.class, new ConfigDeserializer()).create()
+                                           .fromJson(new InputStreamReader(new FileInputStream(configFile), Charset.forName("UTF-8")), DungeonFighterConfig.class);
 
             InventoryMenuFactory.readMenus(menuFolder, null);
 

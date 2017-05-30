@@ -6,21 +6,25 @@ import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.framework.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.sql.BatchUpdateException;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -89,5 +93,27 @@ public class DungeonFightersEventHandler implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Main.game.getPlayerManager().getPlayers().remove(e.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        Player died = e.getEntity();
+        Player killer = died.getKiller();
+
+        e.setDeathMessage(Main.getInstance().getDungeonFighterConfig().getDeathMessage());
+
+        Location eye = died.getEyeLocation();
+
+        Particle headParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, eye, 0.3F, 0.3F, 0.3F, 0F, 25);
+        Particle centerParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, eye.clone().subtract(0, 0.5, 0), 0.3F, 0.3F, 0.3F, 0F, 25);
+        Particle feetParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, died.getLocation(), 0.3F, 0.3F, 0.3F, 0F, 25);
+
+        // TODO: 30.05.2017 - play sound 
+        
+        ParticleUtil.sendParticleToPlayer(headParticles, killer);
+        ParticleUtil.sendParticleToPlayer(centerParticles, killer);
+        ParticleUtil.sendParticleToPlayer(feetParticles, killer);
+
+        e.getEntity().setGameMode(GameMode.SPECTATOR);
     }
 }

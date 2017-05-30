@@ -1,6 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.controller;
 
 import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.framework.general.LabsController;
 import de.bergwerklabs.framework.inventorymenu.InventoryItem;
@@ -116,7 +117,7 @@ public class BuyController implements LabsController {
     private boolean transferEmeralds(DungeonFighter fighter, double cost) {
 
         if (!fighter.hasEnoughMoney(cost)) {
-            fighter.getPlayer().sendMessage("Not enough");
+            fighter.getPlayer().sendMessage(Main.getInstance().getDungeonFighterConfig().getNotEnoughMoneyMessage());
             fighter.getPlayer().playSound(fighter.getPlayer().getEyeLocation(), Sound.NOTE_BASS, 100, 1);
             return false;
         }

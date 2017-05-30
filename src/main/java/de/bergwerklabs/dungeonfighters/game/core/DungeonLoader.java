@@ -14,15 +14,15 @@ public class DungeonLoader {
 
     /**
      *
-     * @param origin
+     * @param gridOrigin
      * @return
      */
-    public static Chunk[][] loadChunks(Location origin) {
+    public static Chunk[][] loadChunks(Location gridOrigin) {
         Chunk[][] chunks = new Chunk[10][10]; // TODO: use config
         World dungeon = Bukkit.getWorld("dungeon");
 
-        int originRow = origin.getChunk().getX();
-        int originColumn = origin.getChunk().getZ();
+        int originRow = gridOrigin.getChunk().getX();
+        int originColumn = gridOrigin.getChunk().getZ();
 
         for (int row = 0; row < chunks.length; row++) {
             for (int column = 0; column < chunks.length; column++) {

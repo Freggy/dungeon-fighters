@@ -1,11 +1,9 @@
 package de.bergwerklabs.dungeonfighters.game.config;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 
 /**
  * Created by Yannic Rieger on 06.05.2017.
@@ -16,7 +14,23 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
 
     @Override
     public DungeonFighterConfig deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        JsonObject json = jsonElement.getAsJsonObject();
 
-        return null;
+        JsonObject messageObject = json.get("messages").getAsJsonObject();
+        JsonObject emeraldObject = json.get("emerald-settings").getAsJsonObject();
+
+        HashMap<String, String> messages = new HashMap<>();
+        messages.put("death-message", messageObject.get("death-message").getAsString());
+        messages.put("join-message", messageObject.get("join-message").getAsString());
+        messages.put("not-enough-money-message", messageObject.get("not-enough-money-message").getAsString());
+        messages.put("cannot-enchant-message", messageObject.get("cannot-enchant-message").getAsString());
+
+        HashMap<String, Integer> emeraldSettings = new HashMap<>();
+        emeraldSettings.put("max-emerald-drop", emeraldObject.get("max-emerald-drop").getAsInt());
+        emeraldSettings.put("min-emerald-drop", emeraldObject.get("min-emerald-drop").getAsInt());
+
+
+
+        return new DungeonFighterConfig(messages, emeraldSettings);
     }
 }

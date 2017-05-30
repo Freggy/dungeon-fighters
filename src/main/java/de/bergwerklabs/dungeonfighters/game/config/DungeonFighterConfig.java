@@ -1,5 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.config;
 
+import java.util.HashMap;
+
 /**
  * Created by Yannic Rieger on 06.05.2017.
  * <p> Config class holding all configurable values. </p>
@@ -12,15 +14,16 @@ public class DungeonFighterConfig {
     private String deathMessage;
     private String joinMessage;
     private String notEnoughMoneyMessage;
+    private String cannotEnchatMessage;
 
-    public DungeonFighterConfig(int maxEmeralds, int minEmerald, String deathMessage, String joinMessage,
-                                String notEnoughMoneyMessage) {
+    public DungeonFighterConfig(HashMap<String, String> messages, HashMap<String, Integer> emeraldSettings) {
+        this.deathMessage = messages.get("death-message");
+        this.joinMessage = messages.get("join-message");
+        this.notEnoughMoneyMessage = messages.get("not-enough-money-message");
+        this.cannotEnchatMessage = messages.get("cannot-enchant-message");
 
-        this.maxEmeraldDrop = maxEmeralds;
-        this.minEmeraldDrop = minEmerald;
-        this.deathMessage = deathMessage;
-        this.joinMessage = joinMessage;
-        this.notEnoughMoneyMessage = notEnoughMoneyMessage;
+        this.maxEmeraldDrop = emeraldSettings.get("max-emerald-drop");
+        this.minEmeraldDrop = emeraldSettings.get("min-emerald-drop");
     }
 
     /**
@@ -56,5 +59,12 @@ public class DungeonFighterConfig {
      */
     public String getNotEnoughMoneyMessage() {
         return notEnoughMoneyMessage;
+    }
+
+    /**
+     *
+     */
+    public String getCannotEnoughEnchatMessage() {
+        return cannotEnchatMessage;
     }
 }
