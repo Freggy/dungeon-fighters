@@ -5,7 +5,10 @@ import de.bergwerklabs.framework.location.LocationUtil;
 import org.bukkit.Location;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by Yannic Rieger on 06.05.2017.
@@ -21,9 +24,9 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
         JsonObject messageObject = json.get("messages").getAsJsonObject();
         JsonObject emeraldObject = json.get("emerald-settings").getAsJsonObject();
 
-        HashMap<String, String> messages = new HashMap<>();
+        HashMap<String, Object> messages = new HashMap<>();
         messages.put("death-message", messageObject.get("death-message").getAsString());
-        messages.put("join-message", messageObject.get("join-message").getAsString());
+        messages.put("join-messages",  this.getJoinMessages(messageObject.get("join-messages").getAsJsonArray()));
         messages.put("not-enough-money-message", messageObject.get("not-enough-money-message").getAsString());
         messages.put("cannot-enchant-message", messageObject.get("cannot-enchant-message").getAsString());
 
@@ -34,5 +37,19 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
         Location gridOrigin = LocationUtil.locationFromJson(json.get("grid-origin").getAsJsonObject());
 
         return new DungeonFighterConfig(messages, emeraldSettings, gridOrigin);
+    }
+
+    /**
+     *
+     * @param messages
+     * @return
+     */
+    private String[] getJoinMessages(JsonArray messages) {
+        String[] join = new String[messages.size()];
+
+        for (int i = 0; i < messages.size(); i++)
+            join[i] = messages.get(i).getAsString();
+
+        return join;
     }
 }

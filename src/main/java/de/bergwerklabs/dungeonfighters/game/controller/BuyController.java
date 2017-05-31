@@ -1,13 +1,11 @@
 package de.bergwerklabs.dungeonfighters.game.controller;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.framework.general.LabsController;
 import de.bergwerklabs.framework.inventorymenu.InventoryItem;
 import de.bergwerklabs.framework.inventorymenu.InventoryItemClickEvent;
 import de.bergwerklabs.framework.inventorymenu.InventoryMenuManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +51,7 @@ public class BuyController implements LabsController {
                 itemInHand.addEnchantments(item.getItemStack().getEnchantments());
             }
             catch (Exception ex) {
-                player.sendMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getCannotEnoughEnchatMessage());
+                player.sendMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getCannotEnoughEnchantMessage());
             }
         }
     }

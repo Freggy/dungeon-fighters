@@ -1,7 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.framework.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
@@ -21,10 +20,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.sql.BatchUpdateException;
-import java.util.List;
+import java.security.SecureRandom;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -39,10 +36,15 @@ import java.util.stream.Collectors;
  */
 public class DungeonFightersEventHandler implements Listener {
 
+    private SecureRandom random = new SecureRandom();
+
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
-        e.setJoinMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getJoinMessage()
-                                                                  .replace("{player}", e.getPlayer().getDisplayName()));
+        String[] messages = Main.getInstance().getDungeonFighterConfig().getJoinmessages();
+        int randomIndex = random.nextInt(messages.length);
+        e.setJoinMessage(Main.getInstance().getChatPrefix() + messages[randomIndex].replace("{player}", e.getPlayer().getDisplayName()));
+
         // NOTE:
         // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized
         // from the JSON file, the scoreboard gets applied correctly, but if the player relogs nothing works anymore

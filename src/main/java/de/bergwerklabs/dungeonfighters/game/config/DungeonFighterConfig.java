@@ -14,18 +14,18 @@ public class DungeonFighterConfig {
     private int maxEmeraldDrop;
     private int minEmeraldDrop;
     private String deathMessage;
-    private String joinMessage;
+    private String[] joinMessages;
     private String notEnoughMoneyMessage;
     private String cannotEnchatMessage;
     private Location gridOrigin;
 
-    public DungeonFighterConfig(HashMap<String, String> messages, HashMap<String, Integer> emeraldSettings,
+    public DungeonFighterConfig(HashMap<String, Object> messages, HashMap<String, Integer> emeraldSettings,
                                 Location gridOrigin) {
 
-        this.deathMessage = messages.get("death-message");
-        this.joinMessage = messages.get("join-message");
-        this.notEnoughMoneyMessage = messages.get("not-enough-money-message");
-        this.cannotEnchatMessage = messages.get("cannot-enchant-message");
+        this.deathMessage = (String)messages.get("death-message");
+        this.joinMessages = (String[])messages.get("join-message");
+        this.notEnoughMoneyMessage = (String)messages.get("not-enough-money-message");
+        this.cannotEnchatMessage = (String)messages.get("cannot-enchant-message");
 
         this.maxEmeraldDrop = emeraldSettings.get("max-emerald-drop");
         this.minEmeraldDrop = emeraldSettings.get("min-emerald-drop");
@@ -57,8 +57,8 @@ public class DungeonFighterConfig {
     /**
      *
      */
-    public String getJoinMessage() {
-        return joinMessage;
+    public String[] getJoinmessages() {
+        return joinMessages;
     }
 
     /**
@@ -71,10 +71,13 @@ public class DungeonFighterConfig {
     /**
      *
      */
-    public String getCannotEnoughEnchatMessage() {
+    public String getCannotEnoughEnchantMessage() {
         return cannotEnchatMessage;
     }
 
+    /**
+     *
+     */
     public Location getGridOrigin() {
         return gridOrigin;
     }
