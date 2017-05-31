@@ -41,6 +41,8 @@ public class DungeonFightersEventHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
+        e.setJoinMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getJoinMessage()
+                                                                  .replace("{player}", e.getPlayer().getDisplayName()));
         // NOTE:
         // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized
         // from the JSON file, the scoreboard gets applied correctly, but if the player relogs nothing works anymore
@@ -50,6 +52,7 @@ public class DungeonFightersEventHandler implements Listener {
         Main.game.getPlayerManager().getPlayers()
                  .put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
                                                                       LabsScoreboardFactory.createInstance(Main.getInstance().getDataFolder() + "/scoreboard.json")));
+
     }
 
     @EventHandler
@@ -61,10 +64,13 @@ public class DungeonFightersEventHandler implements Listener {
             ParticleUtil.sendParticleToPlayer(particle, e.getPlayer());
 
             Random r = new Random();
-            int amounToDrop = r.nextInt((10 - 4) + 1) + 4; // make configurable
+            int max = Main.getInstance().getDungeonFighterConfig().getMaxEmeraldDrop();
+            int min = Main.getInstance().getDungeonFighterConfig().getMinEmeraldDrop();
+            int amounToDrop = r.nextInt((max - min) + 1) + max;
+            double chance = Math.random();
+
             block.setType(Material.AIR);
 
-            double chance = Math.random();
             if (chance < 0.03) block.getWorld().dropItemNaturally(block.getLocation().clone().add(0.5,0.5,0.5), new ItemStack(Material.NETHER_STAR));
 
             for (int i = 0; i < amounToDrop; i++) {
@@ -101,7 +107,8 @@ public class DungeonFightersEventHandler implements Listener {
         Player died = e.getEntity();
         Player killer = died.getKiller();
 
-        e.setDeathMessage(Main.getInstance().getDungeonFighterConfig().getDeathMessage());
+        e.setDeathMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getDeathMessage()
+                                                                   .replace("{player}", died.getDisplayName()));
 
         Location eye = died.getEyeLocation();
 
@@ -109,7 +116,8 @@ public class DungeonFightersEventHandler implements Listener {
         Particle centerParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, eye.clone().subtract(0, 0.5, 0), 0.3F, 0.3F, 0.3F, 0F, 25);
         Particle feetParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, died.getLocation(), 0.3F, 0.3F, 0.3F, 0F, 25);
 
-        // TODO: 30.05.2017 - play sound 
+        // TODO: 30.05.2017 - play sound
+        killer.playSound(killer.getEyeLocation(), Sound.IRONGOLEM_DEATH, 50, 1);
         
         ParticleUtil.sendParticleToPlayer(headParticles, killer);
         ParticleUtil.sendParticleToPlayer(centerParticles, killer);

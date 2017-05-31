@@ -1,6 +1,5 @@
 package de.bergwerklabs.dungeonfighters.game.config;
 
-import de.bergwerklabs.framework.location.LocationUtil;
 import org.bukkit.Location;
 
 import java.util.HashMap;

@@ -62,8 +62,6 @@ public class Main extends LABSGameMode
         instance = this;
         this.getServer().getPluginManager().registerEvents(new DungeonFightersEventHandler(), this);
 
-
-
         try {
             this.config = new GsonBuilder().registerTypeAdapter(DungeonFighterConfig.class, new ConfigDeserializer()).create()
                                            .fromJson(new InputStreamReader(new FileInputStream(configFile), Charset.forName("UTF-8")), DungeonFighterConfig.class);
@@ -79,7 +77,7 @@ public class Main extends LABSGameMode
             e.printStackTrace();
         }
 
-         new DungeonLoader(this.config.getGridOrigin()).prepareMap(this.determineDungeon());
+         //new DungeonLoader(this.config.getGridOrigin()).prepareMap(this.determineDungeon());
     }
 
     @Override
@@ -99,6 +97,11 @@ public class Main extends LABSGameMode
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String getChatPrefix() {
+        return "§6>> §eDungeonFighters §6❘ §7";
     }
 
     /**

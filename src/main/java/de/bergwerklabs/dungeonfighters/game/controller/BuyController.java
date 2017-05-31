@@ -52,8 +52,8 @@ public class BuyController implements LabsController {
                 ItemStack itemInHand = player.getItemInHand();
                 itemInHand.addEnchantments(item.getItemStack().getEnchantments());
             }
-            catch (IllegalArgumentException ex) {
-                player.sendMessage(ChatColor.RED + "Dieses Item kann nicht mit dieser Verzauberung verzaubert werden");
+            catch (Exception ex) {
+                player.sendMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getCannotEnoughEnchatMessage());
             }
         }
     }
@@ -117,7 +117,7 @@ public class BuyController implements LabsController {
     private boolean transferEmeralds(DungeonFighter fighter, double cost) {
 
         if (!fighter.hasEnoughMoney(cost)) {
-            fighter.getPlayer().sendMessage(Main.getInstance().getDungeonFighterConfig().getNotEnoughMoneyMessage());
+            fighter.getPlayer().sendMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getNotEnoughMoneyMessage());
             fighter.getPlayer().playSound(fighter.getPlayer().getEyeLocation(), Sound.NOTE_BASS, 100, 1);
             return false;
         }

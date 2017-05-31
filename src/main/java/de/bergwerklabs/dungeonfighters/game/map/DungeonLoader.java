@@ -25,7 +25,12 @@ public class DungeonLoader {
 
 
     public void prepareMap(Dungeon dungeon) {
-        
+
+        for (int row = 0; row < 10; row++) {
+            for (int column = 0; column < 10; column++) {
+                //dungeon.getGrid()[row][column]
+            }
+        }
     }
 
     /**
