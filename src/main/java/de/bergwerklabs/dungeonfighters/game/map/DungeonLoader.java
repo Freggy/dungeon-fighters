@@ -8,7 +8,7 @@ import org.bukkit.World;
 
 /**
  * Created by Yannic Rieger on 29.05.2017.
- * <p>  </p>
+ * <p> Class  providing methods for placing modules on the grid. </p>
  * @author Yannic Rieger
  */
 public class DungeonLoader {
@@ -16,14 +16,16 @@ public class DungeonLoader {
     private Chunk[][] chunks;
 
     /**
-     *
-     * @param gridOrigin
+     * @param gridOrigin Origin of the grid. Has to be the Upper left corner.
      */
     public DungeonLoader(Location gridOrigin) {
         this.chunks = this.loadChunks(gridOrigin);
     }
 
-
+    /**
+     * Prepares the grid for the game.
+     * @param dungeon Current map that wil be played.
+     */
     public void prepareMap(Dungeon dungeon) {
 
         for (int row = 0; row < 10; row++) {
@@ -34,19 +36,19 @@ public class DungeonLoader {
     }
 
     /**
-     *
-     * @param row
-     * @param column
-     * @param schematic
+     * Places a module on the grid.
+     * @param row Grid row
+     * @param column Grid column
+     * @param schematic Schematic of the module that will be placed.
      */
     private void placeModule(int row, int column, LabsSchematic schematic) {
         schematic.pasteAsync("dungeon", this.chunks[row][column].getBlock(0,0,0).getLocation().toVector());
     }
 
     /**
-     *
-     * @param gridOrigin
-     * @return
+     * Creates a 2 dimensional array of chunks representing the grid.
+     * @param gridOrigin Upper left corner of the grid.
+     * @return 2 dimensional array of chunks representing the grid.
      */
     private Chunk[][] loadChunks(Location gridOrigin) {
         Chunk[][] chunks = new Chunk[10][10]; // TODO: use config

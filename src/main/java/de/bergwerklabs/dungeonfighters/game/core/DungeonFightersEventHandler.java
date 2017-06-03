@@ -22,6 +22,7 @@ import org.bukkit.util.Vector;
 
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -31,6 +32,7 @@ import java.util.Random;
  *     <li> PlayerJoinEvent </li>
  *     <li> PlayerQuitEvent </li>
  *     <li> PlayerDeathEvent </li>
+ *     <li> PlayerPickupItemEvent </li>
  * </ul>
  * @author Yannic Rieger
  */
@@ -38,12 +40,12 @@ public class DungeonFightersEventHandler implements Listener {
 
     private SecureRandom random = new SecureRandom();
 
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
         String[] messages = Main.getInstance().getDungeonFighterConfig().getJoinmessages();
         int randomIndex = random.nextInt(messages.length);
         e.setJoinMessage(Main.getInstance().getChatPrefix() + messages[randomIndex].replace("{player}", e.getPlayer().getDisplayName()));
+        //Bukkit.getPlayer(UUID.fromString("d44e59e6751f431d83f386b13c5306aa")).sendMessage(Main.getInstance().getChatPrefix() + "Du Pflaume! c:");
 
         // NOTE:
         // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized

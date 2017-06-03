@@ -21,8 +21,9 @@ import java.util.stream.Collectors;
 public class BuyController implements LabsController {
 
     /**
+     * Gets invoked when a player buys an item in a shop except the food shop.
+     * @param parameters List of parameters containing the following:
      *
-     * @param parameters
      */
     public void onItemBuy(List<Object> parameters) {
 
@@ -50,15 +51,15 @@ public class BuyController implements LabsController {
                 ItemStack itemInHand = player.getItemInHand();
                 itemInHand.addEnchantments(item.getItemStack().getEnchantments());
             }
-            catch (Exception ex) {
+            catch (Exception ex) { // An exception will be thrown if the player tries to enchant an item that cannot be enchanted.
                 player.sendMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getCannotEnoughEnchantMessage());
             }
         }
     }
 
     /**
-     *
-     * @param parameters
+     * Gets invoked when the player buys food from the food shop.
+     * @param parameters List of parameters containing the following:
      */
     public void buyFood(List<Object> parameters) {
         InventoryItemClickEvent event = (InventoryItemClickEvent)parameters.get(0);
@@ -79,8 +80,8 @@ public class BuyController implements LabsController {
     }
 
     /**
-     *
-     * @param parameters
+     * Navigates between menus.
+     * @param parameters List of parameters containing the following:
      */
     public void navigateToMenu(List<Object> parameters) {
         InventoryItemClickEvent event = (InventoryItemClickEvent)parameters.get(0);
@@ -88,8 +89,8 @@ public class BuyController implements LabsController {
     }
 
     /**
-     *
-     * @param parameters
+     * Converts XP to emeralds. (2 XP = 1 emerald)
+     * @param parameters List of parameters containing the following:
      */
     public void convertXp(List<Object> parameters) {
         InventoryItemClickEvent event = (InventoryItemClickEvent)parameters.get(0);
@@ -107,10 +108,12 @@ public class BuyController implements LabsController {
     }
 
     /**
-     *
-     * @param fighter
-     * @param cost
-     * @return
+     * Transfers emeralds if the player has enough of them to buy the desired item.
+     * <p>
+     * The cost will be withdrawn if the player has enough emeralds.
+     * @param fighter Player who wants to buy an item.
+     * @param cost Cost of the item.
+     * @return a value indicating whether or not the player is able to buy the item.
      */
     private boolean transferEmeralds(DungeonFighter fighter, double cost) {
 
