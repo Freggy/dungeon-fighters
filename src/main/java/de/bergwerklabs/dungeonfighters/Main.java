@@ -7,6 +7,8 @@ import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
 import de.bergwerklabs.dungeonfighters.game.map.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.map.DungeonLoader;
+import de.bergwerklabs.fmga.algorithm.FMGA;
+import de.bergwerklabs.fmga.algorithm.FmgaFactory;
 import de.bergwerklabs.framework.inventorymenu.InventoryMenuFactory;
 import de.bergwerklabs.framework.scoreboard.LabsScoreboard;
 import de.bergwerklabs.framework.scoreboard.LabsScoreboardFactory;
@@ -15,11 +17,14 @@ import de.bergwerklabs.framework.shop.ShopFactory;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
 import org.bukkit.Bukkit;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
@@ -60,6 +65,7 @@ public class Main extends LABSGameMode
     @Override
     public void labsEnable() {
         instance = this;
+        this.getServer().createWorld(new WorldCreator("dummy").type(WorldType.FLAT).generatorSettings("2;0").generateStructures(false));
         this.getServer().getPluginManager().registerEvents(new DungeonFightersEventHandler(), this);
 
         try {

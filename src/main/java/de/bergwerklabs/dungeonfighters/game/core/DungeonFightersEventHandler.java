@@ -1,6 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.framework.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
@@ -17,12 +18,13 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.io.File;
 import java.security.SecureRandom;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -58,6 +60,13 @@ public class DungeonFightersEventHandler implements Listener {
                                                                       LabsScoreboardFactory.createInstance(Main.getInstance().getDataFolder() + "/scoreboard.json")));
 
     }
+
+    @EventHandler
+    public void onMapInitialized(MapInitializeEvent e) {
+        e.getMap().removeRenderer(e.getMap().getRenderers().get(0));
+        e.getMap().addRenderer(new RoundSummaryMapRenderer(new File(Main.getInstance().getDataFolder() + "/image.png")));
+    }
+
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
