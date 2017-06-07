@@ -3,7 +3,8 @@ package de.bergwerklabs.dungeonfighters.game.core;
 import de.bergwerklabs.dungeonfighters.Main;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
-import de.bergwerklabs.framework.scoreboard.LabsScoreboardFactory;
+import de.bergwerklabs.framework.core.general.LabsTabList;
+import de.bergwerklabs.framework.core.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
 import org.bukkit.*;
@@ -41,10 +42,12 @@ import java.util.Random;
 public class DungeonFightersEventHandler implements Listener {
 
     private SecureRandom random = new SecureRandom();
+    private LabsTabList tabList = new LabsTabList(new String[] {"Hallo", "Header"}, new String[] { "Hallo", "Footer" });
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
-        String[] messages = Main.getInstance().getDungeonFighterConfig().getJoinmessages();
+        String[] messages = Main.getInstance().getDungeonFighterConfig().getJoinMessage();
+        tabList.send(e.getPlayer());
         int randomIndex = random.nextInt(messages.length);
         e.setJoinMessage(Main.getInstance().getChatPrefix() + messages[randomIndex].replace("{player}", e.getPlayer().getDisplayName()));
         //Bukkit.getPlayer(UUID.fromString("d44e59e6751f431d83f386b13c5306aa")).sendMessage(Main.getInstance().getChatPrefix() + "Du Pflaume! c:");
@@ -129,7 +132,6 @@ public class DungeonFightersEventHandler implements Listener {
         Particle centerParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, eye.clone().subtract(0, 0.5, 0), 0.3F, 0.3F, 0.3F, 0F, 25);
         Particle feetParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, died.getLocation(), 0.3F, 0.3F, 0.3F, 0F, 25);
 
-        // TODO: 30.05.2017 - play sound
         killer.playSound(killer.getEyeLocation(), Sound.IRONGOLEM_DEATH, 50, 1);
         
         ParticleUtil.sendParticleToPlayer(headParticles, killer);

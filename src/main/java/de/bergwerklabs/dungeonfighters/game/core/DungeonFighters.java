@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
-import de.bergwerklabs.framework.game.PlayerManager;
+import de.bergwerklabs.framework.core.game.PlayerManager;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.

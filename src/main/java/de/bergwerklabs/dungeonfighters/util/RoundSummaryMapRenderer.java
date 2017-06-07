@@ -1,6 +1,5 @@
 package de.bergwerklabs.dungeonfighters.util;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.*;
 
@@ -12,13 +11,15 @@ import java.io.IOException;
 /**
  * Created by Yannic Rieger on 06.06.2017.
  * <p>  </p>
- *
  * @author Yannic Rieger
  */
 public class RoundSummaryMapRenderer extends MapRenderer {
 
     private static Image cachedImage;
 
+    /**
+     * @param file Image for the round summary.
+     */
     public RoundSummaryMapRenderer(File file) {
         if (cachedImage == null) {
             try {

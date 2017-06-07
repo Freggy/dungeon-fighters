@@ -6,14 +6,11 @@ import de.bergwerklabs.dungeonfighters.game.config.ConfigDeserializer;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
 import de.bergwerklabs.dungeonfighters.game.map.Dungeon;
-import de.bergwerklabs.dungeonfighters.game.map.DungeonLoader;
-import de.bergwerklabs.fmga.algorithm.FMGA;
-import de.bergwerklabs.fmga.algorithm.FmgaFactory;
-import de.bergwerklabs.framework.inventorymenu.InventoryMenuFactory;
-import de.bergwerklabs.framework.scoreboard.LabsScoreboard;
-import de.bergwerklabs.framework.scoreboard.LabsScoreboardFactory;
-import de.bergwerklabs.framework.shop.NPCShopManager;
-import de.bergwerklabs.framework.shop.ShopFactory;
+import de.bergwerklabs.framework.core.inventorymenu.InventoryMenuFactory;
+import de.bergwerklabs.framework.core.scoreboard.LabsScoreboard;
+import de.bergwerklabs.framework.core.scoreboard.LabsScoreboardFactory;
+import de.bergwerklabs.framework.core.shop.NPCShopManager;
+import de.bergwerklabs.framework.core.shop.ShopFactory;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
 import org.bukkit.Bukkit;
@@ -24,7 +21,6 @@ import org.bukkit.command.CommandSender;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
@@ -32,7 +28,6 @@ import java.security.SecureRandom;
 /**
  * Created by Yannic Rieger on 25.04.2017.
  * <p> Main class for the DungeonFighter minigame. </p>
- *
  * @author Yannic Rieger
  */
 public class Main extends LABSGameMode

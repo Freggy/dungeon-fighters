@@ -3,7 +3,7 @@ main: de.bergwerklabs.dungeonfighters.Main
 website: http://www.bergwerklabs.de
 author: Freggy
 version: 1.0
-depend: [LABS_Util, LabsFramework]
+depend: [LABS_Util, LabsFrameworkCore]
 
 commands:
     money:

@@ -16,16 +16,18 @@ public class DungeonFighterConfig {
     private String deathMessage;
     private String[] joinMessages;
     private String notEnoughMoneyMessage;
-    private String cannotEnchatMessage;
+    private String cannotEnchantMessage;
+    private String cannotConvertMessage;
     private Location gridOrigin;
 
-    public DungeonFighterConfig(HashMap<String, Object> messages, HashMap<String, Integer> emeraldSettings,
+    DungeonFighterConfig(HashMap<String, Object> messages, HashMap<String, Integer> emeraldSettings,
                                 Location gridOrigin) {
 
         this.deathMessage = (String)messages.get("death-message");
-        this.joinMessages = (String[])messages.get("join-message");
+        this.joinMessages = (String[])messages.get("join-messages");
         this.notEnoughMoneyMessage = (String)messages.get("not-enough-money-message");
-        this.cannotEnchatMessage = (String)messages.get("cannot-enchant-message");
+        this.cannotEnchantMessage = (String)messages.get("cannot-enchant-message");
+        this.cannotConvertMessage = (String)messages.get("cannot-convert-message");
 
         this.maxEmeraldDrop = emeraldSettings.get("max-emerald-drop");
         this.minEmeraldDrop = emeraldSettings.get("min-emerald-drop");
@@ -37,48 +39,55 @@ public class DungeonFighterConfig {
      *
      */
     public int getMaxEmeraldDrop() {
-        return maxEmeraldDrop;
+        return this.maxEmeraldDrop;
     }
 
     /**
      *
      */
     public int getMinEmeraldDrop() {
-        return minEmeraldDrop;
+        return this.minEmeraldDrop;
     }
 
     /**
      *
      */
     public String getDeathMessage() {
-        return deathMessage;
+        return this.deathMessage;
     }
 
     /**
      *
      */
-    public String[] getJoinmessages() {
-        return joinMessages;
+    public String[] getJoinMessage() {
+        return this.joinMessages;
     }
 
     /**
      *
      */
     public String getNotEnoughMoneyMessage() {
-        return notEnoughMoneyMessage;
+        return this.notEnoughMoneyMessage;
     }
 
     /**
      *
      */
     public String getCannotEnoughEnchantMessage() {
-        return cannotEnchatMessage;
+        return this.cannotEnchantMessage;
     }
 
     /**
      *
      */
     public Location getGridOrigin() {
-        return gridOrigin;
+        return this.gridOrigin;
+    }
+
+    /**
+     *
+     */
+    public String getCannotConvertMessage() {
+        return this.cannotConvertMessage;
     }
 }

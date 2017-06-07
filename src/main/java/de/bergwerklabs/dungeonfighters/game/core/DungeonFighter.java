@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
-import de.bergwerklabs.framework.game.LABSPlayer;
-import de.bergwerklabs.framework.scoreboard.LabsScoreboard;
+import de.bergwerklabs.framework.core.game.LabsPlayer;
+import de.bergwerklabs.framework.core.scoreboard.LabsScoreboard;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  * <p> Player object specifically for DungeonFighter therefore providing more specialized functionality </p>
  * @author Yannic Rieger
  */
-public class DungeonFighter extends LABSPlayer {
+public class DungeonFighter extends LabsPlayer {
 
     /**
      * Gets the current amount of emeralds.

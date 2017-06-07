@@ -1,14 +1,11 @@
 package de.bergwerklabs.dungeonfighters.game.config;
 
 import com.google.gson.*;
-import de.bergwerklabs.framework.location.LocationUtil;
+import de.bergwerklabs.framework.core.location.LocationUtil;
 import org.bukkit.Location;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by Yannic Rieger on 06.05.2017.
@@ -29,6 +26,8 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
         messages.put("join-messages",  this.getJoinMessages(messageObject.get("join-messages").getAsJsonArray()));
         messages.put("not-enough-money-message", messageObject.get("not-enough-money-message").getAsString());
         messages.put("cannot-enchant-message", messageObject.get("cannot-enchant-message").getAsString());
+        messages.put("cannot-convert-xp-message", messageObject.get("cannot-convert-xp-message").getAsString());
+
 
         HashMap<String, Integer> emeraldSettings = new HashMap<>();
         emeraldSettings.put("max-emerald-drop", emeraldObject.get("max-emerald-drop").getAsInt());
@@ -40,9 +39,9 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
     }
 
     /**
-     *
-     * @param messages
-     * @return
+     * Creates a string array out of a JsonArray.
+     * @param messages Array containing messages as string.
+     * @return String array
      */
     private String[] getJoinMessages(JsonArray messages) {
         String[] join = new String[messages.size()];
