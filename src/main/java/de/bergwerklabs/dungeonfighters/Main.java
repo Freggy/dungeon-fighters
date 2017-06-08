@@ -6,6 +6,12 @@ import de.bergwerklabs.dungeonfighters.game.config.ConfigDeserializer;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
 import de.bergwerklabs.dungeonfighters.game.map.Dungeon;
+import de.bergwerklabs.fmga.algorithm.FMGA;
+import de.bergwerklabs.fmga.algorithm.FmgaFactory;
+import de.bergwerklabs.fmga.algorithm.cycle.GenerationCycleFixPoint;
+import de.bergwerklabs.fmga.algorithm.grid.GridCoordinate;
+import de.bergwerklabs.fmga.algorithm.module.Direction;
+import de.bergwerklabs.fmga.algorithm.util.PointCompound;
 import de.bergwerklabs.framework.core.inventorymenu.InventoryMenuFactory;
 import de.bergwerklabs.framework.core.scoreboard.LabsScoreboard;
 import de.bergwerklabs.framework.core.scoreboard.LabsScoreboardFactory;
@@ -24,6 +30,8 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yannic Rieger on 25.04.2017.
@@ -54,13 +62,14 @@ public class Main extends LABSGameMode
     private File menuFolder = new File(this.getDataFolder() + "/menus");
     private File shopFolder = new File(this.getDataFolder() + "/shops");
 
+    public static final SecureRandom random = new SecureRandom();
     private LabsScoreboard scoreboard;
     private DungeonFighterConfig config;
+    private FMGA fmga;
 
     @Override
     public void labsEnable() {
         instance = this;
-        this.getServer().createWorld(new WorldCreator("dummy").type(WorldType.FLAT).generatorSettings("2;0").generateStructures(false));
         this.getServer().getPluginManager().registerEvents(new DungeonFightersEventHandler(), this);
 
         try {
@@ -71,6 +80,8 @@ public class Main extends LABSGameMode
 
             ShopFactory.readNPCShops(shopFolder);
             NPCShopManager.getShops().values().forEach(shop -> shop.spawnShop());
+
+            this.fmga = FmgaFactory.createFmga(this.getDataFolder() + "/fmga.json");
 
             scoreboard = LabsScoreboardFactory.createInstance(this.getDataFolder() + "/scoreboard.json");
         }
@@ -111,6 +122,15 @@ public class Main extends LABSGameMode
      */
     private Dungeon determineDungeon() {
         File[] maps = new File(this.getDataFolder() + "/maps").listFiles();
-        return new Dungeon(maps[new SecureRandom().nextInt(maps.length)]);
+        return new Dungeon(maps[random.nextInt(maps.length)], this.fmga.generate(this.getCompunds()));
+    }
+
+    private List<PointCompound> getCompunds() {
+        ArrayList<PointCompound> compounds = new ArrayList<>();
+        compounds.add(new PointCompound(new GenerationCycleFixPoint(new GridCoordinate(1, this.random.nextInt(8) + 1), Direction.SOUTH), new GenerationCycleFixPoint(new GridCoordinate(3, 4), Direction.NORTH)));
+        compounds.add(new PointCompound(new GenerationCycleFixPoint(new GridCoordinate(this.random.nextInt(8) + 1, 8), Direction.WEST), new GenerationCycleFixPoint(new GridCoordinate(4, 6), Direction.EAST)));
+        compounds.add(new PointCompound(new GenerationCycleFixPoint(new GridCoordinate(8, this.random.nextInt(8) + 1), Direction.NORTH), new GenerationCycleFixPoint(new GridCoordinate(6, 5), Direction.SOUTH)));
+        compounds.add(new PointCompound(new GenerationCycleFixPoint(new GridCoordinate(this.random.nextInt(8) + 1, 1), Direction.EAST), new GenerationCycleFixPoint(new GridCoordinate(5, 3), Direction.WEST)));
+        return compounds;
     }
 }

@@ -11,6 +11,7 @@ import java.io.IOException;
 /**
  * Created by Yannic Rieger on 06.06.2017.
  * <p>  </p>
+ *
  * @author Yannic Rieger
  */
 public class RoundSummaryMapRenderer extends MapRenderer {
@@ -34,6 +35,5 @@ public class RoundSummaryMapRenderer extends MapRenderer {
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
         mapCanvas.drawImage(0, 0, cachedImage);
-        mapCanvas.drawText(50, 50, MinecraftFont.Font, "Hello World");
     }
 }

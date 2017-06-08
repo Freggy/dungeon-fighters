@@ -33,8 +33,6 @@ public class Dungeon {
     private HashMap<ModuleType, List<LabsSchematic>> modules = new HashMap<>();
     private GridCoordinate[][] grid;
 
-    // TODO: add FMGA dungeon layout
-
     /**
      * @param mapFolder Folder in which the  map specific schematics are located.
      */

@@ -6,6 +6,9 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.security.SecureRandom;
+import java.util.List;
+
 /**
  * Created by Yannic Rieger on 29.05.2017.
  * <p> Class  providing methods for placing modules on the grid. </p>
@@ -27,10 +30,12 @@ public class DungeonLoader {
      * @param dungeon Current map that wil be played.
      */
     public void prepareMap(Dungeon dungeon) {
+        SecureRandom random = new SecureRandom();
 
         for (int row = 0; row < 10; row++) {
             for (int column = 0; column < 10; column++) {
-                //dungeon.getGrid()[row][column]
+                List<LabsSchematic> modules = dungeon.getModules().get(dungeon.getGrid()[row][column]);
+                this.placeModule(row, column, modules.get(random.nextInt(modules.size())));
             }
         }
     }
@@ -51,7 +56,7 @@ public class DungeonLoader {
      * @return 2 dimensional array of chunks representing the grid.
      */
     private Chunk[][] loadChunks(Location gridOrigin) {
-        Chunk[][] chunks = new Chunk[10][10]; // TODO: use config
+        Chunk[][] chunks = new Chunk[10][10];
         World dungeon = Bukkit.getWorld("dungeon");
 
         int originRow = gridOrigin.getChunk().getX();

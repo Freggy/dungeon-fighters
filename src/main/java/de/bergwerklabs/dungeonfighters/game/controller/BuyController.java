@@ -101,6 +101,12 @@ public class BuyController implements LabsController {
         double money = fighter.getEmeralds();
         int earnedMoney = player.getLevel() / 2;
 
+        if (earnedMoney == 0) {
+            player.sendMessage(Main.getInstance().getDungeonFighterConfig().getCannotConvertMessage());
+            fighter.getPlayer().playSound(fighter.getPlayer().getEyeLocation(), Sound.NOTE_BASS, 100, 1);
+            return;
+        }
+
         money += earnedMoney;
 
         player.setLevel(player.getLevel() - earnedMoney * 2);
