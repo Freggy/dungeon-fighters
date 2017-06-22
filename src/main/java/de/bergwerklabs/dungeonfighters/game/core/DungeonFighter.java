@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
-import de.bergwerklabs.framework.core.game.LabsPlayer;
-import de.bergwerklabs.framework.core.scoreboard.LabsScoreboard;
+import de.bergwerklabs.framework.commons.spigot.game.LabsPlayer;
+import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 

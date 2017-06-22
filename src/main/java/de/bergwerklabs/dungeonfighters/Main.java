@@ -10,16 +10,18 @@ import de.bergwerklabs.dungeonfighters.game.core.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.fubar.Util;
 import de.bergwerklabs.dungeonfighters.game.core.map.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.map.DungeonLoader;
-import de.bergwerklabs.dungeonfighters.util.DestructionWarning;
-import de.bergwerklabs.framework.core.inventorymenu.InventoryMenuFactory;
-import de.bergwerklabs.framework.core.scoreboard.LabsScoreboard;
-import de.bergwerklabs.framework.core.scoreboard.LabsScoreboardFactory;
+import de.bergwerklabs.framework.commons.spigot.inventorymenu.InventoryMenuFactory;
+import de.bergwerklabs.framework.commons.spigot.item.PlayerHead;
+import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
+import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
+import de.bergwerklabs.framework.commons.spigot.shop.NPCShopManager;
+import de.bergwerklabs.framework.commons.spigot.shop.ShopFactory;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import javax.imageio.ImageIO;
@@ -29,7 +31,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yannic Rieger on 25.04.2017.
@@ -88,8 +91,8 @@ public class Main extends LABSGameMode
 
             InventoryMenuFactory.readMenus(menuFolder, null);
 
-            //ShopFactory.readNPCShops(shopFolder);
-            //NPCShopManager.getShops().values().forEach(shop -> shop.spawnShop());
+            ShopFactory.readNPCShops(shopFolder);
+            NPCShopManager.getShops().values().forEach(shop -> shop.spawnShop());
 
             scoreboard = LabsScoreboardFactory.createInstance(this.getDataFolder() + "/scoreboard.json");
         }
@@ -97,7 +100,7 @@ public class Main extends LABSGameMode
             e.printStackTrace();
         }
 
-        this.loader.generate(this.config.getGridOrigin(), this.determineDungeon());
+        //this.loader.generate(this.config.getGridOrigin(), this.determineDungeon());
     }
 
     @Override
@@ -116,6 +119,16 @@ public class Main extends LABSGameMode
          /* just for demonstration purposes */
         if (commandLabel.equalsIgnoreCase("money")) {
 
+            PlayerHead playerHead = new PlayerHead("http://textures.minecraft.net/texture/8793eef4849078df4ccd498054c74e2171c771f2730944164a8ee7b2d563832", "§c✚ §fMediPack", true);
+            PlayerHead pt = new PlayerHead("http://textures.minecraft.net/texture/24fcc989f033947bf2b75416d4ce94a518cf7c2bdb57c43240e87d7ae2663279", "§c✚ §fMediPack", true);
+
+
+            System.out.println(playerHead.getItem().getData() == pt.getItem().getData());
+
+            ((Player)sender).setItemInHand(playerHead.getItem());
+
+
+            /*
             List<Chunk> chunks = Arrays.asList(loader.getChunks().clone());
             Collections.shuffle(chunks);
             Iterator<Chunk> it = chunks.iterator();
@@ -131,8 +144,8 @@ public class Main extends LABSGameMode
                         }
                         else DestructionWarning.sendPacket(player, false);
                     });
-                }, 5L, 5L);
-            }, 20 * 6L); // TODO: start when challenge finished
+                }, 5L, 5L);/give @p skull 1 3 {display:{Name:"Health Icon"},SkullOwner:{Id:"51ba86b3-ece6-4763-ad53-008445a7732a",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODc5M2VlZjQ4NDkwNzhkZjRjY2Q0OTgwNTRjNzRlMjE3MWM3NzFmMjczMDk0NDE2NGE4ZWU3YjJkNTYzODMyIn19fQ=="}]}}}
+            }, 20 * 6L); // TODO: start when challenge finished */
             return true;
         }
         return false;

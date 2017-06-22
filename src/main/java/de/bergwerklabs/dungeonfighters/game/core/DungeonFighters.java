@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
-import de.bergwerklabs.framework.core.game.PlayerManager;
+import de.bergwerklabs.framework.commons.spigot.game.PlayerManager;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -12,7 +12,7 @@ public class DungeonFighters {
     public PlayerManager<DungeonFighter> getPlayerManager() {
         return playerManager;
     }
-
+    
     private PlayerManager<DungeonFighter> playerManager = new PlayerManager<>();
 
     private static DungeonFighters instance;

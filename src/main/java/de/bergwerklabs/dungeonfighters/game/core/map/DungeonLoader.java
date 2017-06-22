@@ -57,7 +57,6 @@ public class DungeonLoader {
         for (int row = 0; row < 10; row++) {
             for (int column = 0; column < 10; column++) {
                 Chunk chunk = dungeonMap.getChunkAt(originColumn + column, originRow + row);
-                chunk.load();
                 TileType tile = grid[GridCoordinate.toIndex(row, column, 10)];
 
                 if (tile != null) {

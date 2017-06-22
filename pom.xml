@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>de.bergwerklabs.framework</groupId>
-            <artifactId>LabsFrameworkCore</artifactId>
+            <artifactId>LabsFrameworkSpigotCommons</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

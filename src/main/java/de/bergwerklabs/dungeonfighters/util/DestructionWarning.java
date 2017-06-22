@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.util;
 
-import de.bergwerklabs.framework.core.general.reflection.LabsReflection;
+import de.bergwerklabs.framework.commons.spigot.general.reflection.LabsReflection;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder;
 import net.minecraft.server.v1_8_R3.WorldBorder;
@@ -17,7 +17,6 @@ public class DestructionWarning {
 
     private static PacketPlayOutWorldBorder displayWorldBorderPacket;
     private static PacketPlayOutWorldBorder removeWorldBorderPacket;
-
 
     public static void sendPacket(Player player, boolean display) {
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();

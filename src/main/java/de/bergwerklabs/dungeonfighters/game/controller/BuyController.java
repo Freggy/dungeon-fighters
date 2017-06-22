@@ -2,10 +2,10 @@ package de.bergwerklabs.dungeonfighters.game.controller;
 
 import de.bergwerklabs.dungeonfighters.Main;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import de.bergwerklabs.framework.core.general.LabsController;
-import de.bergwerklabs.framework.core.inventorymenu.InventoryItem;
-import de.bergwerklabs.framework.core.inventorymenu.InventoryItemClickEvent;
-import de.bergwerklabs.framework.core.inventorymenu.InventoryMenuManager;
+import de.bergwerklabs.framework.commons.spigot.general.LabsController;
+import de.bergwerklabs.framework.commons.spigot.inventorymenu.InventoryItem;
+import de.bergwerklabs.framework.commons.spigot.inventorymenu.InventoryItemClickEvent;
+import de.bergwerklabs.framework.commons.spigot.inventorymenu.InventoryMenuManager;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

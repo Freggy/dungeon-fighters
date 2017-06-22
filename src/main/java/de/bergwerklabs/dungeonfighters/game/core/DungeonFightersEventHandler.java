@@ -1,10 +1,12 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.api.SpecialItem;
+import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemFactory;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
-import de.bergwerklabs.framework.core.general.LabsTabList;
-import de.bergwerklabs.framework.core.scoreboard.LabsScoreboardFactory;
+import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
+import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
 import org.bukkit.GameMode;
@@ -19,6 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -154,5 +157,14 @@ public class DungeonFightersEventHandler implements Listener {
     @EventHandler
     public void onGameFinished() {
         Main.getInstance().getTasks().forEach(BukkitTask::cancel);
+    }
+
+    @EventHandler
+    public void onItemInteract(PlayerInteractEvent e) {
+        SpecialItem item = SpecialItemFactory.createItem(e.getItem().getItemMeta().getDisplayName());
+
+        if (item != null) {
+            if (e.getAction() == item.getRequiredAction()) item.use();
+        }
     }
 }

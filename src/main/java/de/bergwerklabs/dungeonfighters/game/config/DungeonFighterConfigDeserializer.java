@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.config;
 
 import com.google.gson.*;
-import de.bergwerklabs.framework.core.location.LocationUtil;
+import de.bergwerklabs.framework.commons.spigot.location.LocationUtil;
 import org.bukkit.Location;
 
 import java.lang.reflect.Type;
@@ -28,13 +28,11 @@ public class DungeonFighterConfigDeserializer implements JsonDeserializer<Dungeo
         messages.put("cannot-enchant-message", messageObject.get("cannot-enchant-message").getAsString());
         messages.put("cannot-convert-xp-message", messageObject.get("cannot-convert-xp-message").getAsString());
 
-
         HashMap<String, Integer> emeraldSettings = new HashMap<>();
         emeraldSettings.put("max-emerald-drop", emeraldObject.get("max-emerald-drop").getAsInt());
         emeraldSettings.put("min-emerald-drop", emeraldObject.get("min-emerald-drop").getAsInt());
 
         Location gridOrigin = LocationUtil.locationFromJson(json.get("grid-origin").getAsJsonObject());
-        System.out.println(gridOrigin);
 
         return new DungeonFighterConfig(messages, emeraldSettings, gridOrigin);
     }
