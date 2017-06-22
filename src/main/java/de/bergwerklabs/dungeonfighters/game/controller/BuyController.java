@@ -22,11 +22,10 @@ public class BuyController implements LabsController {
 
     /**
      * Gets invoked when a player buys an item in a shop except the food shop.
-     * @param parameters List of parameters containing the following:
      *
+     * @param parameters List of parameters containing the following:
      */
     public void onItemBuy(List<Object> parameters) {
-
         InventoryItemClickEvent event = (InventoryItemClickEvent)parameters.get(0);
         List<String> args = event.getParameter().stream().map(arg -> (String)arg).collect(Collectors.toList());
         InventoryItem item = event.getItem();
@@ -102,7 +101,7 @@ public class BuyController implements LabsController {
         int earnedMoney = player.getLevel() / 2;
 
         if (earnedMoney == 0) {
-            player.sendMessage(Main.getInstance().getDungeonFighterConfig().getCannotConvertMessage());
+            player.sendMessage(Main.getInstance().getChatPrefix() + Main.getInstance().getDungeonFighterConfig().getCannotConvertMessage());
             fighter.getPlayer().playSound(fighter.getPlayer().getEyeLocation(), Sound.NOTE_BASS, 100, 1);
             return;
         }

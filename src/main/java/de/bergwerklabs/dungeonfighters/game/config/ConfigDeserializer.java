@@ -34,6 +34,7 @@ public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig
         emeraldSettings.put("min-emerald-drop", emeraldObject.get("min-emerald-drop").getAsInt());
 
         Location gridOrigin = LocationUtil.locationFromJson(json.get("grid-origin").getAsJsonObject());
+        System.out.println(gridOrigin);
 
         return new DungeonFighterConfig(messages, emeraldSettings, gridOrigin);
     }

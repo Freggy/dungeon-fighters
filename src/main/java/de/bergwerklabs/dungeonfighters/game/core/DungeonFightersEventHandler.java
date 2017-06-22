@@ -1,13 +1,16 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
+import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.framework.core.general.LabsTabList;
 import de.bergwerklabs.framework.core.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -21,6 +24,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapView;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -29,7 +33,7 @@ import java.util.Random;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
- * <p> Class providing EventHandlers for the following events: </p>
+ * <p> Class providing EventHandlers for the following events:
  * <ul>
  *     <li> BlockBreakEvent </li>
  *     <li> PlayerJoinEvent </li>
@@ -67,6 +71,7 @@ public class DungeonFightersEventHandler implements Listener {
     @EventHandler
     public void onMapInitialized(MapInitializeEvent e) {
         e.getMap().removeRenderer(e.getMap().getRenderers().get(0));
+        e.getMap().setScale(MapView.Scale.FARTHEST);
         e.getMap().addRenderer(new RoundSummaryMapRenderer(new File(Main.getInstance().getDataFolder() + "/image.png")));
     }
 

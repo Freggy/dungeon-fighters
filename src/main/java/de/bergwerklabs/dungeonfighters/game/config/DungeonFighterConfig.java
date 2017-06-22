@@ -27,7 +27,7 @@ public class DungeonFighterConfig {
         this.joinMessages = (String[])messages.get("join-messages");
         this.notEnoughMoneyMessage = (String)messages.get("not-enough-money-message");
         this.cannotEnchantMessage = (String)messages.get("cannot-enchant-message");
-        this.cannotConvertMessage = (String)messages.get("cannot-convert-message");
+        this.cannotConvertMessage = (String)messages.get("cannot-convert-xp-message");
 
         this.maxEmeraldDrop = emeraldSettings.get("max-emerald-drop");
         this.minEmeraldDrop = emeraldSettings.get("min-emerald-drop");

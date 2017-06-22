@@ -1,37 +1,32 @@
 package de.bergwerklabs.dungeonfighters;
 
 import com.google.gson.GsonBuilder;
-import de.bergwerklabs.dungeonfighters.game.core.DungeonFightersEventHandler;
 import de.bergwerklabs.dungeonfighters.game.config.ConfigDeserializer;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
+import de.bergwerklabs.dungeonfighters.game.core.DungeonFightersEventHandler;
+import de.bergwerklabs.dungeonfighters.game.core.fubar.Generator;
+import de.bergwerklabs.dungeonfighters.game.core.fubar.TileType;
+import de.bergwerklabs.dungeonfighters.game.core.fubar.Util;
 import de.bergwerklabs.dungeonfighters.game.map.Dungeon;
-import de.bergwerklabs.fmga.algorithm.FMGA;
-import de.bergwerklabs.fmga.algorithm.FmgaFactory;
-import de.bergwerklabs.fmga.algorithm.cycle.GenerationCycleFixPoint;
-import de.bergwerklabs.fmga.algorithm.grid.GridCoordinate;
-import de.bergwerklabs.fmga.algorithm.module.Direction;
-import de.bergwerklabs.fmga.algorithm.util.PointCompound;
+import de.bergwerklabs.dungeonfighters.game.map.DungeonLoader;
+import de.bergwerklabs.dungeonfighters.util.WarningPacket;
 import de.bergwerklabs.framework.core.inventorymenu.InventoryMenuFactory;
 import de.bergwerklabs.framework.core.scoreboard.LabsScoreboard;
 import de.bergwerklabs.framework.core.scoreboard.LabsScoreboardFactory;
-import de.bergwerklabs.framework.core.shop.NPCShopManager;
-import de.bergwerklabs.framework.core.shop.ShopFactory;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
 import org.bukkit.Bukkit;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Yannic Rieger on 25.04.2017.
@@ -62,10 +57,10 @@ public class Main extends LABSGameMode
     private File menuFolder = new File(this.getDataFolder() + "/menus");
     private File shopFolder = new File(this.getDataFolder() + "/shops");
 
-    public static final SecureRandom random = new SecureRandom();
     private LabsScoreboard scoreboard;
     private DungeonFighterConfig config;
-    private FMGA fmga;
+
+    // TODO: put tasks in list an cancle them if needed.
 
     @Override
     public void labsEnable() {
@@ -78,10 +73,8 @@ public class Main extends LABSGameMode
 
             InventoryMenuFactory.readMenus(menuFolder, null);
 
-            ShopFactory.readNPCShops(shopFolder);
-            NPCShopManager.getShops().values().forEach(shop -> shop.spawnShop());
-
-            this.fmga = FmgaFactory.createFmga(this.getDataFolder() + "/fmga.json");
+            //ShopFactory.readNPCShops(shopFolder);
+            //NPCShopManager.getShops().values().forEach(shop -> shop.spawnShop());
 
             scoreboard = LabsScoreboardFactory.createInstance(this.getDataFolder() + "/scoreboard.json");
         }
@@ -89,7 +82,20 @@ public class Main extends LABSGameMode
             e.printStackTrace();
         }
 
-         //new DungeonLoader(this.config.getGridOrigin()).prepareMap(this.determineDungeon());
+       DungeonLoader d = new DungeonLoader();
+        d.loadChunks(this.config.getGridOrigin(), this.determineDungeon()); // TODO: rename function
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            d.startDestructionSequence();
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+                 Bukkit.getOnlinePlayers().forEach(player ->  {
+                     if (d.getDestructedChunks().contains(player.getLocation().getChunk())) {
+                         WarningPacket.sendPacket(player, true);
+                     }
+                     else WarningPacket.sendPacket(player, false);
+                 });
+             }, 5L, 5L);
+        }, 20 * 6L); // TODO: start when challenge finished
     }
 
     @Override
@@ -105,7 +111,6 @@ public class Main extends LABSGameMode
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("money")) {
-
             return true;
         }
         return false;
@@ -122,15 +127,20 @@ public class Main extends LABSGameMode
      */
     private Dungeon determineDungeon() {
         File[] maps = new File(this.getDataFolder() + "/maps").listFiles();
-        return new Dungeon(maps[random.nextInt(maps.length)], this.fmga.generate(this.getCompunds()));
+
+        TileType[] grid = Generator.generateMap(10);
+        this.generateAndSaveImage(grid, 10);
+        SecureRandom random = new SecureRandom();
+
+        return new Dungeon(maps[random.nextInt(maps.length)], grid);
     }
 
-    private List<PointCompound> getCompunds() {
-        ArrayList<PointCompound> compounds = new ArrayList<>();
-        compounds.add(new PointCompound(new GenerationCycleFixPoint(new GridCoordinate(1, this.random.nextInt(8) + 1), Direction.SOUTH), new GenerationCycleFixPoint(new GridCoordinate(3, 4), Direction.NORTH)));
-        compounds.add(new PointCompound(new GenerationCycleFixPoint(new GridCoordinate(this.random.nextInt(8) + 1, 8), Direction.WEST), new GenerationCycleFixPoint(new GridCoordinate(4, 6), Direction.EAST)));
-        compounds.add(new PointCompound(new GenerationCycleFixPoint(new GridCoordinate(8, this.random.nextInt(8) + 1), Direction.NORTH), new GenerationCycleFixPoint(new GridCoordinate(6, 5), Direction.SOUTH)));
-        compounds.add(new PointCompound(new GenerationCycleFixPoint(new GridCoordinate(this.random.nextInt(8) + 1, 1), Direction.EAST), new GenerationCycleFixPoint(new GridCoordinate(5, 3), Direction.WEST)));
-        return compounds;
+    private void generateAndSaveImage(TileType[] grid, int mapSize) {
+        try {
+            ImageIO.write(Util.createImageFromBoard(grid, mapSize), "png", new File("/home/freggy/laby/spigot_1.8.8/plugins/DungeonFighters/board.png"));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
