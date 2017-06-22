@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.map;
+package de.bergwerklabs.dungeonfighters.game.core.map;
 
 import de.bergwerklabs.dungeonfighters.Main;
 import de.bergwerklabs.dungeonfighters.game.core.fubar.GridCoordinate;
@@ -30,17 +30,23 @@ public class DungeonLoader {
 
     public List<Chunk> getDestructedChunks() { return this.destructedChunks; }
 
-    private Chunk[] chunks;
     private int maxCycles, cycle = 0;
+    private Chunk[] chunks;
     private BukkitTask desturctionTask;
     private List<Chunk> destructedChunks = new CopyOnWriteArrayList<>();
+    private static DungeonLoader instance;
+
+    public DungeonLoader() {
+        if (instance != null) return;
+        instance = this;
+    }
 
     /**
      * Creates a 2 dimensional array of chunks representing the grid.
      *
      * @param gridOrigin Upper left corner of the grid.
      */
-    public void loadChunks(Location gridOrigin, Dungeon dungeon) {
+    public void generate(Location gridOrigin, Dungeon dungeon) {
         World dungeonMap = Bukkit.getWorld("spawn");
         TileType[] grid = dungeon.getGrid();
         chunks = new Chunk[grid.length];
@@ -51,6 +57,7 @@ public class DungeonLoader {
         for (int row = 0; row < 10; row++) {
             for (int column = 0; column < 10; column++) {
                 Chunk chunk = dungeonMap.getChunkAt(originColumn + column, originRow + row);
+                chunk.load();
                 TileType tile = grid[GridCoordinate.toIndex(row, column, 10)];
 
                 if (tile != null) {

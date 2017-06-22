@@ -40,7 +40,7 @@ public class DungeonDestructionStrategy implements DestructionStrategy {
 
                 if (counter % 2 == 0) players.forEach(player -> this.sendParticle(player, block.getLocation()));
                 if (counter % 2 == 0) players.forEach(player -> player.damage(0.3));
-                if (counter % 5 == 0) players.forEach(player -> chunk.getWorld().playSound(player.getEyeLocation(), Sound.EXPLODE, 100, 1));
+                if (counter % 10 == 0) players.forEach(player -> chunk.getWorld().playSound(player.getEyeLocation(), Sound.EXPLODE, 100, 1));
 
                 chunk.getWorld().spawnFallingBlock(block.getLocation(), material, data);
                 counter++;
@@ -73,7 +73,8 @@ public class DungeonDestructionStrategy implements DestructionStrategy {
 
         if (chance < 0.3) {
             try {
-                Particle p = new Particle(Particle.ParticleEffect.CLOUD, location, 0.2F, 0.2F, 0.2F, 0.1F, 7); p.sendToPlayer(player);
+                Particle p = new Particle(Particle.ParticleEffect.CLOUD, location, 0.2F, 0.2F, 0.2F, 0.1F, 7);
+                p.sendToPlayer(player);
             }
             catch (IllegalAccessException e) {
                 e.printStackTrace();

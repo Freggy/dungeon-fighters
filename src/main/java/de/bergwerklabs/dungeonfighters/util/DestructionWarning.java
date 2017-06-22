@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
  *
  * @author Yannic Rieger
  */
-public class WarningPacket {
+public class DestructionWarning {
 
     private static PacketPlayOutWorldBorder displayWorldBorderPacket;
     private static PacketPlayOutWorldBorder removeWorldBorderPacket;

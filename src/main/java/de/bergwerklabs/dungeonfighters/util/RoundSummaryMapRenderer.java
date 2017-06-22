@@ -2,10 +2,12 @@ package de.bergwerklabs.dungeonfighters.util;
 
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,12 @@ public class RoundSummaryMapRenderer extends MapRenderer {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
-        mapCanvas.drawImage(0, 0, cachedImage);
+        for (int x = 0; x < 128; x++) {
+            for (int y = 0; y < 128; y++) {
+                int color = cachedImage.getRGB(x, y);
+                mapCanvas.setPixel(x, y, MapPalette.matchColor(new Color(color)));
+            }
+        }
+       // mapCanvas.drawImage(0, 0, cachedImage);
     }
 }

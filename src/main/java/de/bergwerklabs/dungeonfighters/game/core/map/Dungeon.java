@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.map;
+package de.bergwerklabs.dungeonfighters.game.core.map;
 import de.bergwerklabs.dungeonfighters.game.core.fubar.TileType;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 

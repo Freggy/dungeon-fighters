@@ -4,15 +4,15 @@ import org.bukkit.Chunk;
 
 /**
  * Created by Yannic Rieger on 21.06.2017.
- * <p>  </p>
+ * <p>
  *
  * @author Yannic Rieger
  */
 public interface DestructionStrategy {
 
     /**
-     *
-     * @param chunk
+     * Destructs a module in a given {@link Chunk}
+     * @param chunk Chunk where the module is located.
      */
     void destruct(Chunk chunk);
 }

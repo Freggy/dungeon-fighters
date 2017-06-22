@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -137,12 +138,21 @@ public class DungeonFightersEventHandler implements Listener {
         Particle centerParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, eye.clone().subtract(0, 0.5, 0), 0.3F, 0.3F, 0.3F, 0F, 25);
         Particle feetParticles = ParticleUtil.createParticle(ParticleEffect.REDSTONE, died.getLocation(), 0.3F, 0.3F, 0.3F, 0F, 25);
 
-        killer.playSound(killer.getEyeLocation(), Sound.IRONGOLEM_DEATH, 50, 1);
+
+        // can happen if someone types /kill (which shouldn't happen in a regular match)
+        if (killer != null) {
+            killer.playSound(killer.getEyeLocation(), Sound.IRONGOLEM_DEATH, 50, 1);
+        }
         
         ParticleUtil.sendParticleToPlayer(headParticles, killer);
         ParticleUtil.sendParticleToPlayer(centerParticles, killer);
         ParticleUtil.sendParticleToPlayer(feetParticles, killer);
 
         e.getEntity().setGameMode(GameMode.SPECTATOR);
+    }
+
+    @EventHandler
+    public void onGameFinished() {
+        Main.getInstance().getTasks().forEach(BukkitTask::cancel);
     }
 }

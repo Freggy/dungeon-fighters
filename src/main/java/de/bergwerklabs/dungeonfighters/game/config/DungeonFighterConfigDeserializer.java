@@ -12,7 +12,7 @@ import java.util.HashMap;
  * <p> Class providing the capability to deserialize a config for DungeonFighters </p>
  * @author Yannic Rieger
  */
-public class ConfigDeserializer implements JsonDeserializer<DungeonFighterConfig> {
+public class DungeonFighterConfigDeserializer implements JsonDeserializer<DungeonFighterConfig> {
 
     @Override
     public DungeonFighterConfig deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
