@@ -1,8 +1,10 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.api.SpecialArrow;
 import de.bergwerklabs.dungeonfighters.api.SpecialItem;
 import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemFactory;
+import de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.ArrowMetadataHandler;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
@@ -14,13 +16,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -28,11 +32,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -161,10 +167,52 @@ public class DungeonFightersEventHandler implements Listener {
 
     @EventHandler
     public void onItemInteract(PlayerInteractEvent e) {
-        SpecialItem item = SpecialItemFactory.createItem(e.getItem().getItemMeta().getDisplayName());
+        if (e.getItem() == null) return;
 
-        if (item != null) {
-            if (e.getAction() == item.getRequiredAction()) item.use();
+        SpecialItem item = SpecialItemFactory.createItem(e.getItem().getItemMeta().getDisplayName());
+        Material material = e.getItem().getType();
+
+        if (item != null && material != Material.BOW) {
+            if (item.getRequiredActions().contains(e.getAction())) {
+                item.use(e.getPlayer());
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerShootBow(EntityShootBowEvent e) {
+        if (e.getEntity() instanceof Player) {
+            Projectile projectile = (Projectile) e.getProjectile();
+            ArrowMetadataHandler.setMetadata(e.getBow().getItemMeta().getDisplayName(), projectile);
+        }
+    }
+
+    @EventHandler
+    public void onProjectileHit(ProjectileHitEvent e) {
+        if (e.getEntityType() == EntityType.ARROW) {
+            Entity arrow = e.getEntity();
+            List<MetadataValue> values = arrow.getMetadata("damageType");
+
+            if (values.size() > 0) {
+                SpecialArrow specialArrow = ((SpecialArrow)values.get(0).value());
+                if (specialArrow.executeOnGround()) {
+                    specialArrow.groundHit(arrow.getLocation());
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        if (e.getDamager() instanceof Arrow) {
+            if (e.getEntity() instanceof Player) {
+                List<MetadataValue> values = e.getDamager().getMetadata("damageType");
+                if (values.size() > 0) {
+                    SpecialArrow specialArrow = (SpecialArrow) values.get(0).value();
+                    specialArrow.playerHit((Player) e.getEntity());
+                }
+            }
         }
     }
 }

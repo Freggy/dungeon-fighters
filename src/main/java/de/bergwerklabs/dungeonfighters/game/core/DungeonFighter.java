@@ -38,6 +38,7 @@ public class DungeonFighter extends LabsPlayer {
 
     private double emeralds = 0.0;
     private Player player;
+    private boolean canFireBow = true;
     private LabsScoreboard scoreboard;
 
     /**
@@ -77,5 +78,19 @@ public class DungeonFighter extends LabsPlayer {
      */
     public boolean hasEnoughMoney(double cost) {
         return cost < this.emeralds;
+    }
+
+    /**
+     *
+     */
+    public boolean canFireBow() {
+        return canFireBow;
+    }
+
+    /**
+     *
+     */
+    public void setCanFireBow(boolean canFireBow) {
+        this.canFireBow = canFireBow;
     }
 }

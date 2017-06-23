@@ -10,8 +10,18 @@ import de.bergwerklabs.dungeonfighters.api.SpecialItem;
  */
 public class SpecialItemFactory {
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public static SpecialItem createItem(String name) {
-        return null;
+        if (name == null) return null;
+
+        switch (name) {
+            case "§c✚ §fMediPack": return new MedPack();
+            default: return null;
+        }
     }
 
 }

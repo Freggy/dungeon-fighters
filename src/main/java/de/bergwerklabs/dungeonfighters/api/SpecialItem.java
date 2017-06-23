@@ -1,6 +1,9 @@
 package de.bergwerklabs.dungeonfighters.api;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+
+import java.util.List;
 
 /**
  * Created by Yannic Rieger on 23.06.2017.
@@ -13,11 +16,11 @@ public interface SpecialItem {
     /**
      *
      */
-    void use();
+    void use(Player player);
 
     /**
      *
      * @return
      */
-    Action getRequiredAction();
+    List<Action> getRequiredActions();
 }

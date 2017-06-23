@@ -20,6 +20,7 @@ public class DungeonFighterConfigDeserializer implements JsonDeserializer<Dungeo
 
         JsonObject messageObject = json.get("messages").getAsJsonObject();
         JsonObject emeraldObject = json.get("emerald-settings").getAsJsonObject();
+        JsonObject arrowSettingsObject = json.get("arrow-settings").getAsJsonObject();
 
         HashMap<String, Object> messages = new HashMap<>();
         messages.put("death-message", messageObject.get("death-message").getAsString());
@@ -27,14 +28,20 @@ public class DungeonFighterConfigDeserializer implements JsonDeserializer<Dungeo
         messages.put("not-enough-money-message", messageObject.get("not-enough-money-message").getAsString());
         messages.put("cannot-enchant-message", messageObject.get("cannot-enchant-message").getAsString());
         messages.put("cannot-convert-xp-message", messageObject.get("cannot-convert-xp-message").getAsString());
+        messages.put("cannot-use-med-pack-message", messageObject.get("cannot-use-med-pack-message").getAsString());
 
         HashMap<String, Integer> emeraldSettings = new HashMap<>();
         emeraldSettings.put("max-emerald-drop", emeraldObject.get("max-emerald-drop").getAsInt());
         emeraldSettings.put("min-emerald-drop", emeraldObject.get("min-emerald-drop").getAsInt());
 
+        HashMap<String, Number> arrowSettings = new HashMap<>();
+        arrowSettings.put("explosion-radius", arrowSettingsObject.get("explosion-radius").getAsFloat());
+        arrowSettings.put("poison-duration", arrowSettingsObject.get("poison-duration").getAsInt());
+        arrowSettings.put("fire-duration", arrowSettingsObject.get("fire-duration").getAsInt());
+
         Location gridOrigin = LocationUtil.locationFromJson(json.get("grid-origin").getAsJsonObject());
 
-        return new DungeonFighterConfig(messages, emeraldSettings, gridOrigin);
+        return new DungeonFighterConfig(messages, emeraldSettings, arrowSettings, gridOrigin);
     }
 
     /**

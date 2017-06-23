@@ -11,7 +11,7 @@ import de.bergwerklabs.dungeonfighters.game.core.fubar.Util;
 import de.bergwerklabs.dungeonfighters.game.core.map.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.map.DungeonLoader;
 import de.bergwerklabs.framework.commons.spigot.inventorymenu.InventoryMenuFactory;
-import de.bergwerklabs.framework.commons.spigot.item.PlayerHead;
+import de.bergwerklabs.framework.commons.spigot.item.ItemStackBuilder;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.framework.commons.spigot.shop.NPCShopManager;
@@ -19,9 +19,11 @@ import de.bergwerklabs.framework.commons.spigot.shop.ShopFactory;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import javax.imageio.ImageIO;
@@ -81,8 +83,6 @@ public class Main extends LABSGameMode
     public void labsEnable() {
         instance = this;
         this.loader = new DungeonLoader();
-
-
         this.getServer().getPluginManager().registerEvents(new DungeonFightersEventHandler(), this);
 
         try {
@@ -119,14 +119,12 @@ public class Main extends LABSGameMode
          /* just for demonstration purposes */
         if (commandLabel.equalsIgnoreCase("money")) {
 
-            PlayerHead playerHead = new PlayerHead("http://textures.minecraft.net/texture/8793eef4849078df4ccd498054c74e2171c771f2730944164a8ee7b2d563832", "§c✚ §fMediPack", true);
-            PlayerHead pt = new PlayerHead("http://textures.minecraft.net/texture/24fcc989f033947bf2b75416d4ce94a518cf7c2bdb57c43240e87d7ae2663279", "§c✚ §fMediPack", true);
+            ItemStack a1 = new ItemStackBuilder(Material.BOW).setName("§2☠ §fGiftbogen").create();
+            ItemStack a2 = new ItemStackBuilder(Material.BOW).setName("§c☀ §fFeuerbogen").create();
+            ItemStack a3 = new ItemStackBuilder(Material.BOW).setName("§e❖ §fExplosionsbogen").create();
+            ItemStack a4 = new ItemStackBuilder(Material.BOW).setName("§fNormaler Bogen").create();
 
-
-            System.out.println(playerHead.getItem().getData() == pt.getItem().getData());
-
-            ((Player)sender).setItemInHand(playerHead.getItem());
-
+            ((Player)sender).getInventory().addItem(a1, a2, a3, a4);
 
             /*
             List<Chunk> chunks = Arrays.asList(loader.getChunks().clone());
