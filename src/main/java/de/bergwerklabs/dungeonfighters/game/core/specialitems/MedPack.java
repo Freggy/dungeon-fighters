@@ -22,7 +22,7 @@ public class MedPack implements SpecialItem {
     @Override
     public void use(Player player) {
         double health = player.getHealth();
-        double healing = 4.0;
+        double healing = Main.getInstance().getDungeonFighterConfig().getMedPackHealing();
 
         // if set a number higher than 20 a exception is thrown
         if (health == 20) {

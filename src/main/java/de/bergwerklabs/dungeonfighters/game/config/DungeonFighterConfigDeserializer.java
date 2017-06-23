@@ -21,6 +21,7 @@ public class DungeonFighterConfigDeserializer implements JsonDeserializer<Dungeo
         JsonObject messageObject = json.get("messages").getAsJsonObject();
         JsonObject emeraldObject = json.get("emerald-settings").getAsJsonObject();
         JsonObject arrowSettingsObject = json.get("arrow-settings").getAsJsonObject();
+        JsonObject specialItemsSettingsObject = json.get("special-items-settings").getAsJsonObject();
 
         HashMap<String, Object> messages = new HashMap<>();
         messages.put("death-message", messageObject.get("death-message").getAsString());
@@ -39,9 +40,12 @@ public class DungeonFighterConfigDeserializer implements JsonDeserializer<Dungeo
         arrowSettings.put("poison-duration", arrowSettingsObject.get("poison-duration").getAsInt());
         arrowSettings.put("fire-duration", arrowSettingsObject.get("fire-duration").getAsInt());
 
+        HashMap<String, Object> specialItemSettings = new HashMap<>();
+        specialItemSettings.put("med-pack-healing", specialItemsSettingsObject.get("med-pack-healing").getAsFloat());
+
         Location gridOrigin = LocationUtil.locationFromJson(json.get("grid-origin").getAsJsonObject());
 
-        return new DungeonFighterConfig(messages, emeraldSettings, arrowSettings, gridOrigin);
+        return new DungeonFighterConfig(messages, emeraldSettings, arrowSettings, specialItemSettings, gridOrigin);
     }
 
     /**

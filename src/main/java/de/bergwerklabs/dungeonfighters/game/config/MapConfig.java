@@ -39,5 +39,4 @@ public class MapConfig {
     private String mapName;
     private String[] creators;
     private int destructionPeriod, getDestructionDelay;
-    private boolean hasSpecialItems, hasCustomDestructionStrategy;
 }

@@ -22,9 +22,10 @@ public class DungeonFighterConfig {
     private float explosionRadius;
     private int poisonDuration, fireDuration;
     private Location gridOrigin;
+    private float medPackHealing;
 
     DungeonFighterConfig(HashMap<String, Object> messages, HashMap<String, Integer> emeraldSettings,
-                         HashMap<String, Number> arrowSettins, Location gridOrigin) {
+                         HashMap<String, Number> arrowSettins, HashMap<String, Object> specialItemsSettings, Location gridOrigin) {
 
         this.deathMessage = (String)messages.get("death-message");
         this.joinMessages = (String[])messages.get("join-messages");
@@ -42,7 +43,7 @@ public class DungeonFighterConfig {
         this.poisonDuration = arrowSettins.get("poison-duration").intValue();
         this.fireDuration = arrowSettins.get("fire-duration").intValue();
 
-
+        this.medPackHealing = (Float)specialItemsSettings.get("med-pack-healing");
     }
 
     /**
@@ -118,5 +119,9 @@ public class DungeonFighterConfig {
 
     public float getExplosionRadius() {
         return explosionRadius;
+    }
+
+    public float getMedPackHealing() {
+        return medPackHealing;
     }
 }
