@@ -5,6 +5,7 @@ import de.bergwerklabs.dungeonfighters.api.SpecialArrow;
 import de.bergwerklabs.dungeonfighters.api.SpecialItem;
 import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemFactory;
 import de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.ArrowMetadataHandler;
+import de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.trail.ArrowTrailTask;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
@@ -169,7 +170,7 @@ public class DungeonFightersEventHandler implements Listener {
     public void onItemInteract(PlayerInteractEvent e) {
         if (e.getItem() == null) return;
 
-        SpecialItem item = SpecialItemFactory.createItem(e.getItem().getItemMeta().getDisplayName());
+        SpecialItem item = SpecialItemFactory.createItem(e.getItem().getItemMeta().getDisplayName(), e.getPlayer());
         Material material = e.getItem().getType();
 
         if (item != null && material != Material.BOW) {
@@ -185,6 +186,7 @@ public class DungeonFightersEventHandler implements Listener {
         if (e.getEntity() instanceof Player) {
             Projectile projectile = (Projectile) e.getProjectile();
             ArrowMetadataHandler.setMetadata(e.getBow().getItemMeta().getDisplayName(), projectile);
+            ArrowTrailTask.launchedProjectiles.add(projectile);
         }
     }
 
@@ -192,6 +194,7 @@ public class DungeonFightersEventHandler implements Listener {
     public void onProjectileHit(ProjectileHitEvent e) {
         if (e.getEntityType() == EntityType.ARROW) {
             Entity arrow = e.getEntity();
+            ArrowTrailTask.launchedProjectiles.remove(e.getEntity());
             List<MetadataValue> values = arrow.getMetadata("damageType");
 
             if (values.size() > 0) {
@@ -207,6 +210,7 @@ public class DungeonFightersEventHandler implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Arrow) {
             if (e.getEntity() instanceof Player) {
+
                 List<MetadataValue> values = e.getDamager().getMetadata("damageType");
                 if (values.size() > 0) {
                     SpecialArrow specialArrow = (SpecialArrow) values.get(0).value();

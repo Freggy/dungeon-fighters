@@ -7,6 +7,7 @@ import de.bergwerklabs.util.effect.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,16 +36,17 @@ public class MedPack implements SpecialItem {
         if (health + 4 > 20) healing = 20 - health; // gets the remaining healing needed to fully heal the player.
 
         player.setHealth(health + healing);
-        player.playSound(player.getEyeLocation(), Sound.LEVEL_UP, 100, 1);
+        player.playSound(player.getEyeLocation(), Sound.VILLAGER_YES, 100, 1);
 
-        player.getNearbyEntities(10, 10, 10).forEach(entity -> {
+        player.getNearbyEntities(20, 20, 20).forEach(entity -> {
             if (entity instanceof Player) {
                 Particle particle = ParticleUtil.createParticle(Particle.ParticleEffect.HEART, player.getEyeLocation().add(0, 0.3, 0), 0.3F, 0.2F, 0.3F, 0F, 4);
                 ParticleUtil.sendParticleToPlayer(particle, (Player) entity);
             }
         });
 
-        player.setItemInHand(null);
+        ItemStack inHand = player.getItemInHand();
+        inHand.setAmount(inHand.getAmount() - 1);
     }
 
     @Override
