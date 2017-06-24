@@ -53,4 +53,9 @@ public class MedPack implements SpecialItem {
     public List<Action> getRequiredActions() {
         return Arrays.asList(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK);
     }
+
+    @Override
+    public SpecialItemType getType() {
+        return SpecialItemType.MED_PACK;
+    }
 }

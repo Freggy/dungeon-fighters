@@ -1,14 +1,18 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.api.LoadableItem;
 import de.bergwerklabs.dungeonfighters.api.SpecialArrow;
 import de.bergwerklabs.dungeonfighters.api.SpecialItem;
 import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemFactory;
+import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemType;
 import de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.ArrowMetadataHandler;
 import de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.trail.ArrowTrailTask;
+import de.bergwerklabs.dungeonfighters.util.KnockbackUtil;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
+import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
@@ -175,8 +179,14 @@ public class DungeonFightersEventHandler implements Listener {
 
         if (item != null && material != Material.BOW) {
             if (item.getRequiredActions().contains(e.getAction())) {
-                item.use(e.getPlayer());
-                e.setCancelled(true);
+                Player player = e.getPlayer();
+                if (item.getType() == SpecialItemType.KNOCKBACK) {
+                    ((LoadableItem)item).use(player, System.currentTimeMillis());
+                }
+                else {
+                    item.use(player);
+                    e.setCancelled(true);
+                }
             }
         }
     }
@@ -208,14 +218,24 @@ public class DungeonFightersEventHandler implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Arrow) {
-            if (e.getEntity() instanceof Player) {
+        Entity damager = e.getDamager();
 
+        if (damager instanceof Arrow) {
+            if (e.getEntity() instanceof Player) {
                 List<MetadataValue> values = e.getDamager().getMetadata("damageType");
                 if (values.size() > 0) {
                     SpecialArrow specialArrow = (SpecialArrow) values.get(0).value();
                     specialArrow.playerHit((Player) e.getEntity());
                 }
+            }
+        }
+        else if (damager instanceof Player) {
+            Player player = (Player)damager;
+            ItemStack item = player.getItemInHand();
+            if (item.getType() == Material.BLAZE_ROD) {
+                double modifier = 0.1 * KnockbackUtil.getPower(player.getItemInHand().getItemMeta().getDisplayName());
+                e.getEntity().setVelocity(player.getLocation().getDirection().multiply(modifier));
+                ItemStackUtil.setName(item, KnockbackUtil.name.replace("{percentage}", "0"));
             }
         }
     }

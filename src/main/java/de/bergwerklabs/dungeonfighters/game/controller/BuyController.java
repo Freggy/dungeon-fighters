@@ -43,7 +43,7 @@ public class BuyController implements LabsController {
         if (!isEnchantment) {
             ItemStack boughtItem = item.getItemStack();
             boughtItem.setItemMeta(null); // Clear meta so price and stuff won't be displayed after the item has been bought.
-           fighter.getPlayer().getInventory().addItem(boughtItem);
+            fighter.getPlayer().getInventory().addItem(boughtItem);
         }
         else {
             try {

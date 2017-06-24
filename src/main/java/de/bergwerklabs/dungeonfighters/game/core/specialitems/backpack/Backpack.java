@@ -1,6 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitems.backpack;
 
 import de.bergwerklabs.dungeonfighters.api.SpecialItem;
+import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.Inventory;
@@ -16,9 +17,7 @@ import java.util.List;
  */
 public class Backpack implements SpecialItem {
 
-    public Inventory getInventory() { return this.inventory; }
-
-    public void setInventory(Inventory inventory) { this.inventory = inventory; }
+    void setInventory(Inventory inventory) { this.inventory = inventory; }
 
     private Inventory inventory;
 
@@ -31,5 +30,10 @@ public class Backpack implements SpecialItem {
     public List<Action> getRequiredActions()
     {
         return Arrays.asList(Action.RIGHT_CLICK_BLOCK, Action.RIGHT_CLICK_AIR);
+    }
+
+    @Override
+    public SpecialItemType getType() {
+        return SpecialItemType.BACKPACK;
     }
 }

@@ -8,13 +8,21 @@ import de.bergwerklabs.util.effect.Particle;
  *
  * @author Yannic Rieger
  */
-public class TrailInfo {
+class TrailInfo {
 
     private Particle.ParticleEffect effect;
     private float dX, dY, dZ, speed;
     private int count;
 
-    public TrailInfo(Particle.ParticleEffect effect, float dX, float dY, float dZ, float speed, int  count) {
+    /**
+     * @param effect
+     * @param dX
+     * @param dY
+     * @param dZ
+     * @param speed
+     * @param count
+     */
+    TrailInfo(Particle.ParticleEffect effect, float dX, float dY, float dZ, float speed, int  count) {
         this.effect = effect;
         this.dX = dX;
         this.dY = dY;
@@ -23,28 +31,27 @@ public class TrailInfo {
         this.count = count;
     }
 
-
-    public int getCount() {
+    int getCount() {
         return count;
     }
 
-    public float getdX() {
+    float getdX() {
         return dX;
     }
 
-    public float getdY() {
+    float getdY() {
         return dY;
     }
 
-    public float getdZ() {
+    float getdZ() {
         return dZ;
     }
 
-    public float getSpeed() {
+    float getSpeed() {
         return speed;
     }
 
-    public Particle.ParticleEffect getEffect() {
+    Particle.ParticleEffect getEffect() {
         return effect;
     }
 }
