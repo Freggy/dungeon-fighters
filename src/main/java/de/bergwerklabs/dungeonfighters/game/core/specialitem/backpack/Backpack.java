@@ -1,7 +1,7 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitems.backpack;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem.backpack;
 
-import de.bergwerklabs.dungeonfighters.api.SpecialItem;
-import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemType;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialItem;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialItemType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.Inventory;

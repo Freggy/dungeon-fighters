@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.api;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
 import org.bukkit.entity.Player;
 
@@ -10,5 +10,10 @@ import org.bukkit.entity.Player;
  */
 public interface LoadableItem extends SpecialItem {
 
+    /**
+     *
+     * @param player
+     * @param lastUsed
+     */
     void use(Player player, long lastUsed);
 }

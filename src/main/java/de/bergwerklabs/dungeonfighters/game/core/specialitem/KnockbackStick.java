@@ -1,8 +1,6 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitems.knockback;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.api.LoadableItem;
-import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemType;
 import de.bergwerklabs.dungeonfighters.util.KnockbackUtil;
 import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
 import org.bukkit.Bukkit;

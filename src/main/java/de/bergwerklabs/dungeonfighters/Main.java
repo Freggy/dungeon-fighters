@@ -10,9 +10,11 @@ import de.bergwerklabs.dungeonfighters.game.core.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.fubar.Util;
 import de.bergwerklabs.dungeonfighters.game.core.map.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.map.DungeonLoader;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail.ArrowTrailTask;
 import de.bergwerklabs.dungeonfighters.util.KnockbackUtil;
 import de.bergwerklabs.framework.commons.spigot.inventorymenu.InventoryMenuFactory;
 import de.bergwerklabs.framework.commons.spigot.item.ItemStackBuilder;
+import de.bergwerklabs.framework.commons.spigot.item.PlayerHead;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.framework.commons.spigot.shop.NPCShopManager;
@@ -100,6 +102,7 @@ public class Main extends LABSGameMode
         catch (Exception e) {
             e.printStackTrace();
         }
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ArrowTrailTask(), 0, 0);
 
         //this.loader.generate(this.config.getGridOrigin(), this.determineDungeon());
     }
@@ -120,19 +123,18 @@ public class Main extends LABSGameMode
          /* just for demonstration purposes */
         if (commandLabel.equalsIgnoreCase("money")) {
 
-            //Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ArrowTrailTask(), 0, 0);
 
-            //ItemStack a1 = new ItemStackBuilder(Material.BOW).setName("§2☠ §fGiftbogen").create();
-            //ItemStack a2 = new ItemStackBuilder(Material.BOW).setName("§c☀ §fFeuerbogen").create();
-            //ItemStack a3 = new ItemStackBuilder(Material.BOW).setName("§e❖ §fExplosionsbogen").create();
-            //ItemStack a4 = new ItemStackBuilder(Material.BOW).setName("§fNormaler Bogen").create();
+            ItemStack a1 = new ItemStackBuilder(Material.BOW).setName("§2☠ §fGiftbogen").create();
+            ItemStack a2 = new ItemStackBuilder(Material.BOW).setName("§c☀ §fFeuerbogen").create();
+            ItemStack a3 = new ItemStackBuilder(Material.BOW).setName("§e❖ §fExplosionsbogen").create();
+            ItemStack a4 = new ItemStackBuilder(Material.BOW).setName("§fNormaler Bogen").create();
 
-            //PlayerHead medi = new PlayerHead("http://textures.minecraft.net/texture/8793eef4849078df4ccd498054c74e2171c771f2730944164a8ee7b2d563832", "§c✚ §fMediPack", true);
-            //PlayerHead backpack = new PlayerHead("http://textures.minecraft.net/texture/8351e505989838e27287e7afbc7f97e796cab5f3598a76160c131c940d0c5", "Backpack", true);
+            PlayerHead medi = new PlayerHead("http://textures.minecraft.net/texture/8793eef4849078df4ccd498054c74e2171c771f2730944164a8ee7b2d563832", "§c✚ §fMediPack", true);
+            PlayerHead backpack = new PlayerHead("http://textures.minecraft.net/texture/8351e505989838e27287e7afbc7f97e796cab5f3598a76160c131c940d0c5", "Backpack", true);
 
             ItemStack item = new ItemStackBuilder(Material.BLAZE_ROD).setName(KnockbackUtil.name.replace("{percentage}", "0")).create();
 
-            ((Player)sender).getInventory().addItem(item);
+            ((Player)sender).getInventory().addItem(item, a1, a2, a3, a4, medi.getItem(), backpack.getItem());
 
             /*
             List<Chunk> chunks = Arrays.asList(loader.getChunks().clone());

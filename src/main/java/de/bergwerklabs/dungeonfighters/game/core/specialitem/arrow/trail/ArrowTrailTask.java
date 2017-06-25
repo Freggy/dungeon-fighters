@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.trail;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail;
 
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.util.effect.Particle;

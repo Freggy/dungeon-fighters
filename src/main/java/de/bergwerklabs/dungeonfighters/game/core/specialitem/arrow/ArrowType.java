@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow;
 
 /**
  * Created by Yannic Rieger on 23.06.2017.

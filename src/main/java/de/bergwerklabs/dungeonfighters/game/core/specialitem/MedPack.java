@@ -1,9 +1,9 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitems;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.api.SpecialItem;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.util.effect.Particle;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Created by Yannic Rieger on 22.06.2017.
- * <p>  </p>
+ * <p> Represents a special item that heals the player.
  *
  * @author Yannic Rieger
  */
@@ -46,7 +46,11 @@ public class MedPack implements SpecialItem {
         });
 
         ItemStack inHand = player.getItemInHand();
-        inHand.setAmount(inHand.getAmount() - 1);
+
+        if (inHand.getAmount() > 0) {
+            inHand.setAmount(inHand.getAmount() - 1);
+        }
+        else inHand.setType(Material.AIR);
     }
 
     @Override

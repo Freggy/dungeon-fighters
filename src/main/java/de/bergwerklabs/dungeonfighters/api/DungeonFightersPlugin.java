@@ -8,7 +8,13 @@ package de.bergwerklabs.dungeonfighters.api;
  */
 public interface DungeonFightersPlugin {
 
+    /**
+     * Gets the {@link DestructionStrategy} of this Plugin.
+     */
     DestructionStrategy getDestructionStrategy();
 
+    /**
+     * Gets the {@link DungeonChallenge} associated with this Plugin.
+     */
     DungeonChallenge getChallenge();
 }

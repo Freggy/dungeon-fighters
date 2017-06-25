@@ -1,7 +1,7 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.api.SpecialArrow;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialArrow;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

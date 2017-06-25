@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitems.backpack;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem.backpack;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

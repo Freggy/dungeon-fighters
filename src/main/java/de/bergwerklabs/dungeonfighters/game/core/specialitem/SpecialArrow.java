@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.api;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -1,7 +1,7 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.trail.TrailType;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail.TrailType;
 import org.bukkit.entity.Projectile;
 import org.bukkit.metadata.FixedMetadataValue;
 

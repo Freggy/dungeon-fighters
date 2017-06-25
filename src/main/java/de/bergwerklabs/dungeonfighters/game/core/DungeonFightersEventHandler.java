@@ -1,13 +1,9 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.api.LoadableItem;
-import de.bergwerklabs.dungeonfighters.api.SpecialArrow;
-import de.bergwerklabs.dungeonfighters.api.SpecialItem;
-import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemFactory;
-import de.bergwerklabs.dungeonfighters.game.core.specialitems.SpecialItemType;
-import de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.ArrowMetadataHandler;
-import de.bergwerklabs.dungeonfighters.game.core.specialitems.arrow.trail.ArrowTrailTask;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.*;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.ArrowMetadataHandler;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail.ArrowTrailTask;
 import de.bergwerklabs.dungeonfighters.util.KnockbackUtil;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
@@ -55,6 +51,9 @@ import java.util.Random;
  *     <li> PlayerQuitEvent </li>
  *     <li> PlayerDeathEvent </li>
  *     <li> PlayerPickupItemEvent </li>
+ *     <li> PlayerInteractEvent </li>
+ *     <li> EntityShootBowEvent </li>
+ *     <li> EntityDamageByEntity </li>
  * </ul>
  * @author Yannic Rieger
  */
@@ -69,7 +68,6 @@ public class DungeonFightersEventHandler implements Listener {
         tabList.send(e.getPlayer());
         int randomIndex = random.nextInt(messages.length);
         e.setJoinMessage(Main.getInstance().getChatPrefix() + messages[randomIndex].replace("{player}", e.getPlayer().getDisplayName()));
-        //Bukkit.getPlayer(UUID.fromString("d44e59e6751f431d83f386b13c5306aa")).sendMessage(Main.getInstance().getChatPrefix() + "Du Pflaume! c:");
 
         // NOTE:
         // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized
