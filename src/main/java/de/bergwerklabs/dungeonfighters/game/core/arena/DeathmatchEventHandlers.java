@@ -1,6 +1,7 @@
-package de.bergwerklabs.dungeonfighters.game.core;
+package de.bergwerklabs.dungeonfighters.game.core.arena;
 
 import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.*;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.ArrowMetadataHandler;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail.ArrowTrailTask;
@@ -57,7 +58,7 @@ import java.util.Random;
  * </ul>
  * @author Yannic Rieger
  */
-public class DungeonFightersEventHandler implements Listener {
+public class DeathmatchEventHandlers implements Listener {
 
     private SecureRandom random = new SecureRandom();
     private LabsTabList tabList = new LabsTabList(new String[] {"Hallo", "Header"}, new String[] { "Hallo", "Footer" });

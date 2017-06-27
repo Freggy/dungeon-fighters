@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.fubar;
+package de.bergwerklabs.dungeonfighters.game.core.arena.fubar;
 /**
  * Created by Benedikt on 19.06.2017.
  */

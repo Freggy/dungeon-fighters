@@ -1,8 +1,9 @@
-package de.bergwerklabs.dungeonfighters.game.core.map;
+package de.bergwerklabs.dungeonfighters.game.core.arena.map;
 
 import de.bergwerklabs.dungeonfighters.Main;
-import de.bergwerklabs.dungeonfighters.game.core.fubar.GridCoordinate;
-import de.bergwerklabs.dungeonfighters.game.core.fubar.TileType;
+import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
+import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.GridCoordinate;
+import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.util.DungeonDestructionStrategy;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Yannic Rieger
  */
-public class DungeonLoader {
+public class DungeonArenaLoader {
 
     /**
      *
@@ -34,9 +35,9 @@ public class DungeonLoader {
     private Chunk[] chunks;
     private BukkitTask desturctionTask;
     private List<Chunk> destructedChunks = new CopyOnWriteArrayList<>();
-    private static DungeonLoader instance;
+    private static DungeonArenaLoader instance;
 
-    public DungeonLoader() {
+    public DungeonArenaLoader() {
         if (instance != null) return;
         instance = this;
     }
@@ -73,6 +74,9 @@ public class DungeonLoader {
         }
     }
 
+    /**
+     *
+     */
     public void startDestructionSequence() {
         this.maxCycles = (10 / 2) - 2;
         this.desturctionTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), () -> {
@@ -90,31 +94,58 @@ public class DungeonLoader {
                 strategy.destruct(chunk);
             }
             cycle++;
-        }, 20 * 10, 20 * 10);
+        }, 20 * 5, 20 * 5);
     }
 
+    /**
+     *
+     * @param cycle
+     * @return
+     */
     private List<Chunk> calculateBottom(int cycle) {
         int startCol =  (cycle + 1);
         int startRow = (10 - 1) - cycle;
         return getColumnChunks(startCol, startRow, startRow);
     }
 
+    /**
+     *
+     * @param cycle
+     * @return
+     */
     private List<Chunk> calculateTop(int cycle) {
         int startCol = cycle + 1;
         int endCol = (10 - 1) - cycle;
         return getColumnChunks(startCol, endCol, cycle);
     }
 
+    /**
+     *
+     * @param cycle
+     * @return
+     */
     private List<Chunk> calculateLeft(int cycle) {
         int endRow = 10 - cycle;
         return this.getRowChunks(cycle, endRow, cycle);
     }
 
+    /**
+     *
+     * @param cycle
+     * @return
+     */
     private List<Chunk> calculateRight(int cycle) {
-        int endCol= (10 - 1) - cycle;
+        int endCol = (10 - 1) - cycle;
         return this.getRowChunks(cycle, endCol, endCol);
     }
 
+    /**
+     *
+     * @param startCol
+     * @param endCol
+     * @param row
+     * @return
+     */
     private List<Chunk> getColumnChunks(int startCol, int endCol, int row) {
         List<Chunk> rowChunks = new ArrayList<>();
         for (int column = startCol; column <= endCol; column++) {
@@ -125,6 +156,13 @@ public class DungeonLoader {
         return rowChunks;
     }
 
+    /**
+     *
+     * @param startRow
+     * @param endRow
+     * @param column
+     * @return
+     */
     private List<Chunk> getRowChunks(int startRow, int endRow, int column) {
         List<Chunk> rowChunks = new ArrayList<>();
         for (int row = startRow; row < endRow; row++) {

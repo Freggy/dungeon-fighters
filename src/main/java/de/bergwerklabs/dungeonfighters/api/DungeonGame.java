@@ -6,6 +6,10 @@ package de.bergwerklabs.dungeonfighters.api;
  *
  * @author Yannic Rieger
  */
-public interface DungeonChallenge {
+public interface DungeonGame {
 
+    /**
+     *
+     */
+    void start();
 }

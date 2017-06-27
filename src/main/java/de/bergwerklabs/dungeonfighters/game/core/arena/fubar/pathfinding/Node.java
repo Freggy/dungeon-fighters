@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.fubar.pathfinding;
+package de.bergwerklabs.dungeonfighters.game.core.arena.fubar.pathfinding;
 
 import java.util.ArrayList;
 import java.util.Collections;

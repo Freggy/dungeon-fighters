@@ -1,6 +1,6 @@
-package de.bergwerklabs.dungeonfighters.game.core.fubar;
+package de.bergwerklabs.dungeonfighters.game.core.arena.fubar;
 
-import de.bergwerklabs.dungeonfighters.game.core.fubar.pathfinding.Node;
+import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.pathfinding.Node;
 
 import java.util.HashSet;
 import java.util.Set;

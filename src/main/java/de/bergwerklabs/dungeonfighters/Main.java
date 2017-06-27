@@ -1,40 +1,24 @@
 package de.bergwerklabs.dungeonfighters;
 
-import com.google.gson.GsonBuilder;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
-import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfigDeserializer;
+import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
-import de.bergwerklabs.dungeonfighters.game.core.DungeonFightersEventHandler;
-import de.bergwerklabs.dungeonfighters.game.core.fubar.Generator;
-import de.bergwerklabs.dungeonfighters.game.core.fubar.TileType;
-import de.bergwerklabs.dungeonfighters.game.core.fubar.Util;
-import de.bergwerklabs.dungeonfighters.game.core.map.Dungeon;
-import de.bergwerklabs.dungeonfighters.game.core.map.DungeonLoader;
-import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail.ArrowTrailTask;
-import de.bergwerklabs.dungeonfighters.util.KnockbackUtil;
-import de.bergwerklabs.framework.commons.spigot.inventorymenu.InventoryMenuFactory;
-import de.bergwerklabs.framework.commons.spigot.item.ItemStackBuilder;
-import de.bergwerklabs.framework.commons.spigot.item.PlayerHead;
+import de.bergwerklabs.dungeonfighters.game.core.arena.DeathmatchEventHandlers;
+import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.Generator;
+import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
+import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.Util;
+import de.bergwerklabs.dungeonfighters.game.core.arena.map.DungeonArenaLoader;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
-import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
-import de.bergwerklabs.framework.commons.spigot.shop.NPCShopManager;
-import de.bergwerklabs.framework.commons.spigot.shop.ShopFactory;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +59,7 @@ public class Main extends LABSGameMode
 
     private LabsScoreboard scoreboard;
     private DungeonFighterConfig config;
-    private DungeonLoader loader;
+    private DungeonArenaLoader loader;
 
     private List<BukkitTask> tasks = new ArrayList<>();
 
@@ -85,9 +69,10 @@ public class Main extends LABSGameMode
     @Override
     public void labsEnable() {
         instance = this;
-        this.loader = new DungeonLoader();
-        this.getServer().getPluginManager().registerEvents(new DungeonFightersEventHandler(), this);
+        this.loader = new DungeonArenaLoader();
+        this.getServer().getPluginManager().registerEvents(new DeathmatchEventHandlers(), this);
 
+        /*
         try {
             this.config = new GsonBuilder().registerTypeAdapter(DungeonFighterConfig.class, new DungeonFighterConfigDeserializer()).create()
                                            .fromJson(new InputStreamReader(new FileInputStream(configFile), Charset.forName("UTF-8")), DungeonFighterConfig.class);
@@ -105,6 +90,7 @@ public class Main extends LABSGameMode
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ArrowTrailTask(), 0, 0);
 
         //this.loader.generate(this.config.getGridOrigin(), this.determineDungeon());
+        */
     }
 
     @Override
@@ -124,36 +110,9 @@ public class Main extends LABSGameMode
         if (commandLabel.equalsIgnoreCase("money")) {
 
 
-            ItemStack a1 = new ItemStackBuilder(Material.BOW).setName("§2☠ §fGiftbogen").create();
-            ItemStack a2 = new ItemStackBuilder(Material.BOW).setName("§c☀ §fFeuerbogen").create();
-            ItemStack a3 = new ItemStackBuilder(Material.BOW).setName("§e❖ §fExplosionsbogen").create();
-            ItemStack a4 = new ItemStackBuilder(Material.BOW).setName("§fNormaler Bogen").create();
 
-            PlayerHead medi = new PlayerHead("http://textures.minecraft.net/texture/8793eef4849078df4ccd498054c74e2171c771f2730944164a8ee7b2d563832", "§c✚ §fMediPack", true);
-            PlayerHead backpack = new PlayerHead("http://textures.minecraft.net/texture/8351e505989838e27287e7afbc7f97e796cab5f3598a76160c131c940d0c5", "Backpack", true);
 
-            ItemStack item = new ItemStackBuilder(Material.BLAZE_ROD).setName(KnockbackUtil.name.replace("{percentage}", "0")).create();
 
-            ((Player)sender).getInventory().addItem(item, a1, a2, a3, a4, medi.getItem(), backpack.getItem());
-
-            /*
-            List<Chunk> chunks = Arrays.asList(loader.getChunks().clone());
-            Collections.shuffle(chunks);
-            Iterator<Chunk> it = chunks.iterator();
-
-            Bukkit.getOnlinePlayers().forEach(player -> player.teleport(it.next().getBlock(9, 9, 9).getLocation()));
-
-            Bukkit.getScheduler().runTaskLater(this, () -> {
-                this.loader.startDestructionSequence();
-                Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-                    Bukkit.getOnlinePlayers().forEach(player ->  {
-                        if (this.loader.getDestructedChunks().contains(player.getLocation().getChunk())) {
-                            DestructionWarning.sendPacket(player, true);
-                        }
-                        else DestructionWarning.sendPacket(player, false);
-                    });
-                }, 5L, 5L);/give @p skull 1 3 {display:{Name:"Health Icon"},SkullOwner:{Id:"51ba86b3-ece6-4763-ad53-008445a7732a",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODc5M2VlZjQ4NDkwNzhkZjRjY2Q0OTgwNTRjNzRlMjE3MWM3NzFmMjczMDk0NDE2NGE4ZWU3YjJkNTYzODMyIn19fQ=="}]}}}
-            }, 20 * 6L); // TODO: start when challenge finished */
             return true;
         }
         return false;

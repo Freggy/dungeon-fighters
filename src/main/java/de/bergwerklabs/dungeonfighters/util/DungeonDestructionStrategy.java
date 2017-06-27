@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class DungeonDestructionStrategy implements DestructionStrategy {
 
-    private int counter = 0, currentLayer = 10, maxLayer = 30; // TODO: this will be configurable
+    private int counter = 0, currentLayer = 15, maxLayer = 40; // TODO: this will be configurable
     private Iterator<Block> iterator;
     private BukkitTask task;
 

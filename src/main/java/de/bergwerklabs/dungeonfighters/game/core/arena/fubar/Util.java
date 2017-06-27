@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.fubar;
+package de.bergwerklabs.dungeonfighters.game.core.arena.fubar;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

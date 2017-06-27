@@ -14,7 +14,7 @@ public interface DungeonFightersPlugin {
     DestructionStrategy getDestructionStrategy();
 
     /**
-     * Gets the {@link DungeonChallenge} associated with this Plugin.
+     * Gets the {@link DungeonGame} associated with this Plugin.
      */
-    DungeonChallenge getChallenge();
+    DungeonGame getChallenge();
 }

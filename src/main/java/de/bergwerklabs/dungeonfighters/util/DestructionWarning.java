@@ -24,15 +24,19 @@ public class DestructionWarning {
 
         if (display) {
             if (displayWorldBorderPacket == null) {
+                System.out.println("send1");
                 displayWorldBorderPacket = createDisplayPacket(playerWorldBorder, 1000000000);
             }
             nmsPlayer.playerConnection.sendPacket(displayWorldBorderPacket);
+            System.out.println("send2");
         }
         else {
             if (removeWorldBorderPacket == null) {
                 removeWorldBorderPacket = createDisplayPacket(playerWorldBorder, 0);
+                System.out.println("remoce");
             }
             nmsPlayer.playerConnection.sendPacket(removeWorldBorderPacket);
+            System.out.println("remoce2");
         }
     }
 
