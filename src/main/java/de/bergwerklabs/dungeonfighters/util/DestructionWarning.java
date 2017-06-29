@@ -1,10 +1,10 @@
 package de.bergwerklabs.dungeonfighters.util;
 
 import de.bergwerklabs.framework.commons.spigot.general.reflection.LabsReflection;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder;
-import net.minecraft.server.v1_8_R3.WorldBorder;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import net.minecraft.server.v1_8_R2.EntityPlayer;
+import net.minecraft.server.v1_8_R2.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_8_R2.WorldBorder;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 /**

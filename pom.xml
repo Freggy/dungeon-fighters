@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>de.bergwerklabs.framework</groupId>
-            <artifactId>LabsFrameworkSpigotCommons</artifactId>
+            <artifactId>labsframework-spigotcommons</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>de.bergwerklabs.framework</groupId>
-            <artifactId>LabsSchematicService</artifactId>
+            <artifactId>schematic-service</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

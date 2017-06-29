@@ -3,11 +3,11 @@ package de.bergwerklabs.dungeonfighters;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
-import de.bergwerklabs.dungeonfighters.game.core.arena.DeathmatchEventHandlers;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.Generator;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.Util;
 import de.bergwerklabs.dungeonfighters.game.core.arena.map.DungeonArenaLoader;
+import de.bergwerklabs.dungeonfighters.game.core.games.GamesEventHandler;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
@@ -19,7 +19,6 @@ import org.bukkit.scheduler.BukkitTask;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +69,8 @@ public class Main extends LABSGameMode
     public void labsEnable() {
         instance = this;
         this.loader = new DungeonArenaLoader();
-        this.getServer().getPluginManager().registerEvents(new DeathmatchEventHandlers(), this);
+        //this.getServer().getPluginManager().registerEvents(new DeathmatchEventHandlers(), this);
+        this.getServer().getPluginManager().registerEvents(new GamesEventHandler(), this);
 
         /*
         try {
@@ -127,14 +127,14 @@ public class Main extends LABSGameMode
      * Randomly determines the map that will be played
      * @return Folder containing the module schematics.
      */
-    private Dungeon determineDungeon() {
-        File[] maps = new File(this.getDataFolder() + "/maps").listFiles();
+    public Dungeon determineDungeon() {
+        //File[] maps = new File(this.getDataFolder() + "/maps").listFiles();
 
-        TileType[] grid = Generator.generateMap(10);
-        this.generateAndSaveImage(grid, 10);
-        SecureRandom random = new SecureRandom();
+       TileType[] grid = Generator.generateMap(10);
+        //this.generateAndSaveImage(grid, 10);
+        //SecureRandom random = new SecureRandom();
 
-        return new Dungeon(maps[random.nextInt(maps.length)], grid);
+        return new Dungeon(null/*maps[random.nextInt(maps.length)]*/, new File(this.getDataFolder() + "/games"), grid);
     }
 
     /**
