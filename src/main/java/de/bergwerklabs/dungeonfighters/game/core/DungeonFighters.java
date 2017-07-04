@@ -1,6 +1,13 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
+import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.Generator;
+import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameWrapper;
 import de.bergwerklabs.framework.commons.spigot.game.PlayerManager;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -9,16 +16,40 @@ import de.bergwerklabs.framework.commons.spigot.game.PlayerManager;
  */
 public class DungeonFighters {
 
+    /**
+     *
+     */
     public PlayerManager<DungeonFighter> getPlayerManager() {
         return playerManager;
     }
-    
-    private PlayerManager<DungeonFighter> playerManager = new PlayerManager<>();
+
+    /**
+     *
+     */
+    public Queue<DungeonGameWrapper> getGames() { return this.games; }
 
     private static DungeonFighters instance;
+    private PlayerManager<DungeonFighter> playerManager = new PlayerManager<>();
+    private Queue<DungeonGameWrapper> games = new LinkedList<>();
 
     public DungeonFighters() {
         if (instance != null) return;
         instance = this;
     }
+
+    /**
+     * Randomly determines the map that will be played
+     * @return Folder containing the module schematics.
+     */
+    public Dungeon determineDungeon() {
+        //File[] maps = new File(this.getDataFolder() + "/maps").listFiles();
+
+        TileType[] grid = Generator.generateMap(10); // TODO: make confiurable
+        //this.generateAndSaveImage(grid, 10);
+        //SecureRandom random = new SecureRandom();
+
+        return new Dungeon(null/*maps[random.nextInt(maps.length)]*/, Main.getInstance().getThemedGameFolder("temple"), grid);
+    }
+
+
 }

@@ -3,6 +3,7 @@ package de.bergwerklabs.dungeonfighters.game.core.games.map;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 
 import java.io.File;
+import java.security.SecureRandom;
 import java.util.List;
 
 /**
@@ -17,15 +18,15 @@ public class DungeonGameWrapper {
         return game;
     }
 
-    public List<LabsSchematic> getModules() {
-        return modules;
+    public LabsSchematic getModule() {
+        return module;
     }
 
     private File game;
-    private List<LabsSchematic> modules;
+    private LabsSchematic module;
 
     public DungeonGameWrapper(File game, List<LabsSchematic> modules) {
         this.game = game;
-        this.modules = modules;
+        this.module = modules.get(new SecureRandom().nextInt(modules.size()));
     }
 }

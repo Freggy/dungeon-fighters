@@ -1,9 +1,7 @@
 package de.bergwerklabs.dungeonfighters;
 
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
-import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
-import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.Generator;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.Util;
 import de.bergwerklabs.dungeonfighters.game.core.arena.map.DungeonArenaLoader;
@@ -49,19 +47,38 @@ public class Main extends LABSGameMode
      */
     public List<BukkitTask> getTasks() { return this.tasks; }
 
+    public File getThemedGameFolder(String theme) {
+        return new File(themeFolder + "/" + theme + "/games");
+    }
+
+    public File getThemedStartPointFolder(String theme) {
+        return new File(themeFolder + "/" + theme + "/start_points");
+    }
+
+    public File getThemedEndPointFolder(String theme) {
+        return new File(themeFolder + "/" + theme + "/end_points");
+    }
+
+    public File getThemedBattleZoneFolder(String theme) {
+        return new File(themeFolder + "/" + theme + "/battle_zone/");
+    }
+
     public final static DungeonFighters game = new DungeonFighters();
+
     private static Main instance;
 
     private File configFile = new File(this.getDataFolder() + "/config.json");
     private File menuFolder = new File(this.getDataFolder() + "/menus");
     private File shopFolder = new File(this.getDataFolder() + "/shops");
 
+    private String themeFolder;
+
     private LabsScoreboard scoreboard;
+
     private DungeonFighterConfig config;
     private DungeonArenaLoader loader;
 
     private List<BukkitTask> tasks = new ArrayList<>();
-
 
     // TODO: put tasks in list an cancle them if needed.
 
@@ -69,6 +86,8 @@ public class Main extends LABSGameMode
     public void labsEnable() {
         instance = this;
         this.loader = new DungeonArenaLoader();
+        this.themeFolder = this.getDataFolder().getPath() + "/themes";
+
         //this.getServer().getPluginManager().registerEvents(new DeathmatchEventHandlers(), this);
         this.getServer().getPluginManager().registerEvents(new GamesEventHandler(), this);
 
@@ -121,20 +140,6 @@ public class Main extends LABSGameMode
     @Override
     public String getChatPrefix() {
         return "§6>> §eDungeonFighters §6❘ §7";
-    }
-
-    /**
-     * Randomly determines the map that will be played
-     * @return Folder containing the module schematics.
-     */
-    public Dungeon determineDungeon() {
-        //File[] maps = new File(this.getDataFolder() + "/maps").listFiles();
-
-       TileType[] grid = Generator.generateMap(10);
-        //this.generateAndSaveImage(grid, 10);
-        //SecureRandom random = new SecureRandom();
-
-        return new Dungeon(null/*maps[random.nextInt(maps.length)]*/, new File(this.getDataFolder() + "/games"), grid);
     }
 
     /**

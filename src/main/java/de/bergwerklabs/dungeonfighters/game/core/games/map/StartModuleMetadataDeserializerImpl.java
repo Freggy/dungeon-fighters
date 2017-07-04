@@ -2,7 +2,6 @@ package de.bergwerklabs.dungeonfighters.game.core.games.map;
 
 import com.flowpowered.nbt.CompoundTag;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
-import de.bergwerklabs.framework.schematicservice.NbtUtil;
 import de.bergwerklabs.framework.schematicservice.metadata.MetadataDeserializer;
 import org.bukkit.util.Vector;
 
@@ -16,14 +15,14 @@ class StartModuleMetadataDeserializerImpl implements MetadataDeserializer<Module
 
     @Override
     public StartModuleMetadata deserialize(CompoundTag compoundTag) {
-        Vector end = new Vector(Float.valueOf(NbtUtil.readTag("EndDistanceX", compoundTag).getValue().toString()),
-                                Float.valueOf(NbtUtil.readTag("EndDistanceY", compoundTag).getValue().toString()),
-                                Float.valueOf(NbtUtil.readTag("EndDistanceZ", compoundTag).getValue().toString()));
+        return new StartModuleMetadata(this.readVector((CompoundTag)compoundTag.getValue().get("end")),
+                                       (Short)compoundTag.getValue().get("length").getValue(),
+                                       this.readVector((CompoundTag)compoundTag.getValue().get("spawn")));
+    }
 
-        Vector spawn = new Vector(Float.valueOf(NbtUtil.readTag("SpawnX", compoundTag).getValue().toString()),
-                                  Float.valueOf(NbtUtil.readTag("SpawnY", compoundTag).getValue().toString()),
-                                  Float.valueOf(NbtUtil.readTag("SpawnZ", compoundTag).getValue().toString()));
-
-        return new StartModuleMetadata(end, spawn);
+    private Vector readVector(CompoundTag tag) {
+        return new Vector((Double)tag.getValue().get("x").getValue(),
+                          (Double)tag.getValue().get("y").getValue(),
+                          (Double)tag.getValue().get("z").getValue());
     }
 }

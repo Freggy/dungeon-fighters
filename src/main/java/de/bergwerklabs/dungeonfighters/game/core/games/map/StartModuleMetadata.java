@@ -17,8 +17,8 @@ class StartModuleMetadata extends ModuleMetadata {
 
     private Vector spawn;
 
-    StartModuleMetadata(Vector end, Vector spawn) {
-        super(end);
+    StartModuleMetadata(Vector end, short length, Vector spawn) {
+        super(end, length);
         this.spawn = spawn;
     }
 }
