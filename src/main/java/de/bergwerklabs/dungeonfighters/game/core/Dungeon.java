@@ -56,12 +56,16 @@ public class Dungeon {
 
 
     /**
-     * @param mapFolder Folder in which the  map specific schematics are located.
+     *
+     * @param gamesFolder
+     * @param startPoints
+     * @param endPoints
+     * @param grid
      */
-    public Dungeon(File mapFolder, File gamesFolder, TileType[] grid) {
+    public Dungeon(List<File> gamesFolder, List<File> startPoints, List<File> endPoints, TileType[] grid) {
         //this.grid = grid;
         //this.loadMapTiles(mapFolder);
-        this.loadGames(gamesFolder);
+        this.loadGames(gamesFolder, startPoints, endPoints);
     }
 
     /**
@@ -90,16 +94,15 @@ public class Dungeon {
 
     /**
      * Loads all the {@link DungeonGameWrapper}s.
-     *
-     * @param gamesFolder Folder where all the {@link DungeonGameWrapper} are contained.
      */
-    private void loadGames(File gamesFolder) {
-       //for (File gameFolder : gamesFolder.listFiles()) {
-         //   dungeonGames.add(this.createGame(gameFolder));
-        //}
+    private void loadGames(List<File> gamesFolder, List<File> startPoints, List<File> endPoints) {
+       for (File gameFolder : gamesFolder) {
+           dungeonGames.add(this.createGame(gameFolder));
+       }
 
-        this.startPoints = Arrays.asList(new File(gamesFolder.getPath() + "/start_points").listFiles());
-        this.endPoints =  Arrays.asList(new File(gamesFolder.getPath() + "/end_points").listFiles());
+
+       this.startPoints = startPoints;
+       this.endPoints = endPoints;
     }
 
     /**
@@ -109,23 +112,7 @@ public class Dungeon {
      * @return a {@link DungeonGameWrapper}
      */
     private DungeonGameWrapper createGame(File gameFolder) {
-        List<LabsSchematic> modules = Arrays.stream(gameFolder.listFiles()).filter(File::isDirectory)
-                                                .map(this::readModule)
-                                                .collect(Collectors.toList());
-        return new DungeonGameWrapper(new File(gameFolder.getPath() + gameFolder.getName() + ".jar"), modules);
-    }
-
-    /**
-     * Creates a {@link LabsSchematic}. The folder structure that is required for this to work, look here.
-     * {link to confluence}
-     *
-     * @param moduleFolder Folder where the files are contained.
-     * @return a {@link LabsSchematic}
-     */
-    private LabsSchematic readModule(File moduleFolder) {
-        List<File> list = Arrays.asList(moduleFolder.listFiles());
-        File schem = list.stream().filter(file -> file.getName().endsWith(".schematic")).findFirst().get();
-        return new LabsSchematic(schem);
+        return new DungeonGameWrapper(new File(gameFolder.getPath() + gameFolder.getName() + ".jar"), Arrays.asList(gameFolder.listFiles()));
     }
 
     /**

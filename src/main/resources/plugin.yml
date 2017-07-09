@@ -1,5 +1,5 @@
 name: DungeonFighters
-main: de.bergwerklabs.dungeonfighters.Main
+main: de.bergwerklabs.dungeonfighters.DungeonPlugin
 website: http://www.bergwerklabs.de
 author: Freggy
 version: 1.0

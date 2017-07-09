@@ -1,5 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map;
 
+import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 
 import java.io.File;
@@ -14,19 +15,30 @@ import java.util.List;
  */
 public class DungeonGameWrapper {
 
+    /**
+     *
+     */
     public File getGame() {
         return game;
     }
 
-    public LabsSchematic getModule() {
+    /**
+     *
+     */
+    public LabsSchematic<ModuleMetadata> getModule() {
         return module;
     }
 
     private File game;
-    private LabsSchematic module;
+    private LabsSchematic<ModuleMetadata> module;
 
-    public DungeonGameWrapper(File game, List<LabsSchematic> modules) {
+    /**
+     *
+     * @param game
+     * @param modules
+     */
+    public DungeonGameWrapper(File game, List<File> modules) {
         this.game = game;
-        this.module = modules.get(new SecureRandom().nextInt(modules.size()));
+        this.module = ModuleMetadata.getService().createSchematic(modules.get(new SecureRandom().nextInt(modules.size())));
     }
 }

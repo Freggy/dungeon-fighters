@@ -1,13 +1,15 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map;
 
-import de.bergwerklabs.dungeonfighters.Main;
+import com.google.common.collect.Iterables;
+import de.bergwerklabs.dungeonfighters.DungeonPlugin;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadata;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadataDeserializerImpl;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import de.bergwerklabs.framework.schematicservice.SchematicService;
 import de.bergwerklabs.framework.schematicservice.SchematicServiceBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -24,49 +26,60 @@ import java.util.*;
  */
 public class DungeonGameLoader {
 
-    private final Location start = new Location(Bukkit.getWorld("spawn"), 270, 69, 93); // TODO: change world name
-    private final SchematicService<ModuleMetadata> service = new SchematicServiceBuilder<ModuleMetadata>().setDeserializer(new StartModuleMetadataDeserializerImpl()).build();
+    private Location start = new Location(Bukkit.getWorld("spawn"), 270, 69, 93); // TODO: change world name
+    private Dungeon dungeon;
 
     public void buildDungeons(Dungeon dungeon, List<Player> players) {
         Random random = new Random();
-        LabsSchematic<StartModuleMetadata> startPoint = this.determineSchematic(dungeon.getStartPoints(), random);
-        List<Vector> startLocations = new ArrayList<>();
+        SchematicService<StartModuleMetadata> service = new SchematicServiceBuilder<StartModuleMetadata>().setDeserializer(new StartModuleMetadataDeserializerImpl()).build();
+        LabsSchematic<StartModuleMetadata> startPoint = this.determineSchematic(dungeon.getStartPoints(), service, random);
+        List<Location> startLocations = new ArrayList<>();
+        this.dungeon = dungeon;
+        Location newLocation = this.start.getChunk().getBlock(0, 69, 0).getLocation().clone();
 
-        for (int x = 0; x < 12; x++) {
-            start.add(46, 0, 0);
-            this.buildStartPoints(startPoint);
-            startLocations.add(startPoint.getMetadata().getEnd());
+        for (int x = 0; x < 12; x++) { // TODO: use players.
+            this.buildStartPoints(startPoint, newLocation);
+            startLocations.add(newLocation.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3, 0, -1))));
+            newLocation.add(46, 0 ,0 );
         }
-        this.buildPath(this.determineGames(dungeon.getDungeonGames()).iterator(), startLocations);
+
+        // Use cycle iterators to avoid the Iterator#hasNext query.
+        this.buildPath(Iterables.cycle(this.determineGames(this.dungeon.getDungeonGames())).iterator(), startLocations);
     }
 
     /**
      *
      * @param startPoint
      */
-    private void buildStartPoints(LabsSchematic startPoint) {
-        Chunk chunk = this.start.getChunk();
-        Location location = chunk.getBlock(0, 69, 0).getLocation();
+    private void buildStartPoints(LabsSchematic startPoint, Location location) {
         startPoint.pasteAsync(this.start.getWorld().getName(), location.toVector());
     }
 
-    private void buildPath(Iterator<DungeonGameWrapper> availableGames, List<Vector> starts) {
-        Iterator<BattleZone> battleZones = this.determineBattleZones(2, Main.getInstance().getThemedBattleZoneFolder("temple"), new Random())
-                                               .iterator();
+    private void buildPath(Iterator<DungeonGameWrapper> availableGames, List<Location> starts) {
+        Random random =  new Random();
+        LabsSchematic<ModuleMetadata> end = this.determineSchematic(this.dungeon.getEndPoints(), ModuleMetadata.getService(), random);
+
+        // Use cycle iterators to avoid the Iterator#hasNext query.
+        Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonPlugin.getInstance().getThemedBattleZoneFolder("temple"), random))
+                                                    .iterator();
 
         for (int path = 0; path < starts.size(); path++) {
-            Vector start = starts.get(path);
-            for (int i = 0; i < 11; i++) {
-                if (i % 4 == 0) {
-                    if (battleZones.hasNext())
-                        start = this.buildBattleZonePart(start, battleZones.next(), this.getPartByPosition(path, starts.size() - 1));
+            Location start = starts.get(path);
+            System.out.println("parht: " + path);
+            for (int i = 1; i < 13; i++) {
+                if (i % 4 == 0 && i != 1 && i != 12) {
+                    start = this.buildBattleZonePart(start, battleZones.next(), this.getPartByPosition(path, starts.size() - 1));
+                }
+                else if (i == 12) { // end has been reached
+                    this.placeModule(end, start);
                 }
                 else {
-                    this.buildGame(availableGames.next(), start);
+                   start = this.buildGame(availableGames.next(), start).add(new Vector(0, 0, 1));
                 }
             }
         }
     }
+
 
     /**
      * Randomly picks {@link BattleZone}s that will be generated.
@@ -78,11 +91,16 @@ public class DungeonGameLoader {
      */
     private List<BattleZone> determineBattleZones(int count, File battleZones, Random random) {
         List<BattleZone> pickedZones = new ArrayList<>();
-        List<File> zones = Arrays.asList(battleZones.listFiles());
+
+        // adding this to a ArrayList object, if I would do
+        // List<File> zones = Arrays.asList(battleZones.listFiles());
+        // a UnsupportedOperationException is thrown.
+        List<File> zones = new ArrayList<>(Arrays.asList(battleZones.listFiles()));
 
         for (int i = 0; i < count; i++) {
+            if (zones.size() == 0) break; // Only for test purposes
             int randomIndex = random.nextInt(zones.size());
-            pickedZones.add(new BattleZone(zones.get(randomIndex), this.service));
+            pickedZones.add(new BattleZone(zones.get(randomIndex)));
             zones.remove(randomIndex);
         }
         return pickedZones;
@@ -94,7 +112,7 @@ public class DungeonGameLoader {
         else return BattleZone.Part.MIDDLE;
     }
 
-    private Vector buildBattleZonePart(Vector toPlace, BattleZone zone, BattleZone.Part part) {
+    private Location buildBattleZonePart(Location toPlace, BattleZone zone, BattleZone.Part part) {
         switch (part) {
             case START:  return this.placeModule(zone.getStart(), toPlace);
             case MIDDLE: return this.placeModule(zone.getMiddle(), toPlace);
@@ -103,24 +121,28 @@ public class DungeonGameLoader {
         }
     }
 
-    private Vector buildGame(DungeonGameWrapper game, Vector start) {
-        Main.game.getGames().add(game);
-        // TODO: paste schem.
+    private Location buildGame(DungeonGameWrapper game, Location start) {
+        DungeonPlugin.game.getGames().add(game);
+        return this.placeModule(game.getModule(), start);
     }
 
-    private Vector placeModule(LabsSchematic<ModuleMetadata> schematic, Vector to) {
-        schematic.pasteAsync("spawn", to);
-        return schematic.getMetadata().getEnd();
+    private <T extends ModuleMetadata> Location placeModule(LabsSchematic<T> schematic, Location to) {
+        schematic.pasteAsync("spawn", to.toVector());
+        if (schematic.hasMetadata())
+            return to.subtract(schematic.getMetadata().getEnd());
+        else
+            return null;
     }
 
     /**
      * Determines a {@link LabsSchematic}.
+     *
      * @param schematics
      * @param random
      * @return
      */
-    private LabsSchematic determineSchematic(List<File> schematics, Random random) {
-        return this.service.createSchematic(schematics.get(random.nextInt(schematics.size())));
+    private <T extends ModuleMetadata> LabsSchematic<T> determineSchematic(List<File> schematics, SchematicService<T> service, Random random) {
+        return service.createSchematic(schematics.get(random.nextInt(schematics.size())));
     }
 
     /**
@@ -132,7 +154,9 @@ public class DungeonGameLoader {
         SecureRandom random = new SecureRandom();
         List<DungeonGameWrapper> chosenGames = new ArrayList<>();
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 8; i++) { // TODO: make game size configurable
+            if (availableGames.size() == 0) break; // Only for test purposes
+
             int index = random.nextInt(availableGames.size());
             DungeonGameWrapper game = availableGames.get(index);
             chosenGames.add(game);

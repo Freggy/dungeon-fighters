@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.games.map;
+package de.bergwerklabs.dungeonfighters.game.core.games.map.metadata;
 
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import org.bukkit.util.Vector;
@@ -9,7 +9,7 @@ import org.bukkit.util.Vector;
  *
  * @author Yannic Rieger
  */
-class StartModuleMetadata extends ModuleMetadata {
+public class StartModuleMetadata extends ModuleMetadata {
 
     Vector getSpawn() {
         return spawn;
@@ -17,7 +17,7 @@ class StartModuleMetadata extends ModuleMetadata {
 
     private Vector spawn;
 
-    StartModuleMetadata(Vector end, short length, Vector spawn) {
+    public StartModuleMetadata(Vector end, short length, Vector spawn) {
         super(end, length);
         this.spawn = spawn;
     }

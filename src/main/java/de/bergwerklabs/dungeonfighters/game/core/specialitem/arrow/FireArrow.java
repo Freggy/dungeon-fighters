@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow;
 
-import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.DungeonPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialArrow;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class FireArrow extends SpecialArrow {
     public void playerHit(Player player) {
         System.out.printf("FIRE -> PLAYER");
-        player.setFireTicks(20 * Main.getInstance().getDungeonFighterConfig().getFireDuration());
+        player.setFireTicks(20 * DungeonPlugin.getInstance().getDungeonFighterConfig().getFireDuration());
     }
 
     @Override

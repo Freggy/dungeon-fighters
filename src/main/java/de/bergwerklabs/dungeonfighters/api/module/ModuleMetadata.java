@@ -1,5 +1,7 @@
 package de.bergwerklabs.dungeonfighters.api.module;
 
+import de.bergwerklabs.framework.schematicservice.SchematicService;
+import de.bergwerklabs.framework.schematicservice.SchematicServiceBuilder;
 import org.bukkit.util.Vector;
 
 /**
@@ -10,11 +12,13 @@ import org.bukkit.util.Vector;
  */
 public class ModuleMetadata {
 
+    public static SchematicService<ModuleMetadata> getService() {return service; }
+
     /**
      * Gets the end point of this module.
      */
     public Vector getEnd() {
-        return end.clone().add(new Vector(0, 0, 1));
+        return this.end;
     }
 
     /**
@@ -24,8 +28,11 @@ public class ModuleMetadata {
         return length;
     }
 
+    private static SchematicService<ModuleMetadata> service = new SchematicServiceBuilder<ModuleMetadata>()
+                                                              .setDeserializer(new ModuleMetadataDeserializerImpl()).build();
     private Vector end;
     private short length;
+
 
     /**
      * @param end

@@ -6,8 +6,8 @@ import de.bergwerklabs.framework.schematicservice.SchematicService;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Created by Yannic Rieger on 04.07.2017.
@@ -48,11 +48,12 @@ public class BattleZone {
     /**
      * @param folder
      */
-    public BattleZone(File folder, SchematicService<ModuleMetadata> service) {
-        Stream<File> files = Arrays.stream(folder.listFiles());
-        this.start = this.getIfPresent(files.filter(file -> file.getName().contains("start")).findAny(), service);
-        this.middle = this.getIfPresent(files.filter(file -> file.getName().contains("middle")).findAny(), service);
-        this.end = this.getIfPresent(files.filter(file -> file.getName().contains("end")).findAny(), service);
+    public BattleZone(File folder) {
+        SchematicService<ModuleMetadata> service = ModuleMetadata.getService();
+        List<File> files = Arrays.asList(folder.listFiles());
+        this.start = this.getIfPresent(files.stream().filter(file -> file.getName().contains("start")).findAny(), service);
+        this.middle = this.getIfPresent(files.stream().filter(file -> file.getName().contains("middle")).findAny(), service);
+        this.end = this.getIfPresent(files.stream().filter(file -> file.getName().contains("end")).findAny(), service);
     }
 
     /**

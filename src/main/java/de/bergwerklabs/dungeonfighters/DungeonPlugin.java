@@ -18,19 +18,20 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Yannic Rieger on 25.04.2017.
- * <p> Main class for the DungeonFighter minigame. </p>
+ * <p> DungeonPlugin class for the DungeonFighter minigame. </p>
  * @author Yannic Rieger
  */
-public class Main extends LABSGameMode
+public class DungeonPlugin extends LABSGameMode
 {
     /**
-     * Returns the current instance of the Main class.
+     * Returns the current instance of the DungeonPlugin class.
      */
-    public static Main getInstance() { return instance; }
+    public static DungeonPlugin getInstance() { return instance; }
 
     /**
      * Gets the current scoreboard template.
@@ -47,25 +48,25 @@ public class Main extends LABSGameMode
      */
     public List<BukkitTask> getTasks() { return this.tasks; }
 
-    public File getThemedGameFolder(String theme) {
-        return new File(themeFolder + "/" + theme + "/games");
+    public List<File> getThemedGameFolder(String theme) {
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/games").listFiles());
     }
 
-    public File getThemedStartPointFolder(String theme) {
-        return new File(themeFolder + "/" + theme + "/start_points");
+    public List<File> getThemedStartPoints(String theme) {
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/start_points").listFiles());
     }
 
-    public File getThemedEndPointFolder(String theme) {
-        return new File(themeFolder + "/" + theme + "/end_points");
+    public List<File> getThemedEndPoints(String theme) {
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/end_points").listFiles());
     }
 
     public File getThemedBattleZoneFolder(String theme) {
-        return new File(themeFolder + "/" + theme + "/battle_zone/");
+        return new File(themeFolder + "/" + theme + "/battle_zone");
     }
 
     public final static DungeonFighters game = new DungeonFighters();
 
-    private static Main instance;
+    private static DungeonPlugin instance;
 
     private File configFile = new File(this.getDataFolder() + "/config.json");
     private File menuFolder = new File(this.getDataFolder() + "/menus");
@@ -127,9 +128,6 @@ public class Main extends LABSGameMode
 
          /* just for demonstration purposes */
         if (commandLabel.equalsIgnoreCase("money")) {
-
-
-
 
 
             return true;

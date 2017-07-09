@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games;
 
-import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.DungeonPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameLoader;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +17,6 @@ public class GamesEventHandler implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         DungeonGameLoader loader = new DungeonGameLoader();
-        loader.buildDungeons(Main.getInstance().determineDungeon(), null);
+        loader.buildDungeons(DungeonPlugin.game.determineDungeon(), null);
     }
 }

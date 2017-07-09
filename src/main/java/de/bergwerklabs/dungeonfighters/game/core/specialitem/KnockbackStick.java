@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
-import de.bergwerklabs.dungeonfighters.Main;
+import de.bergwerklabs.dungeonfighters.DungeonPlugin;
 import de.bergwerklabs.dungeonfighters.util.KnockbackUtil;
 import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
 import org.bukkit.Bukkit;
@@ -40,7 +40,7 @@ public class KnockbackStick implements LoadableItem {
             return; // return so the tasks below don't get executed twice.
         }
 
-        cancelTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
+        cancelTask = Bukkit.getScheduler().runTaskTimerAsynchronously(DungeonPlugin.getInstance(), () -> {
             if (player.getItemInHand().getType() != Material.BLAZE_ROD) {
                 System.out.println("canceling due item switch");
                 this.cancelAndRemove(player.getUniqueId());
@@ -49,15 +49,15 @@ public class KnockbackStick implements LoadableItem {
                 System.out.println("canceling due to time");
                 this.cancelAndRemove(player.getUniqueId());
             }
-        },0, 5L);
+        }, 0, 5L);
 
-        loadingTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
+        loadingTask = Bukkit.getScheduler().runTaskTimerAsynchronously(DungeonPlugin.getInstance(), () -> {
                 int currentPower = KnockbackUtil.getPower(player.getItemInHand().getItemMeta().getDisplayName());
                 if (currentPower < 100) {
                     ItemStackUtil.setName(player.getItemInHand(), KnockbackUtil.name.replace("{percentage}", String.valueOf(currentPower + 10)));
                 }
                 else this.cancelAndRemove(player.getUniqueId());
-    },40L, 40L);
+    }, 40L, 40L);
 }
 
     @Override
