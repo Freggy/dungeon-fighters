@@ -26,9 +26,14 @@ public class DungeonFighters {
      */
     public Queue<DungeonGameWrapper> getGames() { return this.games; }
 
+    public Dungeon getDungeon() {
+        return dungeon;
+    }
+
     private static DungeonFighters instance;
     private PlayerManager<DungeonFighter> playerManager = new PlayerManager<>();
     private Queue<DungeonGameWrapper> games = new LinkedList<>();
+    private Dungeon dungeon;
 
     public DungeonFighters() {
         if (instance != null) return;
@@ -47,10 +52,8 @@ public class DungeonFighters {
         //this.generateAndSaveImage(grid, 10);
         //SecureRandom random = new SecureRandom();
 
-        return new Dungeon(DungeonPlugin.getInstance().getThemedGameFolder("temple"),
-                           DungeonPlugin.getInstance().getThemedStartPoints("temple"),
-                           DungeonPlugin.getInstance().getThemedEndPoints("temple"), null);
+        return this.dungeon = new Dungeon(DungeonPlugin.getInstance().getThemedGameFolder("temple"),
+                                          DungeonPlugin.getInstance().getThemedStartPoints("temple"),
+                                          DungeonPlugin.getInstance().getThemedEndPoints("temple"), null);
     }
-
-
 }

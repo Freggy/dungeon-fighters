@@ -1,9 +1,11 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import com.google.gson.JsonObject;
+import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameWrapper;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -25,6 +27,10 @@ public class Dungeon {
      * Map containing all the modules.
      */
     public HashMap<TileType, List<LabsSchematic>> getModules() { return this.modules; }
+
+    public HashMap<ChunkSnapshot, DungeonMechanicProvider> getGamePositions() { return this.gamePositions; }
+
+    public HashMap<DungeonMechanicProvider, Integer> getGetModuleLength() { return this.moduleLengths; }
 
     /**
      * Gets the list of available {@link DungeonGameWrapper}s.
@@ -49,6 +55,8 @@ public class Dungeon {
     }
 
     private HashMap<TileType, List<LabsSchematic>> modules = new HashMap<>();
+    private HashMap<ChunkSnapshot, DungeonMechanicProvider> gamePositions = new HashMap<>();
+    private HashMap<DungeonMechanicProvider, Integer> moduleLengths = new HashMap<>();
     private List<DungeonGameWrapper> dungeonGames = new ArrayList<>();
     private List<File> startPoints;
     private List<File> endPoints;

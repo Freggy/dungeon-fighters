@@ -1,10 +1,6 @@
 package de.bergwerklabs.dungeonfighters.util;
 
-import de.bergwerklabs.framework.commons.spigot.general.reflection.LabsReflection;
-import net.minecraft.server.v1_8_R2.EntityPlayer;
-import net.minecraft.server.v1_8_R2.PacketPlayOutWorldBorder;
-import net.minecraft.server.v1_8_R2.WorldBorder;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import de.bergwerklabs.framework.commons.spigot.nms.packet.v1MV8.WrapperPlayServerWorldBorder;
 import org.bukkit.entity.Player;
 
 /**
@@ -15,34 +11,16 @@ import org.bukkit.entity.Player;
  */
 public class DestructionWarning {
 
-    private static PacketPlayOutWorldBorder displayWorldBorderPacket;
-    private static PacketPlayOutWorldBorder removeWorldBorderPacket;
+    private static WrapperPlayServerWorldBorder worldBorderPacket = new WrapperPlayServerWorldBorder();
 
     public static void sendPacket(Player player, boolean display) {
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        WorldBorder playerWorldBorder = nmsPlayer.world.getWorldBorder();
-
         if (display) {
-            if (displayWorldBorderPacket == null) {
-                System.out.println("send1");
-                displayWorldBorderPacket = createDisplayPacket(playerWorldBorder, 1000000000);
-            }
-            nmsPlayer.playerConnection.sendPacket(displayWorldBorderPacket);
-            System.out.println("send2");
+            worldBorderPacket.setWarningDistance(1000000000);
+            worldBorderPacket.sendPacket(player);
         }
         else {
-            if (removeWorldBorderPacket == null) {
-                removeWorldBorderPacket = createDisplayPacket(playerWorldBorder, 0);
-                System.out.println("remoce");
-            }
-            nmsPlayer.playerConnection.sendPacket(removeWorldBorderPacket);
-            System.out.println("remoce2");
+            worldBorderPacket.setWarningDistance(0);
+            worldBorderPacket.sendPacket(player);
         }
-    }
-
-    private static PacketPlayOutWorldBorder createDisplayPacket(WorldBorder border, int warningDistance) {
-        PacketPlayOutWorldBorder packetPlayOutWorldBorder = new PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.SET_WARNING_BLOCKS);
-        LabsReflection.setFieldValue(LabsReflection.getField(packetPlayOutWorldBorder.getClass(), "i"), packetPlayOutWorldBorder, warningDistance);
-        return packetPlayOutWorldBorder;
     }
 }

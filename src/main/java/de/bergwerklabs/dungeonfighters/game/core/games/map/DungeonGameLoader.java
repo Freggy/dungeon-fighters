@@ -63,9 +63,8 @@ public class DungeonGameLoader {
         Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonPlugin.getInstance().getThemedBattleZoneFolder("temple"), random))
                                                     .iterator();
 
-        for (int path = 0; path < starts.size(); path++) {
+        for (int path = 0; path < 12; path++) {
             Location start = starts.get(path);
-            System.out.println("parht: " + path);
             for (int i = 1; i < 13; i++) {
                 if (i % 4 == 0 && i != 1 && i != 12) {
                     start = this.buildBattleZonePart(start, battleZones.next(), this.getPartByPosition(path, starts.size() - 1));
@@ -123,6 +122,8 @@ public class DungeonGameLoader {
 
     private Location buildGame(DungeonGameWrapper game, Location start) {
         DungeonPlugin.game.getGames().add(game);
+        DungeonPlugin.game.getDungeon().getGamePositions().put(start.getChunk().getChunkSnapshot(), game.getGame());
+        // TODO: add chunks based on length
         return this.placeModule(game.getModule(), start);
     }
 

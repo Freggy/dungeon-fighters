@@ -1,7 +1,9 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map;
 
+import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.security.SecureRandom;
@@ -18,7 +20,7 @@ public class DungeonGameWrapper {
     /**
      *
      */
-    public File getGame() {
+    public DungeonMechanicProvider getGame() {
         return game;
     }
 
@@ -29,7 +31,7 @@ public class DungeonGameWrapper {
         return module;
     }
 
-    private File game;
+    private DungeonMechanicProvider game;
     private LabsSchematic<ModuleMetadata> module;
 
     /**
@@ -38,7 +40,12 @@ public class DungeonGameWrapper {
      * @param modules
      */
     public DungeonGameWrapper(File game, List<File> modules) {
-        this.game = game;
-        this.module = ModuleMetadata.getService().createSchematic(modules.get(new SecureRandom().nextInt(modules.size())));
+        try {
+            this.game = (DungeonMechanicProvider) Bukkit.getServer().getPluginManager().loadPlugin(game);
+            this.module = ModuleMetadata.getService().createSchematic(modules.get(new SecureRandom().nextInt(modules.size())));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

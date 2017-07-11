@@ -27,6 +27,11 @@ public class DungeonFighter extends LabsPlayer {
     }
 
     /**
+     *
+     */
+    public DungeonSession getSession() { return this.session; }
+
+    /**
      * Sets the current amount of emeralds.
      *
      * @param emeralds Amount of emeralds the player will have.
@@ -40,6 +45,7 @@ public class DungeonFighter extends LabsPlayer {
     private Player player;
     private boolean canFireBow = true;
     private LabsScoreboard scoreboard;
+    private DungeonSession session;
 
     /**
      * @param p Player representing the new DungeonFighter

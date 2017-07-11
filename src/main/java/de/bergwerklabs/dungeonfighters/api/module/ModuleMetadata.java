@@ -28,10 +28,13 @@ public class ModuleMetadata {
         return length;
     }
 
+    public String getType() { return type; }
+
     private static SchematicService<ModuleMetadata> service = new SchematicServiceBuilder<ModuleMetadata>()
                                                               .setDeserializer(new ModuleMetadataDeserializerImpl()).build();
     private Vector end;
     private short length;
+    private String type;
 
 
     /**
