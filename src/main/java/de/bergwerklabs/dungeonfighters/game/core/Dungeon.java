@@ -1,12 +1,9 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
-import com.google.gson.JsonObject;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameWrapper;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
-import org.bukkit.ChunkSnapshot;
-import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,9 +25,7 @@ public class Dungeon {
      */
     public HashMap<TileType, List<LabsSchematic>> getModules() { return this.modules; }
 
-    public HashMap<ChunkSnapshot, DungeonMechanicProvider> getGamePositions() { return this.gamePositions; }
-
-    public HashMap<DungeonMechanicProvider, Integer> getGetModuleLength() { return this.moduleLengths; }
+    public HashMap<String, DungeonMechanicProvider> getGamePositions() { return this.gamePositions; }
 
     /**
      * Gets the list of available {@link DungeonGameWrapper}s.
@@ -55,8 +50,7 @@ public class Dungeon {
     }
 
     private HashMap<TileType, List<LabsSchematic>> modules = new HashMap<>();
-    private HashMap<ChunkSnapshot, DungeonMechanicProvider> gamePositions = new HashMap<>();
-    private HashMap<DungeonMechanicProvider, Integer> moduleLengths = new HashMap<>();
+    private HashMap<String, DungeonMechanicProvider> gamePositions = new HashMap<>();
     private List<DungeonGameWrapper> dungeonGames = new ArrayList<>();
     private List<File> startPoints;
     private List<File> endPoints;
@@ -120,17 +114,9 @@ public class Dungeon {
      * @return a {@link DungeonGameWrapper}
      */
     private DungeonGameWrapper createGame(File gameFolder) {
-        return new DungeonGameWrapper(new File(gameFolder.getPath() + gameFolder.getName() + ".jar"), Arrays.asList(gameFolder.listFiles()));
-    }
-
-    /**
-     * Deserializes a {@link Vector}.
-     *
-     * @param object {@link JsonObject} containing x, y and z coordinates.
-     * @return a {@link Vector}
-     */
-    private Vector deserializeVector(JsonObject object) {
-        return new Vector(object.get("x").getAsDouble(), object.get("y").getAsDouble(), object.get("z").getAsDouble());
+        return new DungeonGameWrapper(new File(gameFolder.getPath() + gameFolder.getName() + ".jar"),
+                                      gameFolder.getPath() + "config.json",
+                                      Arrays.asList(gameFolder.listFiles()));
     }
 
     /**

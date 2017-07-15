@@ -2,10 +2,13 @@ package de.bergwerklabs.dungeonfighters.game.core.games.map;
 
 import com.google.common.collect.Iterables;
 import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadataDeserializerImpl;
+import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.BattleZoneMechanic;
+import de.bergwerklabs.dungeonfighters.util.Util;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import de.bergwerklabs.framework.schematicservice.SchematicService;
 import de.bergwerklabs.framework.schematicservice.SchematicServiceBuilder;
@@ -28,6 +31,7 @@ public class DungeonGameLoader {
 
     private Location start = new Location(Bukkit.getWorld("spawn"), 270, 69, 93); // TODO: change world name
     private Dungeon dungeon;
+    private BattleZoneMechanic battleZoneMechanic = new BattleZoneMechanic();
 
     public void buildDungeons(Dungeon dungeon, List<Player> players) {
         Random random = new Random();
@@ -112,6 +116,8 @@ public class DungeonGameLoader {
     }
 
     private Location buildBattleZonePart(Location toPlace, BattleZone zone, BattleZone.Part part) {
+        DungeonPlugin.game.getDungeon().getGamePositions().put(Util.getChunkCoordinateString(toPlace.getChunk()), battleZoneMechanic);
+
         switch (part) {
             case START:  return this.placeModule(zone.getStart(), toPlace);
             case MIDDLE: return this.placeModule(zone.getMiddle(), toPlace);
@@ -121,9 +127,9 @@ public class DungeonGameLoader {
     }
 
     private Location buildGame(DungeonGameWrapper game, Location start) {
-        DungeonPlugin.game.getGames().add(game);
-        DungeonPlugin.game.getDungeon().getGamePositions().put(start.getChunk().getChunkSnapshot(), game.getGame());
-        // TODO: add chunks based on length
+        DungeonGame dungeonGame = game.getGame();
+        Bukkit.getServer().getPluginManager().enablePlugin(dungeonGame);
+        DungeonPlugin.game.getDungeon().getGamePositions().put(Util.getChunkCoordinateString(start.getChunk()), dungeonGame);
         return this.placeModule(game.getModule(), start);
     }
 

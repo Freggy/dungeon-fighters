@@ -54,6 +54,7 @@ public class DungeonFighter extends LabsPlayer {
     public DungeonFighter(Player p, LabsScoreboard scoreboard) {
         this.player = p;
         this.scoreboard = scoreboard;
+        this.session = new DungeonSession();
         p.setScoreboard(scoreboard.getScoreboard());
     }
 

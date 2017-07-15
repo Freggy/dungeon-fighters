@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
 import de.bergwerklabs.dungeonfighters.DungeonPlugin;
-import de.bergwerklabs.dungeonfighters.util.KnockbackUtil;
+import de.bergwerklabs.dungeonfighters.util.Util;
 import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -52,9 +52,9 @@ public class KnockbackStick implements LoadableItem {
         }, 0, 5L);
 
         loadingTask = Bukkit.getScheduler().runTaskTimerAsynchronously(DungeonPlugin.getInstance(), () -> {
-                int currentPower = KnockbackUtil.getPower(player.getItemInHand().getItemMeta().getDisplayName());
+                int currentPower = Util.getPower(player.getItemInHand().getItemMeta().getDisplayName());
                 if (currentPower < 100) {
-                    ItemStackUtil.setName(player.getItemInHand(), KnockbackUtil.name.replace("{percentage}", String.valueOf(currentPower + 10)));
+                    ItemStackUtil.setName(player.getItemInHand(), Util.name.replace("{percentage}", String.valueOf(currentPower + 10)));
                 }
                 else this.cancelAndRemove(player.getUniqueId());
     }, 40L, 40L);

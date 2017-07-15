@@ -12,6 +12,11 @@ import org.bukkit.inventory.ItemStack;
 public class EndMechanic extends BaseMechanic {
 
     @Override
+    public String getId() {
+        return  "end";
+    }
+
+    @Override
     public void start() {
         this.fighter.getPlayer().setItemInHand(new ItemStack(Material.WOOD_SWORD));
     }

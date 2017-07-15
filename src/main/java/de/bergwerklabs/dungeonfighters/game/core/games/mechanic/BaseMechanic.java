@@ -2,7 +2,6 @@ package de.bergwerklabs.dungeonfighters.game.core.games.mechanic;
 
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import org.bukkit.ChunkSnapshot;
 
 import java.util.HashSet;
 
@@ -15,7 +14,7 @@ import java.util.HashSet;
 public abstract class BaseMechanic implements DungeonMechanicProvider {
 
     @Override
-    public HashSet<ChunkSnapshot> getChunks() {
+    public HashSet<String> getChunks() {
         return this.chunks;
     }
 
@@ -24,11 +23,11 @@ public abstract class BaseMechanic implements DungeonMechanicProvider {
         return this.fighter;
     }
 
-    protected HashSet<ChunkSnapshot> chunks;
+    protected HashSet<String> chunks;
     protected DungeonFighter fighter;
 
     @Override
-    public void assignChunks(HashSet<ChunkSnapshot> chunks) {
+    public void assignChunks(HashSet<String> chunks) {
         this.chunks = chunks;
     }
 
@@ -36,4 +35,7 @@ public abstract class BaseMechanic implements DungeonMechanicProvider {
     public void assignPlayer(DungeonFighter fighter) {
         this.fighter = fighter;
     }
+
+    @Override
+    public void stop() {}
 }

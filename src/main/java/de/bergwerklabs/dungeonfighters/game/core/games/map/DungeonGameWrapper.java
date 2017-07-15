@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map;
 
-import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ public class DungeonGameWrapper {
     /**
      *
      */
-    public DungeonMechanicProvider getGame() {
+    public DungeonGame getGame() {
         return game;
     }
 
@@ -31,7 +31,7 @@ public class DungeonGameWrapper {
         return module;
     }
 
-    private DungeonMechanicProvider game;
+    private DungeonGame game;
     private LabsSchematic<ModuleMetadata> module;
 
     /**
@@ -39,10 +39,11 @@ public class DungeonGameWrapper {
      * @param game
      * @param modules
      */
-    public DungeonGameWrapper(File game, List<File> modules) {
+    public DungeonGameWrapper(File game, String configLocation, List<File> modules) {
         try {
-            this.game = (DungeonMechanicProvider) Bukkit.getServer().getPluginManager().loadPlugin(game);
+            this.game = (DungeonGame)Bukkit.getServer().getPluginManager().loadPlugin(game);
             this.module = ModuleMetadata.getService().createSchematic(modules.get(new SecureRandom().nextInt(modules.size())));
+            this.game.setConfigLocation(configLocation);
         }
         catch (Exception e) {
             e.printStackTrace();

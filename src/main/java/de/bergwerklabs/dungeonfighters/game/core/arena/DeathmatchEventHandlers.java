@@ -5,9 +5,9 @@ import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.*;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.ArrowMetadataHandler;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail.ArrowTrailTask;
-import de.bergwerklabs.dungeonfighters.util.KnockbackUtil;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
+import de.bergwerklabs.dungeonfighters.util.Util;
 import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
 import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
@@ -233,9 +233,9 @@ public class DeathmatchEventHandlers implements Listener {
             Player player = (Player)damager;
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BLAZE_ROD) {
-                double modifier = 0.1 * KnockbackUtil.getPower(player.getItemInHand().getItemMeta().getDisplayName());
+                double modifier = 0.1 * Util.getPower(player.getItemInHand().getItemMeta().getDisplayName());
                 e.getEntity().setVelocity(player.getLocation().getDirection().multiply(modifier));
-                ItemStackUtil.setName(item, KnockbackUtil.name.replace("{percentage}", "0"));
+                ItemStackUtil.setName(item, Util.name.replace("{percentage}", "0"));
             }
         }
     }

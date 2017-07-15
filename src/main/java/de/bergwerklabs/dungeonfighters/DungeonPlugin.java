@@ -1,11 +1,13 @@
 package de.bergwerklabs.dungeonfighters;
 
+import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
-import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.Util;
 import de.bergwerklabs.dungeonfighters.game.core.arena.map.DungeonArenaLoader;
 import de.bergwerklabs.dungeonfighters.game.core.games.GamesEventHandler;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameLoader;
+import de.bergwerklabs.dungeonfighters.util.Util;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
@@ -14,9 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
 
-import javax.imageio.ImageIO;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,6 +92,28 @@ public class DungeonPlugin extends LABSGameMode
         //this.getServer().getPluginManager().registerEvents(new DeathmatchEventHandlers(), this);
         this.getServer().getPluginManager().registerEvents(new GamesEventHandler(), this);
 
+
+        DungeonGameLoader loader = new DungeonGameLoader();
+        loader.buildDungeons(DungeonPlugin.game.determineDungeon(), null);
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(DungeonPlugin.getInstance(), () -> {
+            DungeonPlugin.game.getPlayerManager().getPlayers().values().forEach(fighter -> {
+
+                String chunkCoordinates = Util.getChunkCoordinateString(fighter.getPlayer().getLocation().getChunk());
+
+                    DungeonMechanicProvider gameToPlay = DungeonPlugin.game.getDungeon().getGamePositions().get(chunkCoordinates);
+
+                    if (gameToPlay != null) {
+                        if (!fighter.getSession().getCurrentGame().getId().equals(gameToPlay.getId())) {
+                            fighter.getSession().getCurrentGame().stop();
+                            fighter.getSession().setCurrentGame(gameToPlay);
+                            gameToPlay.assignPlayer(fighter);
+                            gameToPlay.start();
+                        }
+                    }
+            });
+        }, 0, 20L);
+
         /*
         try {
             this.config = new GsonBuilder().registerTypeAdapter(DungeonFighterConfig.class, new DungeonFighterConfigDeserializer()).create()
@@ -146,11 +168,13 @@ public class DungeonPlugin extends LABSGameMode
      * @param mapSize
      */
     private void generateAndSaveImage(TileType[] grid, int mapSize) {
+
+        /*
         try {
             ImageIO.write(Util.createImageFromBoard(grid, mapSize), "png", new File("/home/freggy/laby/spigot_1.8.8/plugins/DungeonFighters/board.png"));
         }
         catch (IOException e) {
             e.printStackTrace();
-        }
+        } */
     }
 }

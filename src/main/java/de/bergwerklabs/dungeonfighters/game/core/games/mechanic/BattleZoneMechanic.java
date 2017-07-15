@@ -13,6 +13,11 @@ import org.bukkit.inventory.ItemStack;
 public class BattleZoneMechanic extends BaseMechanic {
 
     @Override
+    public String getId() {
+        return "battle";
+    }
+
+    @Override
     public void start() {
         this.fighter.getPlayer().setItemInHand(new ItemStack(Material.WOOD_SWORD));
     }

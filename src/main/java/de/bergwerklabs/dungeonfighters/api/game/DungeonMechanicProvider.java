@@ -1,7 +1,6 @@
 package de.bergwerklabs.dungeonfighters.api.game;
 
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import org.bukkit.ChunkSnapshot;
 
 import java.util.HashSet;
 
@@ -16,7 +15,7 @@ public interface DungeonMechanicProvider {
     /**
      *
      */
-    HashSet<ChunkSnapshot> getChunks();
+    HashSet<String> getChunks();
 
     /**
      *
@@ -26,13 +25,13 @@ public interface DungeonMechanicProvider {
     /**
      *
      */
-    short getLength();
+    String getId();
 
     /**
      *
      * @param chunks
      */
-    void assignChunks(HashSet<ChunkSnapshot> chunks);
+    void assignChunks(HashSet<String> chunks);
 
     /**
      *
@@ -44,4 +43,9 @@ public interface DungeonMechanicProvider {
      *
      */
     void start();
+
+    /**
+     *
+     */
+    void stop();
 }
