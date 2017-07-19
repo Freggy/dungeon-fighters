@@ -1,6 +1,7 @@
 package de.bergwerklabs.dungeonfighters.api.game;
 
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
+import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 
 import java.util.HashSet;
 
@@ -10,7 +11,7 @@ import java.util.HashSet;
  *
  * @author Yannic Rieger
  */
-public interface DungeonMechanicProvider {
+public interface DungeonMechanicProvider extends Cloneable {
 
     /**
      *
@@ -41,11 +42,30 @@ public interface DungeonMechanicProvider {
 
     /**
      *
+     * @param schematic
+     */
+    void assignModule(LabsSchematic schematic);
+
+    /**
+     *
+     * @return
+     */
+    LabsSchematic getModule();
+
+    /**
+     *
      */
     void start();
+
+    Object clone();
 
     /**
      *
      */
     void stop();
+
+    /**
+     *
+     */
+    void reset();
 }

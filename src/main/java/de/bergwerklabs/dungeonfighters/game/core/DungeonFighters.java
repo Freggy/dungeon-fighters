@@ -1,11 +1,13 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
-import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameWrapper;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.ModuleInfo;
 import de.bergwerklabs.framework.commons.spigot.game.PlayerManager;
+import org.bukkit.Location;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -21,23 +23,24 @@ public class DungeonFighters {
         return playerManager;
     }
 
-    /**
-     *
-     */
-    public Queue<DungeonGameWrapper> getGames() { return this.games; }
-
     public Dungeon getDungeon() {
         return dungeon;
     }
 
+    public List<Location> getSpawns() { return this.spawns; }
+
+    public HashMap<String, ModuleInfo> getModules() { return this.modules; }
+
     private static DungeonFighters instance;
     private PlayerManager<DungeonFighter> playerManager = new PlayerManager<>();
-    private Queue<DungeonGameWrapper> games = new LinkedList<>();
+    private HashMap<String, ModuleInfo> modules = new HashMap<>();
+    private List<Location> spawns = new ArrayList<>();
     private Dungeon dungeon;
 
     public DungeonFighters() {
-        if (instance != null) return;
-        instance = this;
+        if (instance == null) {
+            instance = this;
+        }
     }
 
     /**
@@ -52,8 +55,8 @@ public class DungeonFighters {
         //this.generateAndSaveImage(grid, 10);
         //SecureRandom random = new SecureRandom();
 
-        return this.dungeon = new Dungeon(DungeonPlugin.getInstance().getThemedGameFolder("temple"),
-                                          DungeonPlugin.getInstance().getThemedStartPoints("temple"),
-                                          DungeonPlugin.getInstance().getThemedEndPoints("temple"), null);
+        return this.dungeon = new Dungeon(DungeonFightersPlugin.getInstance().getThemedGameFolder("temple"),
+                                          DungeonFightersPlugin.getInstance().getThemedStartPoints("temple"),
+                                          DungeonFightersPlugin.getInstance().getThemedEndPoints("temple"), null);
     }
 }

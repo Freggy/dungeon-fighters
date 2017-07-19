@@ -2,6 +2,7 @@ package de.bergwerklabs.dungeonfighters;
 
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
+import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.arena.map.DungeonArenaLoader;
@@ -12,26 +13,29 @@ import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Yannic Rieger on 25.04.2017.
- * <p> DungeonPlugin class for the DungeonFighter minigame. </p>
+ * <p> DungeonFightersPlugin class for the DungeonFighter minigame. </p>
  * @author Yannic Rieger
  */
-public class DungeonPlugin extends LABSGameMode
+public class DungeonFightersPlugin extends LABSGameMode
 {
     /**
-     * Returns the current instance of the DungeonPlugin class.
+     * Returns the current instance of the DungeonFightersPlugin class.
      */
-    public static DungeonPlugin getInstance() { return instance; }
+    public static DungeonFightersPlugin getInstance() { return instance; }
 
     /**
      * Gets the current scoreboard template.
@@ -66,7 +70,7 @@ public class DungeonPlugin extends LABSGameMode
 
     public final static DungeonFighters game = new DungeonFighters();
 
-    private static DungeonPlugin instance;
+    private static DungeonFightersPlugin instance;
 
     private File configFile = new File(this.getDataFolder() + "/config.json");
     private File menuFolder = new File(this.getDataFolder() + "/menus");
@@ -92,25 +96,30 @@ public class DungeonPlugin extends LABSGameMode
         //this.getServer().getPluginManager().registerEvents(new DeathmatchEventHandlers(), this);
         this.getServer().getPluginManager().registerEvents(new GamesEventHandler(), this);
 
-
         DungeonGameLoader loader = new DungeonGameLoader();
-        loader.buildDungeons(DungeonPlugin.game.determineDungeon(), null);
+        loader.buildDungeons(DungeonFightersPlugin.game.determineDungeon(), null);
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DungeonPlugin.getInstance(), () -> {
-            DungeonPlugin.game.getPlayerManager().getPlayers().values().forEach(fighter -> {
+        Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), () -> {
+            DungeonFightersPlugin.game.getPlayerManager().getPlayers().values().forEach(fighter -> {
 
                 String chunkCoordinates = Util.getChunkCoordinateString(fighter.getPlayer().getLocation().getChunk());
 
-                    DungeonMechanicProvider gameToPlay = DungeonPlugin.game.getDungeon().getGamePositions().get(chunkCoordinates);
+                DungeonMechanicProvider gameToPlay = DungeonFightersPlugin.game.getDungeon().getGamePositions().get(chunkCoordinates);
+                DungeonMechanicProvider currentGame = fighter.getSession().getCurrentGame();
 
-                    if (gameToPlay != null) {
-                        if (!fighter.getSession().getCurrentGame().getId().equals(gameToPlay.getId())) {
-                            fighter.getSession().getCurrentGame().stop();
-                            fighter.getSession().setCurrentGame(gameToPlay);
-                            gameToPlay.assignPlayer(fighter);
-                            gameToPlay.start();
-                        }
+                if (gameToPlay != null) {
+                    if (gameToPlay.getId().contains("built-in") && currentGame.getChunks().contains(chunkCoordinates)) {
+                        this.initGame(fighter, gameToPlay, chunkCoordinates);
                     }
+                    else if (!currentGame.getId().equals(gameToPlay.getId())) {
+                        this.initGame(fighter, gameToPlay, chunkCoordinates);
+                    }
+                    else if (currentGame.getChunks().contains(chunkCoordinates)) {
+                        this.close(fighter.getPlayer(), chunkCoordinates);
+                        currentGame.reset();
+                        currentGame.getChunks().remove(chunkCoordinates);
+                    }
+                }
             });
         }, 0, 20L);
 
@@ -135,6 +144,21 @@ public class DungeonPlugin extends LABSGameMode
         */
     }
 
+    private void initGame(DungeonFighter fighter, DungeonMechanicProvider provider, String chunkCoord) {
+        fighter.getSession().getCurrentGame().stop();
+        this.close(fighter.getPlayer(), chunkCoord);
+        fighter.getSession().setCurrentGame(provider);
+        fighter.getSession().getCurrentGame().getChunks().remove(chunkCoord);
+        fighter.getSession().getCurrentGame().assignPlayer(fighter);
+        fighter.getSession().getCurrentGame().assignModule(game.getModules().get(chunkCoord).getSchematic());
+        fighter.getSession().getCurrentGame().start();
+    }
+
+    private void close(Player player, String  coords) {
+        List<Location> blocks = game.getModules().get(coords).getBlockLocations();
+        Util.closeEntrance(player, blocks);
+    }
+
     @Override
     public void labsDisable() {
         Bukkit.getScheduler().cancelTasks(this);
@@ -151,7 +175,12 @@ public class DungeonPlugin extends LABSGameMode
          /* just for demonstration purposes */
         if (commandLabel.equalsIgnoreCase("money")) {
 
+            Iterator<Location> it = game.getSpawns().iterator();
 
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                if (it.hasNext())
+                    player.teleport(it.next());
+            });
             return true;
         }
         return false;

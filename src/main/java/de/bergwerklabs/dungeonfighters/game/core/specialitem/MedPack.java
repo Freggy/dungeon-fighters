@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.util.effect.Particle;
 import org.bukkit.Material;
@@ -23,12 +23,12 @@ public class MedPack implements SpecialItem {
     @Override
     public void use(Player player) {
         double health = player.getHealth();
-        double healing = DungeonPlugin.getInstance().getDungeonFighterConfig().getMedPackHealing();
+        double healing = DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getMedPackHealing();
 
         // if set a number higher than 20 a exception is thrown
         if (health == 20) {
-            player.sendMessage(DungeonPlugin.getInstance().getChatPrefix() +
-                                  DungeonPlugin.getInstance().getDungeonFighterConfig().getCannotUseMedPackMessage());
+            player.sendMessage(DungeonFightersPlugin.getInstance().getChatPrefix() +
+                                  DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getCannotUseMedPackMessage());
             return;
         }
 

@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialArrow;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,7 +28,7 @@ public class ExplosionArrow extends SpecialArrow {
     @Override
     public void groundHit(Location location) {
         Bukkit.getWorld("spawn").createExplosion(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
-                                                 DungeonPlugin.getInstance().getDungeonFighterConfig().getExplosionRadius(),
+                                                 DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getExplosionRadius(),
                                                  false, false);
         System.out.println("EXP -> GROUND");
     }

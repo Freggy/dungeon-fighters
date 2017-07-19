@@ -11,13 +11,13 @@ import org.bukkit.util.Vector;
  */
 public class StartModuleMetadata extends ModuleMetadata {
 
-    Vector getSpawn() {
+    public Vector getSpawn() {
         return spawn;
     }
 
     private Vector spawn;
 
-    public StartModuleMetadata(Vector end, short length, Vector spawn) {
+    StartModuleMetadata(Vector end, short length, Vector spawn) {
         super(end, length);
         this.spawn = spawn;
     }

@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialArrow;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ public class PoisonedArrow extends SpecialArrow {
 
     public void playerHit(Player player) {
         System.out.printf("POISON -> PLAYER");
-        new PotionEffect(PotionEffectType.POISON, 20 * DungeonPlugin.getInstance().getDungeonFighterConfig().getPoisonDuration(), 1).apply(player);
+        new PotionEffect(PotionEffectType.POISON, 20 * DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getPoisonDuration(), 1).apply(player);
     }
 
     @Override

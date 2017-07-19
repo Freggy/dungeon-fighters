@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
 import org.bukkit.event.EventHandler;
@@ -17,9 +17,11 @@ public class GamesEventHandler implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        DungeonPlugin.game.getPlayerManager().getPlayers()
-                          .put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
+        DungeonFightersPlugin.game.getPlayerManager().getPlayers()
+                                  .put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
                                                                                LabsScoreboardFactory
-                                                                                       .createInstance(DungeonPlugin.getInstance().getDataFolder() + "/scoreboard.json")));
+                                                                                       .createInstance(DungeonFightersPlugin
+                                                                                                               .getInstance().getDataFolder() + "/scoreboard.json")));
     }
+
 }

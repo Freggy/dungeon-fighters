@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.arena;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.*;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.ArrowMetadataHandler;
@@ -65,10 +65,10 @@ public class DeathmatchEventHandlers implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
-        String[] messages = DungeonPlugin.getInstance().getDungeonFighterConfig().getJoinMessage();
+        String[] messages = DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getJoinMessage();
         tabList.send(e.getPlayer());
         int randomIndex = random.nextInt(messages.length);
-        e.setJoinMessage(DungeonPlugin.getInstance().getChatPrefix() + messages[randomIndex].replace("{player}", e.getPlayer().getDisplayName()));
+        e.setJoinMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + messages[randomIndex].replace("{player}", e.getPlayer().getDisplayName()));
 
         // NOTE:
         // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized
@@ -76,9 +76,9 @@ public class DeathmatchEventHandlers implements Listener {
         // because the initial scoreboard we deserialized got modified although we clone it.
 
         // load it everytime again?
-        DungeonPlugin.game.getPlayerManager().getPlayers()
-                          .put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
-                                                                      LabsScoreboardFactory.createInstance(DungeonPlugin
+        DungeonFightersPlugin.game.getPlayerManager().getPlayers()
+                                  .put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
+                                                                      LabsScoreboardFactory.createInstance(DungeonFightersPlugin
                                                                                                                    .getInstance().getDataFolder() + "/scoreboard.json")));
 
     }
@@ -87,7 +87,7 @@ public class DeathmatchEventHandlers implements Listener {
     public void onMapInitialized(MapInitializeEvent e) {
         e.getMap().removeRenderer(e.getMap().getRenderers().get(0));
         e.getMap().setScale(MapView.Scale.FARTHEST);
-        e.getMap().addRenderer(new RoundSummaryMapRenderer(new File(DungeonPlugin.getInstance().getDataFolder() + "/image.png")));
+        e.getMap().addRenderer(new RoundSummaryMapRenderer(new File(DungeonFightersPlugin.getInstance().getDataFolder() + "/image.png")));
     }
 
 
@@ -100,8 +100,8 @@ public class DeathmatchEventHandlers implements Listener {
             ParticleUtil.sendParticleToPlayer(particle, e.getPlayer());
 
             Random r = new Random();
-            int max = DungeonPlugin.getInstance().getDungeonFighterConfig().getMaxEmeraldDrop();
-            int min = DungeonPlugin.getInstance().getDungeonFighterConfig().getMinEmeraldDrop();
+            int max = DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getMaxEmeraldDrop();
+            int min = DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getMinEmeraldDrop();
             int amounToDrop = r.nextInt((max - min) + 1) + max;
             double chance = Math.random();
 
@@ -118,7 +118,7 @@ public class DeathmatchEventHandlers implements Listener {
 
     @EventHandler
     public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
-        DungeonFighter fighter = DungeonPlugin.game.getPlayerManager().getPlayers().get(e.getPlayer().getUniqueId());
+        DungeonFighter fighter = DungeonFightersPlugin.game.getPlayerManager().getPlayers().get(e.getPlayer().getUniqueId());
         ItemStack itemStack = e.getItem().getItemStack();
 
         if (itemStack.getType() == Material.EMERALD) {
@@ -135,7 +135,7 @@ public class DeathmatchEventHandlers implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        DungeonPlugin.game.getPlayerManager().getPlayers().remove(e.getPlayer().getUniqueId());
+        DungeonFightersPlugin.game.getPlayerManager().getPlayers().remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -143,8 +143,8 @@ public class DeathmatchEventHandlers implements Listener {
         Player died = e.getEntity();
         Player killer = died.getKiller();
 
-        e.setDeathMessage(DungeonPlugin.getInstance().getChatPrefix() + DungeonPlugin.getInstance().getDungeonFighterConfig().getDeathMessage()
-                                                                                     .replace("{player}", died.getDisplayName()));
+        e.setDeathMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getDeathMessage()
+                                                                                                     .replace("{player}", died.getDisplayName()));
 
         Location eye = died.getEyeLocation();
 
@@ -167,7 +167,7 @@ public class DeathmatchEventHandlers implements Listener {
 
     @EventHandler
     public void onGameFinished() {
-        DungeonPlugin.getInstance().getTasks().forEach(BukkitTask::cancel);
+        DungeonFightersPlugin.getInstance().getTasks().forEach(BukkitTask::cancel);
     }
 
     @EventHandler

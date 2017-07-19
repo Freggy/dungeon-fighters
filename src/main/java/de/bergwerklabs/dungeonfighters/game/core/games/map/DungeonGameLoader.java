@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map;
 
 import com.google.common.collect.Iterables;
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
@@ -38,8 +38,8 @@ public class DungeonGameLoader {
         SchematicService<StartModuleMetadata> service = new SchematicServiceBuilder<StartModuleMetadata>().setDeserializer(new StartModuleMetadataDeserializerImpl()).build();
         LabsSchematic<StartModuleMetadata> startPoint = this.determineSchematic(dungeon.getStartPoints(), service, random);
         List<Location> startLocations = new ArrayList<>();
-        this.dungeon = dungeon;
         Location newLocation = this.start.getChunk().getBlock(0, 69, 0).getLocation().clone();
+        this.dungeon = dungeon;
 
         for (int x = 0; x < 12; x++) { // TODO: use players.
             this.buildStartPoints(startPoint, newLocation);
@@ -55,7 +55,11 @@ public class DungeonGameLoader {
      *
      * @param startPoint
      */
-    private void buildStartPoints(LabsSchematic startPoint, Location location) {
+    private void buildStartPoints(LabsSchematic<StartModuleMetadata> startPoint, Location location) {
+        Location spawn = location.clone().subtract(startPoint.getMetadata().getSpawn()).add(0, 1, 0.9);
+        spawn.setPitch(0);
+        spawn.setYaw(0);
+        DungeonFightersPlugin.game.getSpawns().add(spawn);
         startPoint.pasteAsync(this.start.getWorld().getName(), location.toVector());
     }
 
@@ -64,14 +68,14 @@ public class DungeonGameLoader {
         LabsSchematic<ModuleMetadata> end = this.determineSchematic(this.dungeon.getEndPoints(), ModuleMetadata.getService(), random);
 
         // Use cycle iterators to avoid the Iterator#hasNext query.
-        Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonPlugin.getInstance().getThemedBattleZoneFolder("temple"), random))
+        Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonFightersPlugin.getInstance().getThemedBattleZoneFolder("temple"), random))
                                                     .iterator();
 
         for (int path = 0; path < 12; path++) {
             Location start = starts.get(path);
             for (int i = 1; i < 13; i++) {
                 if (i % 4 == 0 && i != 1 && i != 12) {
-                    start = this.buildBattleZonePart(start, battleZones.next(), this.getPartByPosition(path, starts.size() - 1));
+                    start = this.buildBattleZonePart(start, battleZones.next(), this.getPartByPosition(path, starts.size() - 1)).add(new Vector(0, 0, 1));
                 }
                 else if (i == 12) { // end has been reached
                     this.placeModule(end, start);
@@ -116,7 +120,9 @@ public class DungeonGameLoader {
     }
 
     private Location buildBattleZonePart(Location toPlace, BattleZone zone, BattleZone.Part part) {
-        DungeonPlugin.game.getDungeon().getGamePositions().put(Util.getChunkCoordinateString(toPlace.getChunk()), battleZoneMechanic);
+        String chunkCoords = Util.getChunkCoordinateString(toPlace.getChunk());
+        this.battleZoneMechanic.getChunks().add(chunkCoords);
+        DungeonFightersPlugin.game.getDungeon().getGamePositions().put(chunkCoords, battleZoneMechanic);
 
         switch (part) {
             case START:  return this.placeModule(zone.getStart(), toPlace);
@@ -128,15 +134,28 @@ public class DungeonGameLoader {
 
     private Location buildGame(DungeonGameWrapper game, Location start) {
         DungeonGame dungeonGame = game.getGame();
-        Bukkit.getServer().getPluginManager().enablePlugin(dungeonGame);
-        DungeonPlugin.game.getDungeon().getGamePositions().put(Util.getChunkCoordinateString(start.getChunk()), dungeonGame);
+        String chunkCoord = Util.getChunkCoordinateString(start.getChunk());
+
+        if (!DungeonFightersPlugin.game.getDungeon().getGamePositions().containsValue(dungeonGame)) {
+            Bukkit.getServer().getPluginManager().enablePlugin(dungeonGame);
+        }
+
+        DungeonFightersPlugin.game.getDungeon().getGamePositions().put(chunkCoord, dungeonGame);
+        dungeonGame.getChunks().add(chunkCoord);
+
+
         return this.placeModule(game.getModule(), start);
     }
 
     private <T extends ModuleMetadata> Location placeModule(LabsSchematic<T> schematic, Location to) {
         schematic.pasteAsync("spawn", to.toVector());
-        if (schematic.hasMetadata())
-            return to.subtract(schematic.getMetadata().getEnd());
+
+        if (schematic.hasMetadata()) {
+            Location endLocation = to.clone().subtract(schematic.getMetadata().getEnd());
+            DungeonFightersPlugin.game.getModules().putIfAbsent(Util.getChunkCoordinateString(to.getChunk()),
+                                                                new ModuleInfo(this.buildEnd(to.clone()), schematic));
+            return endLocation;
+        }
         else
             return null;
     }
@@ -170,5 +189,11 @@ public class DungeonGameLoader {
             availableGames.remove(index);
         }
         return chosenGames;
+    }
+
+    private List<Location> buildEnd(Location end) {
+        Location min = end.add(0, 1, 0);
+        Location max = min.clone().add(3, 3, 0);
+        return Util.getDoorLocations(min, max);
     }
 }

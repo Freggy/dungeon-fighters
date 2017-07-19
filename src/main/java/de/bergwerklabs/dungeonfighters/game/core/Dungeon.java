@@ -114,9 +114,10 @@ public class Dungeon {
      * @return a {@link DungeonGameWrapper}
      */
     private DungeonGameWrapper createGame(File gameFolder) {
-        return new DungeonGameWrapper(new File(gameFolder.getPath() + gameFolder.getName() + ".jar"),
-                                      gameFolder.getPath() + "config.json",
-                                      Arrays.asList(gameFolder.listFiles()));
+        String path = gameFolder.getPath() + "/";
+        return new DungeonGameWrapper(new File(path + gameFolder.getName() + ".jar"),
+                                      gameFolder.getPath() + "/config.json",
+                                      Arrays.asList(new File(path + "modules").listFiles()));
     }
 
     /**
@@ -127,7 +128,7 @@ public class Dungeon {
      * @return the list of schematics based of the module type.
      */
     private List<LabsSchematic> getSchematicList(List<File> modules, String moduleType) {
-        return modules.stream().filter(file -> file.getName().endsWith(moduleType + ".schematic"))
+        return modules.stream().filter(file -> file.getName().endsWith(moduleType + ".module"))
                       .map(LabsSchematic::new)
                       .collect(Collectors.toList());
     }

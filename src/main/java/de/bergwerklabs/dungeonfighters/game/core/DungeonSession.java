@@ -1,8 +1,11 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by Yannic Rieger on 04.07.2017.
@@ -16,7 +19,7 @@ public class DungeonSession {
 
         @Override
         public HashSet<String> getChunks() {
-            return null;
+            return new HashSet<>();
         }
 
         @Override
@@ -26,20 +29,48 @@ public class DungeonSession {
 
         @Override
         public String getId() {
-            return "stub";
+            return "bla";
         }
 
         @Override
-        public void assignChunks(HashSet<String> chunks) {}
+        public void assignChunks(HashSet<String> chunks) {
+
+        }
 
         @Override
-        public void assignPlayer(DungeonFighter fighter) {}
+        public void assignPlayer(DungeonFighter fighter) {
+
+        }
 
         @Override
-        public void start() {}
+        public void assignModule(LabsSchematic schematic) {
+
+        }
 
         @Override
-        public void stop() {}
+        public LabsSchematic getModule() {
+            return null;
+        }
+
+        @Override
+        public void start() {
+
+        }
+
+        @Override
+        public Object clone() {
+            return null;
+        }
+
+        @Override
+        public void stop() {
+
+        }
+
+        @Override
+        public void reset() {
+
+        }
     }
 
     /**
@@ -51,7 +82,21 @@ public class DungeonSession {
      *
      * @param provider
      */
-    public void setCurrentGame(DungeonMechanicProvider provider) { this.currentGame = provider; }
+    public void setCurrentGame(DungeonMechanicProvider provider) { this.currentGame = (DungeonMechanicProvider) provider.clone(); }
+
+
+    public Queue<DungeonMechanicProvider> getGames() { return this.games; }
+
+    /**
+     *
+     * @param games
+     */
+    public void setGames(Queue<DungeonMechanicProvider> games) {
+        this.games = games;
+    }
+
+
 
     private DungeonMechanicProvider currentGame = new DummyGame();
+    private Queue<DungeonMechanicProvider> games = new LinkedList<>();
 }

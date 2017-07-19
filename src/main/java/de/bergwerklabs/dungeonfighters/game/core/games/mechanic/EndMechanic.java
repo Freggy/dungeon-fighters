@@ -13,7 +13,7 @@ public class EndMechanic extends BaseMechanic {
 
     @Override
     public String getId() {
-        return  "end";
+        return  "end-built-in";
     }
 
     @Override

@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.arena.map;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.GridCoordinate;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
@@ -79,7 +79,7 @@ public class DungeonArenaLoader {
      */
     public void startDestructionSequence() {
         this.maxCycles = (10 / 2) - 2;
-        this.desturctionTask = Bukkit.getScheduler().runTaskTimer(DungeonPlugin.getInstance(), () -> {
+        this.desturctionTask = Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), () -> {
             if (this.cycle == this.maxCycles) desturctionTask.cancel();
 
             List<Chunk> borderChunks = new ArrayList<>();

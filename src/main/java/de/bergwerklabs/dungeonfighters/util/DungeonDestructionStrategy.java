@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.util;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.DestructionStrategy;
 import de.bergwerklabs.util.effect.Particle;
 import org.bukkit.*;
@@ -29,7 +29,7 @@ public class DungeonDestructionStrategy implements DestructionStrategy {
     public void destruct(Chunk chunk) {
         iterator = getShuffledLayer(currentLayer, chunk);
 
-        task = Bukkit.getScheduler().runTaskTimer(DungeonPlugin.getInstance(), () -> {
+        task = Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), () -> {
             if (iterator.hasNext()) {
                 Block block = iterator.next();
                 Material material = block.getType();

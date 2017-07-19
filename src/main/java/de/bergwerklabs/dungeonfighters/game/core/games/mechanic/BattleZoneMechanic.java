@@ -14,11 +14,12 @@ public class BattleZoneMechanic extends BaseMechanic {
 
     @Override
     public String getId() {
-        return "battle";
+        return "battleZone-built-in";
     }
 
     @Override
     public void start() {
         this.fighter.getPlayer().setItemInHand(new ItemStack(Material.WOOD_SWORD));
+        fighter.getSession().getCurrentGame().getChunks().clear();
     }
 }

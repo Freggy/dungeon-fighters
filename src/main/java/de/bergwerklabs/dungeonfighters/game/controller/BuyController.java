@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.controller;
 
-import de.bergwerklabs.dungeonfighters.DungeonPlugin;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.framework.commons.spigot.general.LabsController;
 import de.bergwerklabs.framework.commons.spigot.inventorymenu.InventoryItem;
@@ -30,7 +30,7 @@ public class BuyController implements LabsController {
         List<String> args = event.getParameter().stream().map(arg -> (String)arg).collect(Collectors.toList());
         InventoryItem item = event.getItem();
 
-        DungeonFighter fighter = DungeonPlugin.game.getPlayerManager().getPlayers().get(event.getEvent().getWhoClicked().getUniqueId());
+        DungeonFighter fighter = DungeonFightersPlugin.game.getPlayerManager().getPlayers().get(event.getEvent().getWhoClicked().getUniqueId());
         Player player = fighter.getPlayer();
 
         double cost = Double.valueOf(args.get(0));
@@ -51,7 +51,7 @@ public class BuyController implements LabsController {
                 itemInHand.addEnchantments(item.getItemStack().getEnchantments());
             }
             catch (Exception ex) { // An exception will be thrown if the player tries to enchant an item that cannot be enchanted.
-                player.sendMessage(DungeonPlugin.getInstance().getChatPrefix() + DungeonPlugin.getInstance().getDungeonFighterConfig().getCannotEnoughEnchantMessage());
+                player.sendMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getCannotEnoughEnchantMessage());
             }
         }
     }
@@ -65,7 +65,7 @@ public class BuyController implements LabsController {
         List<String> args = event.getParameter().stream().map(arg -> (String)arg).collect(Collectors.toList());
         InventoryItem item = event.getItem();
 
-        DungeonFighter fighter = DungeonPlugin.game.getPlayerManager().getPlayers().get(event.getEvent().getWhoClicked().getUniqueId());
+        DungeonFighter fighter = DungeonFightersPlugin.game.getPlayerManager().getPlayers().get(event.getEvent().getWhoClicked().getUniqueId());
         int amount = Integer.valueOf(args.get(1));
         double cost = Double.valueOf(args.get(0));
 
@@ -94,14 +94,14 @@ public class BuyController implements LabsController {
     public void convertXp(List<Object> parameters) {
         InventoryItemClickEvent event = (InventoryItemClickEvent)parameters.get(0);
 
-        DungeonFighter fighter = DungeonPlugin.game.getPlayerManager().getPlayers().get(event.getEvent().getWhoClicked().getUniqueId());
+        DungeonFighter fighter = DungeonFightersPlugin.game.getPlayerManager().getPlayers().get(event.getEvent().getWhoClicked().getUniqueId());
         Player player = fighter.getPlayer();
 
         double money = fighter.getEmeralds();
         int earnedMoney = player.getLevel() / 2;
 
         if (earnedMoney == 0) {
-            player.sendMessage(DungeonPlugin.getInstance().getChatPrefix() + DungeonPlugin.getInstance().getDungeonFighterConfig().getCannotConvertMessage());
+            player.sendMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getCannotConvertMessage());
             fighter.getPlayer().playSound(fighter.getPlayer().getEyeLocation(), Sound.NOTE_BASS, 100, 1);
             return;
         }
@@ -123,7 +123,7 @@ public class BuyController implements LabsController {
     private boolean transferEmeralds(DungeonFighter fighter, double cost) {
 
         if (!fighter.hasEnoughMoney(cost)) {
-            fighter.getPlayer().sendMessage(DungeonPlugin.getInstance().getChatPrefix() + DungeonPlugin.getInstance().getDungeonFighterConfig().getNotEnoughMoneyMessage());
+            fighter.getPlayer().sendMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getNotEnoughMoneyMessage());
             fighter.getPlayer().playSound(fighter.getPlayer().getEyeLocation(), Sound.NOTE_BASS, 100, 1);
             return false;
         }
