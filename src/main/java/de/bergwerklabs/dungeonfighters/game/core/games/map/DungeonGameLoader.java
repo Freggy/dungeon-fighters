@@ -14,7 +14,6 @@ import de.bergwerklabs.framework.schematicservice.SchematicService;
 import de.bergwerklabs.framework.schematicservice.SchematicServiceBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -29,22 +28,26 @@ import java.util.*;
  */
 public class DungeonGameLoader {
 
-    private Location start = new Location(Bukkit.getWorld("spawn"), 270, 69, 93); // TODO: change world name
+    private Location start = new Location(DungeonFightersPlugin.moduleWorld, 270, 69, 93); // TODO: change world name
     private Dungeon dungeon;
     private BattleZoneMechanic battleZoneMechanic = new BattleZoneMechanic();
+    private String theme;
 
-    public void buildDungeons(Dungeon dungeon, List<Player> players) {
+    public void buildDungeons(Dungeon dungeon, int players, String theme) {
         Random random = new Random();
         SchematicService<StartModuleMetadata> service = new SchematicServiceBuilder<StartModuleMetadata>().setDeserializer(new StartModuleMetadataDeserializerImpl()).build();
         LabsSchematic<StartModuleMetadata> startPoint = this.determineSchematic(dungeon.getStartPoints(), service, random);
         List<Location> startLocations = new ArrayList<>();
         Location newLocation = this.start.getChunk().getBlock(0, 69, 0).getLocation().clone();
         this.dungeon = dungeon;
+        this.theme = theme;
 
-        for (int x = 0; x < 12; x++) { // TODO: use players.
+        for (int x = 0; x < players; x++) {
             this.buildStartPoints(startPoint, newLocation);
-            startLocations.add(newLocation.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3, 0, -1))));
-            newLocation.add(46, 0 ,0 );
+            Location end = newLocation.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3, 0, -1)));
+            DungeonFightersPlugin.game.getModules().putIfAbsent(Util.getChunkCoordinateString(end.getChunk()), new ModuleInfo(this.buildEnd(end), startPoint));
+            startLocations.add(end);
+            newLocation.add(46, 0 ,0);
         }
 
         // Use cycle iterators to avoid the Iterator#hasNext query.
@@ -68,7 +71,7 @@ public class DungeonGameLoader {
         LabsSchematic<ModuleMetadata> end = this.determineSchematic(this.dungeon.getEndPoints(), ModuleMetadata.getService(), random);
 
         // Use cycle iterators to avoid the Iterator#hasNext query.
-        Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonFightersPlugin.getInstance().getThemedBattleZoneFolder("temple"), random))
+        Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonFightersPlugin.getInstance().getThemedBattleZoneFolder(this.theme), random))
                                                     .iterator();
 
         for (int path = 0; path < 12; path++) {
@@ -148,7 +151,7 @@ public class DungeonGameLoader {
     }
 
     private <T extends ModuleMetadata> Location placeModule(LabsSchematic<T> schematic, Location to) {
-        schematic.pasteAsync("spawn", to.toVector());
+        schematic.pasteAsync(DungeonFightersPlugin.moduleWorld.getName(), to.toVector());
 
         if (schematic.hasMetadata()) {
             Location endLocation = to.clone().subtract(schematic.getMetadata().getEnd());

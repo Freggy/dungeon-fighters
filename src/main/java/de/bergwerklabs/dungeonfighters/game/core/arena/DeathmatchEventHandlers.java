@@ -8,9 +8,7 @@ import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail.ArrowTr
 import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.dungeonfighters.util.Util;
-import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
 import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
-import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
 import org.bukkit.GameMode;
@@ -20,7 +18,6 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -28,18 +25,14 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
@@ -60,36 +53,12 @@ import java.util.Random;
  */
 public class DeathmatchEventHandlers implements Listener {
 
-    private SecureRandom random = new SecureRandom();
-    private LabsTabList tabList = new LabsTabList(new String[] {"Hallo", "Header"}, new String[] { "Hallo", "Footer" });
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        String[] messages = DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getJoinMessage();
-        tabList.send(e.getPlayer());
-        int randomIndex = random.nextInt(messages.length);
-        e.setJoinMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + messages[randomIndex].replace("{player}", e.getPlayer().getDisplayName()));
-
-        // NOTE:
-        // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized
-        // from the JSON file, the scoreboard gets applied correctly, but if the player relogs nothing works anymore
-        // because the initial scoreboard we deserialized got modified although we clone it.
-
-        // load it everytime again?
-        DungeonFightersPlugin.game.getPlayerManager().getPlayers()
-                                  .put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer(),
-                                                                      LabsScoreboardFactory.createInstance(DungeonFightersPlugin
-                                                                                                                   .getInstance().getDataFolder() + "/scoreboard.json")));
-
-    }
-
     @EventHandler
     public void onMapInitialized(MapInitializeEvent e) {
         e.getMap().removeRenderer(e.getMap().getRenderers().get(0));
         e.getMap().setScale(MapView.Scale.FARTHEST);
         e.getMap().addRenderer(new RoundSummaryMapRenderer(new File(DungeonFightersPlugin.getInstance().getDataFolder() + "/image.png")));
     }
-
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
@@ -134,11 +103,6 @@ public class DeathmatchEventHandlers implements Listener {
     }
 
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e) {
-        DungeonFightersPlugin.game.getPlayerManager().getPlayers().remove(e.getPlayer().getUniqueId());
-    }
-
-    @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player died = e.getEntity();
         Player killer = died.getKiller();
@@ -167,7 +131,7 @@ public class DeathmatchEventHandlers implements Listener {
 
     @EventHandler
     public void onGameFinished() {
-        DungeonFightersPlugin.getInstance().getTasks().forEach(BukkitTask::cancel);
+       // TODO: disable all tasks.
     }
 
     @EventHandler

@@ -1,26 +1,27 @@
 package de.bergwerklabs.dungeonfighters;
 
-import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import com.google.gson.GsonBuilder;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
-import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
+import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfigDeserializer;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
-import de.bergwerklabs.dungeonfighters.game.core.arena.map.DungeonArenaLoader;
 import de.bergwerklabs.dungeonfighters.game.core.games.GamesEventHandler;
-import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameLoader;
-import de.bergwerklabs.dungeonfighters.util.Util;
-import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
+import de.bergwerklabs.dungeonfighters.game.core.lobby.LobbyEventHandler;
+import de.bergwerklabs.dungeonfighters.game.core.lobby.StartHandler;
+import de.bergwerklabs.util.GameState;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import de.bergwerklabs.util.mechanic.StartTimer;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.event.Listener;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -38,19 +39,9 @@ public class DungeonFightersPlugin extends LABSGameMode
     public static DungeonFightersPlugin getInstance() { return instance; }
 
     /**
-     * Gets the current scoreboard template.
-     */
-    public LabsScoreboard getScoreboard() { return this.scoreboard; }
-
-    /**
      * Gets the DungeonFighter configuration.
      */
     public DungeonFighterConfig getDungeonFighterConfig() { return this.config; }
-
-    /**
-     *
-     */
-    public List<BukkitTask> getTasks() { return this.tasks; }
 
     public List<File> getThemedGameFolder(String theme) {
         return Arrays.asList(new File(themeFolder + "/" + theme + "/games").listFiles());
@@ -68,7 +59,13 @@ public class DungeonFightersPlugin extends LABSGameMode
         return new File(themeFolder + "/" + theme + "/battle_zone");
     }
 
-    public final static DungeonFighters game = new DungeonFighters();
+    public static final DungeonFighters game = new DungeonFighters();
+    public static final World arenaWorld = Bukkit.getWorld("arena");
+    public static final World moduleWorld = Bukkit.getWorld("module");
+    public static final World spawnWorld = Bukkit.getWorld("spawn");
+
+    public static final Listener lobbyListener = new LobbyEventHandler();
+    public static final Listener moduleEventHandler = new GamesEventHandler();
 
     private static DungeonFightersPlugin instance;
 
@@ -77,86 +74,39 @@ public class DungeonFightersPlugin extends LABSGameMode
     private File shopFolder = new File(this.getDataFolder() + "/shops");
 
     private String themeFolder;
-
-    private LabsScoreboard scoreboard;
-
     private DungeonFighterConfig config;
-    private DungeonArenaLoader loader;
-
-    private List<BukkitTask> tasks = new ArrayList<>();
 
     // TODO: put tasks in list an cancle them if needed.
 
     @Override
     public void labsEnable() {
         instance = this;
-        this.loader = new DungeonArenaLoader();
         this.themeFolder = this.getDataFolder().getPath() + "/themes";
 
-        //this.getServer().getPluginManager().registerEvents(new DeathmatchEventHandlers(), this);
-        this.getServer().getPluginManager().registerEvents(new GamesEventHandler(), this);
+        this.getGameStateManager().setState(GameState.PREPARING);
 
-        DungeonGameLoader loader = new DungeonGameLoader();
-        loader.buildDungeons(DungeonFightersPlugin.game.determineDungeon(), null);
+        this.createFlatWorld("module");
+        this.createFlatWorld("arena");
 
-        Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), () -> {
-            DungeonFightersPlugin.game.getPlayerManager().getPlayers().values().forEach(fighter -> {
+        this.prepareSpawn(spawnWorld);
+        this.prepareWorld(moduleWorld);
+        this.prepareWorld(arenaWorld);
 
-                String chunkCoordinates = Util.getChunkCoordinateString(fighter.getPlayer().getLocation().getChunk());
+        new StartTimer(this, 2, 4, new StartHandler()).launch();
 
-                DungeonMechanicProvider gameToPlay = DungeonFightersPlugin.game.getDungeon().getGamePositions().get(chunkCoordinates);
-                DungeonMechanicProvider currentGame = fighter.getSession().getCurrentGame();
+        Bukkit.getPluginManager().registerEvents(lobbyListener, this);
 
-                if (gameToPlay != null) {
-                    if (gameToPlay.getId().contains("built-in") && currentGame.getChunks().contains(chunkCoordinates)) {
-                        this.initGame(fighter, gameToPlay, chunkCoordinates);
-                    }
-                    else if (!currentGame.getId().equals(gameToPlay.getId())) {
-                        this.initGame(fighter, gameToPlay, chunkCoordinates);
-                    }
-                    else if (currentGame.getChunks().contains(chunkCoordinates)) {
-                        this.close(fighter.getPlayer(), chunkCoordinates);
-                        currentGame.reset();
-                        currentGame.getChunks().remove(chunkCoordinates);
-                    }
-                }
-            });
-        }, 0, 20L);
-
-        /*
         try {
-            this.config = new GsonBuilder().registerTypeAdapter(DungeonFighterConfig.class, new DungeonFighterConfigDeserializer()).create()
-                                           .fromJson(new InputStreamReader(new FileInputStream(configFile), Charset.forName("UTF-8")), DungeonFighterConfig.class);
-
-            InventoryMenuFactory.readMenus(menuFolder, null);
-
-            ShopFactory.readNPCShops(shopFolder);
-            NPCShopManager.getShops().values().forEach(shop -> shop.spawnShop());
-
-            scoreboard = LabsScoreboardFactory.createInstance(this.getDataFolder() + "/scoreboard.json");
+            this.config = new GsonBuilder().registerTypeAdapter(DungeonFighterConfig.class, new DungeonFighterConfigDeserializer())
+                                           .create()
+                                           .fromJson(new InputStreamReader(new FileInputStream(this.configFile), Charset.forName("UTF-8")),
+                                                     DungeonFighterConfig.class);
         }
-        catch (Exception e) {
+        catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new ArrowTrailTask(), 0, 0);
 
-        //this.loader.generate(this.config.getGridOrigin(), this.determineDungeon());
-        */
-    }
-
-    private void initGame(DungeonFighter fighter, DungeonMechanicProvider provider, String chunkCoord) {
-        fighter.getSession().getCurrentGame().stop();
-        this.close(fighter.getPlayer(), chunkCoord);
-        fighter.getSession().setCurrentGame(provider);
-        fighter.getSession().getCurrentGame().getChunks().remove(chunkCoord);
-        fighter.getSession().getCurrentGame().assignPlayer(fighter);
-        fighter.getSession().getCurrentGame().assignModule(game.getModules().get(chunkCoord).getSchematic());
-        fighter.getSession().getCurrentGame().start();
-    }
-
-    private void close(Player player, String  coords) {
-        List<Location> blocks = game.getModules().get(coords).getBlockLocations();
-        Util.closeEntrance(player, blocks);
+        game.determineDungeon();
     }
 
     @Override
@@ -190,6 +140,29 @@ public class DungeonFightersPlugin extends LABSGameMode
     public String getChatPrefix() {
         return "§6>> §eDungeonFighters §6❘ §7";
     }
+
+
+    private void prepareSpawn(World world) {
+        this.prepareWorld(world);
+        world.setPVP(false);
+        world.setGameRuleValue("doMobSpawning", "false");
+        world.setGameRuleValue("spectatorsGenerateChunks","false");
+    }
+
+    private void prepareWorld(World world) {
+        world.setTime(0);
+        world.setStorm(false);
+        world.setThundering(false);
+        world.setGameRuleValue("doDaylightCycle","false");
+    }
+
+    private void createFlatWorld(String name) {
+        Bukkit.getServer().createWorld(new WorldCreator(name)
+                                               .generateStructures(false)
+                                               .environment(World.Environment.NORMAL)
+                                               .type(WorldType.FLAT));
+    }
+
 
     /**
      *
