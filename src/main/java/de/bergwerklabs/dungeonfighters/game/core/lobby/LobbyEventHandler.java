@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import java.security.SecureRandom;
 
@@ -29,6 +30,11 @@ public class LobbyEventHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
+
+        // DEBUG START
+        player.setWalkSpeed(0.2F);
+        player.removePotionEffect(PotionEffectType.JUMP);
+        // DEBUG END
 
         String[] messages = DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getJoinMessage();
         tabList.send(player);

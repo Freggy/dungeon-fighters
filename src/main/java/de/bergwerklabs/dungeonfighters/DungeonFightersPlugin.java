@@ -1,5 +1,6 @@
 package de.bergwerklabs.dungeonfighters;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfigDeserializer;
@@ -8,6 +9,8 @@ import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.games.GamesEventHandler;
 import de.bergwerklabs.dungeonfighters.game.core.lobby.LobbyEventHandler;
 import de.bergwerklabs.dungeonfighters.game.core.lobby.StartHandler;
+import de.bergwerklabs.dungeonfighters.util.animation.TitleAnimation;
+import de.bergwerklabs.dungeonfighters.util.animation.TitleAnimationDeserializer;
 import de.bergwerklabs.util.GameState;
 import de.bergwerklabs.util.GameStateManager;
 import de.bergwerklabs.util.LABSGameMode;
@@ -60,12 +63,14 @@ public class DungeonFightersPlugin extends LABSGameMode
     }
 
     public static final DungeonFighters game = new DungeonFighters();
-    public static final World arenaWorld = Bukkit.getWorld("arena");
-    public static final World moduleWorld = Bukkit.getWorld("module");
-    public static final World spawnWorld = Bukkit.getWorld("spawn");
+    public static World arenaWorld;
+    public static World moduleWorld;
+    public static World spawnWorld;
 
     public static final Listener lobbyListener = new LobbyEventHandler();
     public static final Listener moduleEventHandler = new GamesEventHandler();
+
+    public static TitleAnimation animation;
 
     private static DungeonFightersPlugin instance;
 
@@ -82,17 +87,19 @@ public class DungeonFightersPlugin extends LABSGameMode
     public void labsEnable() {
         instance = this;
         this.themeFolder = this.getDataFolder().getPath() + "/themes";
+        animation = this.readTitleAnimation();
+
+        arenaWorld = this.createFlatWorld("arena");
+        moduleWorld = this.createFlatWorld("module");
+        spawnWorld = Bukkit.getWorld("spawn");
 
         this.getGameStateManager().setState(GameState.PREPARING);
-
-        this.createFlatWorld("module");
-        this.createFlatWorld("arena");
 
         this.prepareSpawn(spawnWorld);
         this.prepareWorld(moduleWorld);
         this.prepareWorld(arenaWorld);
 
-        new StartTimer(this, 2, 4, new StartHandler()).launch();
+        new StartTimer(this, 1, 4, new StartHandler()).launch();
 
         Bukkit.getPluginManager().registerEvents(lobbyListener, this);
 
@@ -141,6 +148,27 @@ public class DungeonFightersPlugin extends LABSGameMode
         return "§6>> §eDungeonFighters §6❘ §7";
     }
 
+    private TitleAnimation readTitleAnimation() {
+
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(TitleAnimation.class, new TitleAnimationDeserializer())
+                                     .create();
+
+
+
+
+
+
+        try {
+            return gson.fromJson(new InputStreamReader(new FileInputStream(this.getDataFolder() + "/animation.json"),
+                                                                    Charset.forName("UTF-8")), TitleAnimation.class);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     private void prepareSpawn(World world) {
         this.prepareWorld(world);
@@ -156,11 +184,11 @@ public class DungeonFightersPlugin extends LABSGameMode
         world.setGameRuleValue("doDaylightCycle","false");
     }
 
-    private void createFlatWorld(String name) {
-        Bukkit.getServer().createWorld(new WorldCreator(name)
-                                               .generateStructures(false)
-                                               .environment(World.Environment.NORMAL)
-                                               .type(WorldType.FLAT));
+    private World createFlatWorld(String name) {
+        return Bukkit.getServer().createWorld(new WorldCreator(name)
+                                                      .generateStructures(false)
+                                                      .environment(World.Environment.NORMAL)
+                                                      .type(WorldType.FLAT));
     }
 
 

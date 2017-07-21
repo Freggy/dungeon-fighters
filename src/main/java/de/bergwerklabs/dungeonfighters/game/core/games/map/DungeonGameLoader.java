@@ -44,8 +44,19 @@ public class DungeonGameLoader {
 
         for (int x = 0; x < players; x++) {
             this.buildStartPoints(startPoint, newLocation);
-            Location end = newLocation.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3, 0, -1)));
-            DungeonFightersPlugin.game.getModules().putIfAbsent(Util.getChunkCoordinateString(end.getChunk()), new ModuleInfo(this.buildEnd(end), startPoint));
+            Location end = newLocation.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3,0, -1)));
+
+            newLocation.getChunk().load();
+
+            Location inChunk = end.clone().subtract(0, 0, 1);
+
+            List<Location> blockLoc = this.buildEnd(inChunk);
+            String coord = Util.getChunkCoordinateString(inChunk.getChunk());
+
+            DungeonFightersPlugin.game.getModules().putIfAbsent(coord, new ModuleInfo(blockLoc, startPoint));
+
+            Util.closeEntrance(null, blockLoc);
+
             startLocations.add(end);
             newLocation.add(46, 0 ,0);
         }
@@ -59,7 +70,7 @@ public class DungeonGameLoader {
      * @param startPoint
      */
     private void buildStartPoints(LabsSchematic<StartModuleMetadata> startPoint, Location location) {
-        Location spawn = location.clone().subtract(startPoint.getMetadata().getSpawn()).add(0, 1, 0.9);
+        Location spawn = location.clone().subtract(startPoint.getMetadata().getSpawn().clone()).add(0, 1, 0.9);
         spawn.setPitch(0);
         spawn.setYaw(0);
         DungeonFightersPlugin.game.getSpawns().add(spawn);
@@ -74,7 +85,7 @@ public class DungeonGameLoader {
         Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonFightersPlugin.getInstance().getThemedBattleZoneFolder(this.theme), random))
                                                     .iterator();
 
-        for (int path = 0; path < 12; path++) {
+        for (int path = 0; path < starts.size(); path++) {
             Location start = starts.get(path);
             for (int i = 1; i < 13; i++) {
                 if (i % 4 == 0 && i != 1 && i != 12) {
@@ -152,6 +163,8 @@ public class DungeonGameLoader {
 
     private <T extends ModuleMetadata> Location placeModule(LabsSchematic<T> schematic, Location to) {
         schematic.pasteAsync(DungeonFightersPlugin.moduleWorld.getName(), to.toVector());
+
+        to.getChunk().load();
 
         if (schematic.hasMetadata()) {
             Location endLocation = to.clone().subtract(schematic.getMetadata().getEnd());

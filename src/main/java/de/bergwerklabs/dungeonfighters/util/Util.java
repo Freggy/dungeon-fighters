@@ -1,5 +1,6 @@
 package de.bergwerklabs.dungeonfighters.util;
 
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.util.effect.Particle;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class Util {
         ArrayList<Location> locations = new ArrayList<>();
         for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
             for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
-                locations.add(new Location(Bukkit.getWorld("spawn"), x , y, min.getBlockZ()));
+                locations.add(new Location(DungeonFightersPlugin.moduleWorld, x, y, min.getBlockZ()));
             }
         }
         return locations;
@@ -47,10 +48,12 @@ public class Util {
     }
 
     public static void closeEntrance(Player player, List<Location> locations) {
-        locations.forEach(location -> {
-            location.getBlock().setType(Material.SMOOTH_BRICK);
-            Particle.sendParticle(player, Particle.ParticleEffect.CLOUD, location.add(0, 0, 1), 0.2F, 0.2F, 0.2F, 0, 3);
-        });
+        Bukkit.getScheduler().runTaskLater(DungeonFightersPlugin.getInstance(), () -> {
+            locations.forEach(location -> {
+                location.getBlock().setType(Material.SMOOTH_BRICK);
+                if (player != null)
+                    Particle.sendParticle(player, Particle.ParticleEffect.CLOUD, location.add(0, 0, 1), 0.2F, 0.2F, 0.2F, 0, 3);
+            });
+        }, 10L);
     }
-
 }
