@@ -31,6 +31,8 @@ public class DungeonFighter extends LabsPlayer {
      */
     public DungeonSession getSession() { return this.session; }
 
+    public void setScoreboard(LabsScoreboard scoreboard) { this.scoreboard = scoreboard; }
+
     /**
      * Sets the current amount of emeralds.
      *
@@ -49,13 +51,10 @@ public class DungeonFighter extends LabsPlayer {
 
     /**
      * @param p Player representing the new DungeonFighter
-     * @param scoreboard Scoreboard that will be displayed.
      */
-    public DungeonFighter(Player p, LabsScoreboard scoreboard) {
+    public DungeonFighter(Player p) {
         this.player = p;
-        this.scoreboard = scoreboard;
         this.session = new DungeonSession();
-        p.setScoreboard(scoreboard.getScoreboard());
     }
 
     /**

@@ -149,16 +149,8 @@ public class DungeonFightersPlugin extends LABSGameMode
     }
 
     private TitleAnimation readTitleAnimation() {
-
-
         Gson gson = new GsonBuilder().registerTypeAdapter(TitleAnimation.class, new TitleAnimationDeserializer())
                                      .create();
-
-
-
-
-
-
         try {
             return gson.fromJson(new InputStreamReader(new FileInputStream(this.getDataFolder() + "/animation.json"),
                                                                     Charset.forName("UTF-8")), TitleAnimation.class);

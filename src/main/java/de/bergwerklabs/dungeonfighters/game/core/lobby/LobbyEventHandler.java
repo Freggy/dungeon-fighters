@@ -3,8 +3,7 @@ package de.bergwerklabs.dungeonfighters.game.core.lobby;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
-import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
-import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,6 +35,8 @@ public class LobbyEventHandler implements Listener {
         player.removePotionEffect(PotionEffectType.JUMP);
         // DEBUG END
 
+        player.setGameMode(GameMode.ADVENTURE);
+
         String[] messages = DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getJoinMessage();
         tabList.send(player);
         int randomIndex = random.nextInt(messages.length);
@@ -47,15 +48,7 @@ public class LobbyEventHandler implements Listener {
 
         player.teleport(spawnLocation);
 
-        // NOTE:
-        // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized
-        // from the JSON file, the scoreboard gets applied correctly, but if the player relogs nothing works anymore
-        // because the initial scoreboard we deserialized got modified although we clone it.
-        LabsScoreboard scoreboard = LabsScoreboardFactory.createInstance(DungeonFightersPlugin.getInstance().getDataFolder() + "/scoreboard.json");
-
-        // load it everytime again?
-        DungeonFightersPlugin.game.getPlayerManager().getPlayers()
-                                  .put(player.getUniqueId(), new DungeonFighter(e.getPlayer(), scoreboard));
+        DungeonFightersPlugin.game.getPlayerManager().getPlayers().put(player.getUniqueId(), new DungeonFighter(e.getPlayer()));
 
     }
 

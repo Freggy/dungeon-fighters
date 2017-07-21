@@ -1,12 +1,14 @@
 package de.bergwerklabs.dungeonfighters.game.config;
 
+import de.bergwerklabs.framework.commons.spigot.title.Title;
 import org.bukkit.Location;
 
 import java.util.HashMap;
 
 /**
  * Created by Yannic Rieger on 06.05.2017.
- * <p> Config class holding all configurable values. </p>
+ * <p> Config class holding all configurable values.
+ *
  * @author Yannic Rieger
  */
 public class DungeonFighterConfig {
@@ -19,13 +21,14 @@ public class DungeonFighterConfig {
     private String cannotEnchantMessage;
     private String cannotConvertMessage;
     private String cannotUseMedPackMessage;
+    private Title intermissionTitle;
     private float explosionRadius;
     private int poisonDuration, fireDuration;
     private Location gridOrigin;
     private float medPackHealing;
 
     DungeonFighterConfig(HashMap<String, Object> messages, HashMap<String, Integer> emeraldSettings,
-                         HashMap<String, Number> arrowSettins, HashMap<String, Object> specialItemsSettings, Location gridOrigin) {
+                         HashMap<String, Number> arrowSettins, HashMap<String, Object> specialItemsSettings, HashMap<String, Title> titles, Location gridOrigin) {
 
         this.deathMessage = (String)messages.get("death-message");
         this.joinMessages = (String[])messages.get("join-messages");
@@ -44,6 +47,8 @@ public class DungeonFighterConfig {
         this.fireDuration = arrowSettins.get("fire-duration").intValue();
 
         this.medPackHealing = (Float)specialItemsSettings.get("med-pack-healing");
+
+        this.intermissionTitle = titles.get("intermission-title");
     }
 
     /**
@@ -123,5 +128,9 @@ public class DungeonFighterConfig {
 
     public float getMedPackHealing() {
         return medPackHealing;
+    }
+
+    public Title getIntermissionTitle() {
+        return intermissionTitle;
     }
 }

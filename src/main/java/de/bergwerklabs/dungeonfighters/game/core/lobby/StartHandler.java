@@ -45,7 +45,7 @@ public class StartHandler implements StartTimer.StartHandler {
     public void handle(Player[] players) {
         new DungeonGameLoader().buildDungeons(DungeonFightersPlugin.game.getDungeon(), Bukkit.getOnlinePlayers().size(), "temple");
         Iterator<Location> spawns = DungeonFightersPlugin.game.getSpawns().iterator();
-        this.displayTitle(new Title("§aDu betrittst nun den Dungeon§b...", null, 20, 20, 20));
+        this.displayTitle(DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getIntermissionTitle());
 
         Bukkit.getScheduler().runTaskLater(DungeonFightersPlugin.getInstance(), () -> {
             for (Player player : players) {

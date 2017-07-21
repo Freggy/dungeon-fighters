@@ -9,6 +9,8 @@ import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.util.RoundSummaryMapRenderer;
 import de.bergwerklabs.dungeonfighters.util.Util;
 import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
+import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
+import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
 import de.bergwerklabs.util.effect.Particle.ParticleEffect;
 import org.bukkit.GameMode;
@@ -26,6 +28,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
@@ -83,6 +86,17 @@ public class DeathmatchEventHandlers implements Listener {
                 item.setVelocity(new Vector(0.1 * Math.random(), 0.3, 0.1 * Math.random())); // Apply random velocity to make it look cool when dropping the emeralds.
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent e) {
+        // NOTE:
+        // There is some strange behavior going on. When the server first starts and the scoreboard gets deserialized
+        // from the JSON file, the scoreboard gets applied correctly, but if the player relogs nothing works anymore
+        // because the initial scoreboard we deserialized got modified although we clone it.
+        LabsScoreboard scoreboard = LabsScoreboardFactory.createInstance(DungeonFightersPlugin.getInstance().getDataFolder() + "/scoreboard.json");
+
+        DungeonFightersPlugin.game.getPlayerManager().getPlayers().get(e.getPlayer().getUniqueId()).setScoreboard(scoreboard);
     }
 
     @EventHandler

@@ -2,6 +2,7 @@ package de.bergwerklabs.dungeonfighters.game.config;
 
 import com.google.gson.*;
 import de.bergwerklabs.framework.commons.spigot.location.LocationUtil;
+import de.bergwerklabs.framework.commons.spigot.title.Title;
 import org.bukkit.Location;
 
 import java.lang.reflect.Type;
@@ -22,6 +23,7 @@ public class DungeonFighterConfigDeserializer implements JsonDeserializer<Dungeo
         JsonObject emeraldObject = json.get("emerald-settings").getAsJsonObject();
         JsonObject arrowSettingsObject = json.get("arrow-settings").getAsJsonObject();
         JsonObject specialItemsSettingsObject = json.get("special-items-settings").getAsJsonObject();
+        JsonObject titlesObject = json.get("titles").getAsJsonObject();
 
         HashMap<String, Object> messages = new HashMap<>();
         messages.put("death-message", messageObject.get("death-message").getAsString());
@@ -45,7 +47,10 @@ public class DungeonFighterConfigDeserializer implements JsonDeserializer<Dungeo
 
         Location gridOrigin = LocationUtil.locationFromJson(json.get("grid-origin").getAsJsonObject());
 
-        return new DungeonFighterConfig(messages, emeraldSettings, arrowSettings, specialItemSettings, gridOrigin);
+        HashMap<String, Title> titles = new HashMap<>();
+        titles.put("intermission-title", Title.fromJson(titlesObject.get("intermission-title").getAsJsonObject()));
+
+        return new DungeonFighterConfig(messages, emeraldSettings, arrowSettings, specialItemSettings, titles, gridOrigin);
     }
 
     /**
