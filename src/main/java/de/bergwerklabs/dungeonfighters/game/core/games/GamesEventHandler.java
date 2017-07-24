@@ -1,10 +1,8 @@
 package de.bergwerklabs.dungeonfighters.game.core.games;
 
-import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
-import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 /**
  * Created by Yannic Rieger on 28.06.2017.
@@ -15,9 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class GamesEventHandler implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        DungeonFightersPlugin.game.getPlayerManager().getPlayers()
-                                  .put(e.getPlayer().getUniqueId(), new DungeonFighter(e.getPlayer()));
+    public void onFoodLevelChange(FoodLevelChangeEvent e) {
+        e.setCancelled(true);
     }
-
 }

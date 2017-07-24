@@ -2,6 +2,7 @@ package de.bergwerklabs.dungeonfighters.game.core.games.map;
 
 import com.google.common.collect.Iterables;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
@@ -87,15 +88,15 @@ public class DungeonGameLoader {
 
         for (int path = 0; path < starts.size(); path++) {
             Location start = starts.get(path);
-            for (int i = 1; i < 13; i++) {
-                if (i % 4 == 0 && i != 1 && i != 12) {
+            for (int position = 1; position < 13; position++) {
+                if (position % 4 == 0 && position != 1 && position != 12) {
                     start = this.buildBattleZonePart(start, battleZones.next(), this.getPartByPosition(path, starts.size() - 1)).add(new Vector(0, 0, 1));
                 }
-                else if (i == 12) { // end has been reached
+                else if (position == 12) { // end has been reached
                     this.placeModule(end, start);
                 }
                 else {
-                   start = this.buildGame(availableGames.next(), start).add(new Vector(0, 0, 1));
+                   start = this.buildGame(availableGames.next(), start, position).add(new Vector(0, 0, 1));
                 }
             }
         }
@@ -146,9 +147,11 @@ public class DungeonGameLoader {
         }
     }
 
-    private Location buildGame(DungeonGameWrapper game, Location start) {
-        DungeonGame dungeonGame = game.getGame();
+    private Location buildGame(DungeonGameWrapper game, Location start, int position) {
+
+        DungeonGame dungeonGame = (DungeonGame) game.getGame().clone();
         String chunkCoord = Util.getChunkCoordinateString(start.getChunk());
+        dungeonGame.setStageTier(StageTier.getStageTierByPosition(position));
 
         if (!DungeonFightersPlugin.game.getDungeon().getGamePositions().containsValue(dungeonGame)) {
             Bukkit.getServer().getPluginManager().enablePlugin(dungeonGame);

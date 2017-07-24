@@ -21,6 +21,8 @@ public class GameUpdateTask implements Runnable {
     public void run() {
         DungeonFightersPlugin.game.getPlayerManager().getPlayers().values().forEach(fighter -> {
 
+            // TODO: update scoreboard time
+
             String chunkCoordinates = Util.getChunkCoordinateString(fighter.getPlayer().getLocation().getChunk());
 
             DungeonMechanicProvider gameToPlay = DungeonFightersPlugin.game.getDungeon().getGamePositions().get(chunkCoordinates);
@@ -42,6 +44,12 @@ public class GameUpdateTask implements Runnable {
         });
     }
 
+    /**
+     *
+     * @param fighter
+     * @param provider
+     * @param chunkCoord
+     */
     private void initGame(DungeonFighter fighter, DungeonMechanicProvider provider, String chunkCoord) {
         fighter.getSession().getCurrentGame().stop();
         this.close(fighter.getPlayer(), chunkCoord);
@@ -53,9 +61,21 @@ public class GameUpdateTask implements Runnable {
         fighter.getSession().getCurrentGame().start();
     }
 
+    /**
+     *
+     * @param player
+     * @param coords
+     */
     private void close(Player player, String coords) {
         List<Location> blocks = DungeonFightersPlugin.game.getModules().get(coords).getBlockLocations();
         Util.closeEntrance(player, blocks);
+    }
+
+    /**
+     *
+     */
+    private void updateScoreboard() {
+
     }
 
 

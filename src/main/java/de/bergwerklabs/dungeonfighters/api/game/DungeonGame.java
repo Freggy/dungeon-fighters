@@ -1,5 +1,6 @@
 package de.bergwerklabs.dungeonfighters.api.game;
 
+import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,6 +30,12 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
 
     /**
      *
+     * @param tier
+     */
+    public void setStageTier(StageTier tier) { this.tier = tier; }
+
+    /**
+     *
      * @param configLocation
      */
     public void setConfigLocation(String configLocation) { this.configLocation = configLocation; }
@@ -37,6 +44,7 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
     protected DungeonFighter fighter;
     protected String configLocation;
     protected LabsSchematic module;
+    protected StageTier tier;
 
     @Override
     public void assignChunks(HashSet<String> chunks) {
@@ -63,4 +71,5 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
     public void assignPlayer(DungeonFighter fighter) {
         this.fighter = fighter;
     }
+
 }

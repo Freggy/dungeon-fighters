@@ -9,11 +9,16 @@ import org.bukkit.entity.Player;
  *
  * @author Yannic Rieger
  */
-public class DestructionWarning {
+public class ScreenWarning {
 
     private static WrapperPlayServerWorldBorder worldBorderPacket = new WrapperPlayServerWorldBorder();
 
-    public static void sendPacket(Player player, boolean display) {
+    /**
+     *
+     * @param player
+     * @param display
+     */
+    public static void send(Player player, boolean display) {
         if (display) {
             worldBorderPacket.setWarningDistance(1000000000);
             worldBorderPacket.sendPacket(player);

@@ -1,7 +1,10 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -63,14 +66,10 @@ public class DungeonSession {
         }
 
         @Override
-        public void stop() {
-
-        }
+        public void stop() {}
 
         @Override
-        public void reset() {
-
-        }
+        public void reset() {}
     }
 
     /**
@@ -80,12 +79,19 @@ public class DungeonSession {
 
     /**
      *
-     * @param provider
      */
-    public void setCurrentGame(DungeonMechanicProvider provider) { this.currentGame = (DungeonMechanicProvider) provider.clone(); }
-
-
     public Queue<DungeonMechanicProvider> getGames() { return this.games; }
+
+    /**
+     *
+     */
+    public int getGold() { return this.gold; }
+
+    /**
+     *
+     */
+    public DungeonFighter getFighter() { return this.fighter; }
+
 
     /**
      *
@@ -95,8 +101,36 @@ public class DungeonSession {
         this.games = games;
     }
 
+    /**
+     *
+     * @param provider
+     */
+    public void setCurrentGame(DungeonMechanicProvider provider) { this.currentGame = (DungeonMechanicProvider) provider.clone(); }
+
+    /**
+     *
+     * @param amount
+     */
+    public void addGold(int amount) {
+        Player player = this.fighter.getPlayer();
+        player.sendMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + "§b+" + amount + " §eGold");
+        player.playSound(player.getEyeLocation(), Sound.LEVEL_UP, 100, 1);
+
+        this.fighter.getScoreboard().getRowsByContent().get(String.valueOf(this.gold))
+                    .setText("§f§l" + String.valueOf(this.gold += amount));
+    }
+
+    /**
+     *
+     * @param fighter
+     */
+    public void setFighter(DungeonFighter fighter) {
+        if (this.fighter == null) this.fighter = fighter;
+    }
 
 
     private DungeonMechanicProvider currentGame = new DummyGame();
     private Queue<DungeonMechanicProvider> games = new LinkedList<>();
+    private DungeonFighter fighter;
+    private int gold = 0;
 }
