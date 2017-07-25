@@ -37,8 +37,7 @@ public class GameUpdateTask implements Runnable {
                 }
                 else if (currentGame.getChunks().contains(chunkCoordinates)) {
                     this.close(fighter.getPlayer(), chunkCoordinates);
-                    currentGame.reset();
-                    currentGame.getChunks().remove(chunkCoordinates);
+                    this.initGame(fighter, gameToPlay, chunkCoordinates);
                 }
             }
         });

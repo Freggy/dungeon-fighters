@@ -1,5 +1,9 @@
 package de.bergwerklabs.dungeonfighters.api;
 
+import com.google.common.collect.Range;
+
+import java.util.Arrays;
+
 /**
  * Created by Yannic Rieger on 24.07.2017.
  * <p>  </p>
@@ -8,9 +12,9 @@ package de.bergwerklabs.dungeonfighters.api;
  */
 public enum StageTier {
 
-    ONE(200),
-    TWO(300),
-    THREE(400);
+    ONE(200, Range.closed(1, 4)),
+    TWO(300, Range.closed(5, 8)),
+    THREE(400, Range.closed(9, 11));
 
     /**
      *
@@ -21,13 +25,15 @@ public enum StageTier {
     }
 
     private int maxGold;
+    private Range<Integer> range;
 
     /**
      *
      * @param maxGold
      */
-    StageTier(int maxGold) {
+    StageTier(int maxGold, Range<Integer> range) {
         this.maxGold = maxGold;
+        this.range = range;
     }
 
     /**
@@ -50,10 +56,7 @@ public enum StageTier {
      * @return
      */
     public static StageTier getStageTierByPosition(int position) {
-        if (position > 1 && position < 5) return StageTier.ONE;
-        else if (position > 5 && position < 9) return StageTier.TWO;
-        else if (position > 9 && position < 13) return StageTier.THREE;
-        else return StageTier.ONE;
+        return Arrays.stream(StageTier.values()).filter(tier -> tier.range.contains(position)).findFirst().get();
     }
 
 }

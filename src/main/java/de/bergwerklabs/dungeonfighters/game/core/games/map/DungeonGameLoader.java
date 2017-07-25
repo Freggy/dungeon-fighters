@@ -9,11 +9,11 @@ import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadataDeserializerImpl;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.BattleZoneMechanic;
+import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.EndMechanic;
 import de.bergwerklabs.dungeonfighters.util.Util;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import de.bergwerklabs.framework.schematicservice.SchematicService;
 import de.bergwerklabs.framework.schematicservice.SchematicServiceBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
@@ -32,6 +32,8 @@ public class DungeonGameLoader {
     private Location start = new Location(DungeonFightersPlugin.moduleWorld, 270, 69, 93); // TODO: change world name
     private Dungeon dungeon;
     private BattleZoneMechanic battleZoneMechanic = new BattleZoneMechanic();
+    private EndMechanic endMechanic = new EndMechanic();
+    LabsSchematic<ModuleMetadata> end;
     private String theme;
 
     public void buildDungeons(Dungeon dungeon, int players, String theme) {
@@ -42,6 +44,7 @@ public class DungeonGameLoader {
         Location newLocation = this.start.getChunk().getBlock(0, 69, 0).getLocation().clone();
         this.dungeon = dungeon;
         this.theme = theme;
+        this.end = this.determineSchematic(this.dungeon.getEndPoints(), ModuleMetadata.getService(), random);
 
         for (int x = 0; x < players; x++) {
             this.buildStartPoints(startPoint, newLocation);
@@ -51,7 +54,7 @@ public class DungeonGameLoader {
 
             Location inChunk = end.clone().subtract(0, 0, 1);
 
-            List<Location> blockLoc = this.buildEnd(inChunk);
+            List<Location> blockLoc = this.getWallLocs(inChunk);
             String coord = Util.getChunkCoordinateString(inChunk.getChunk());
 
             DungeonFightersPlugin.game.getModules().putIfAbsent(coord, new ModuleInfo(blockLoc, startPoint));
@@ -80,7 +83,6 @@ public class DungeonGameLoader {
 
     private void buildPath(Iterator<DungeonGameWrapper> availableGames, List<Location> starts) {
         Random random =  new Random();
-        LabsSchematic<ModuleMetadata> end = this.determineSchematic(this.dungeon.getEndPoints(), ModuleMetadata.getService(), random);
 
         // Use cycle iterators to avoid the Iterator#hasNext query.
         Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonFightersPlugin.getInstance().getThemedBattleZoneFolder(this.theme), random))
@@ -93,7 +95,7 @@ public class DungeonGameLoader {
                     start = this.buildBattleZonePart(start, battleZones.next(), this.getPartByPosition(path, starts.size() - 1)).add(new Vector(0, 0, 1));
                 }
                 else if (position == 12) { // end has been reached
-                    this.placeModule(end, start);
+                    this.buildEnd(start);
                 }
                 else {
                    start = this.buildGame(availableGames.next(), start, position).add(new Vector(0, 0, 1));
@@ -148,14 +150,12 @@ public class DungeonGameLoader {
     }
 
     private Location buildGame(DungeonGameWrapper game, Location start, int position) {
-
         DungeonGame dungeonGame = (DungeonGame) game.getGame().clone();
         String chunkCoord = Util.getChunkCoordinateString(start.getChunk());
-        dungeonGame.setStageTier(StageTier.getStageTierByPosition(position));
 
-        if (!DungeonFightersPlugin.game.getDungeon().getGamePositions().containsValue(dungeonGame)) {
-            Bukkit.getServer().getPluginManager().enablePlugin(dungeonGame);
-        }
+        System.out.println(StageTier.getStageTierByPosition(position));
+
+        dungeonGame.setStageTier(StageTier.getStageTierByPosition(position));
 
         DungeonFightersPlugin.game.getDungeon().getGamePositions().put(chunkCoord, dungeonGame);
         dungeonGame.getChunks().add(chunkCoord);
@@ -172,7 +172,7 @@ public class DungeonGameLoader {
         if (schematic.hasMetadata()) {
             Location endLocation = to.clone().subtract(schematic.getMetadata().getEnd());
             DungeonFightersPlugin.game.getModules().putIfAbsent(Util.getChunkCoordinateString(to.getChunk()),
-                                                                new ModuleInfo(this.buildEnd(to.clone()), schematic));
+                                                                new ModuleInfo(this.getWallLocs(to.clone()), schematic));
             return endLocation;
         }
         else
@@ -210,7 +210,13 @@ public class DungeonGameLoader {
         return chosenGames;
     }
 
-    private List<Location> buildEnd(Location end) {
+
+    private void buildEnd(Location to) {
+        DungeonFightersPlugin.game.getDungeon().getGamePositions().put(Util.getChunkCoordinateString(to.getChunk()), this.endMechanic);
+        this.placeModule(this.end, to);
+    }
+
+    private List<Location> getWallLocs(Location end) {
         Location min = end.add(0, 1, 0);
         Location max = min.clone().add(3, 3, 0);
         return Util.getDoorLocations(min, max);

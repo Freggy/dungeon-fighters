@@ -106,7 +106,7 @@ public class DungeonFightersPlugin extends LABSGameMode
         npcSpawn.setPitch(0);
         npcSpawn.setYaw(-171);
 
-        npc = new GlobalNpc(npcSpawn, getSkin(), "Itemhändler");
+        npc = new GlobalNpc(npcSpawn, getSkin(), "Itemhändler", "Gib einfach Coins aus");
         npc.spawn();
 
         new StartTimer(this, 1, 4, new StartHandler()).launch();
@@ -154,7 +154,7 @@ public class DungeonFightersPlugin extends LABSGameMode
 
     @Override
     public String getChatPrefix() {
-        return "§6» §eDungeonFighters §6❘ §7";
+        return "§6>> §eDungeonFighters §6❘ §7";
     }
 
     private TitleAnimation readTitleAnimation() {

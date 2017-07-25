@@ -116,8 +116,8 @@ public class DungeonSession {
         player.sendMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + "§b+" + amount + " §eGold");
         player.playSound(player.getEyeLocation(), Sound.LEVEL_UP, 100, 1);
 
-        this.fighter.getScoreboard().getRowsByContent().get(String.valueOf(this.gold))
-                    .setText("§f§l" + String.valueOf(this.gold += amount));
+        this.fighter.getScoreboard().getRowsByContent().get("§7§l" + String.valueOf(this.gold))
+                    .setText("§7§l" + String.valueOf(this.gold += amount));
     }
 
     /**

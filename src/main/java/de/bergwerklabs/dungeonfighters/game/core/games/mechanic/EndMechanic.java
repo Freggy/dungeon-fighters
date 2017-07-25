@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.mechanic;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import org.bukkit.Bukkit;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
@@ -18,6 +18,6 @@ public class EndMechanic extends BaseMechanic {
 
     @Override
     public void start() {
-        this.fighter.getPlayer().setItemInHand(new ItemStack(Material.WOOD_SWORD));
+        Bukkit.broadcastMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + "ENE :)");
     }
 }
