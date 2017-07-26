@@ -44,6 +44,7 @@ public class DungeonGameWrapper {
             this.game = (DungeonGame)Bukkit.getServer().getPluginManager().loadPlugin(game);
             this.module = ModuleMetadata.getService().createSchematic(modules.get(new SecureRandom().nextInt(modules.size())));
             this.game.setConfigLocation(configLocation);
+            this.game.onLoad();
         }
         catch (Exception e) {
             e.printStackTrace();

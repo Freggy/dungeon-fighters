@@ -93,7 +93,7 @@ public class DungeonFightersPlugin extends LABSGameMode
         animation = this.readTitleAnimation();
 
         arenaWorld = this.createFlatWorld("arena");
-        moduleWorld = this.createFlatWorld("module");
+        moduleWorld = Bukkit.getWorld("module");//this.createFlatWorld("module");
         spawnWorld = Bukkit.getWorld("spawn");
 
         this.getGameStateManager().setState(GameState.PREPARING);
@@ -194,8 +194,8 @@ public class DungeonFightersPlugin extends LABSGameMode
 
 
     private PlayerSkin getSkin() {
-        return new PlayerSkin("eyJ0aW1lc3RhbXAiOjE1MDA4MTgzNzc2NjksInByb2ZpbGVJZCI6IjQ4N2RiNmNmZWViMzRhMjE4MjM3YzAzNDhhMjg1NjY2IiwicHJvZmlsZU5hbWUiOiJhdXNkZXJmdXR1cmUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2VhNWI4MmU0NDNmY2FlZTdiZGUxZjkzNmQ1ZWJlNTg1NThhZTAzMjFkNDg5ODVkZGZlODRiOTUyMWU3OTg5YSJ9fX0=",
-                              "SrFsjVwK8Aes1+k9QLzqlFwjlKeyZ48h9PpdnLW296Z9R68AOsJIOrj+jEiEtfSMe8CGlQ/VoureALlUSA9YJuZyEWM6i4Y28Q2IWGQr9Firq6yPho6sjkBEkJirbIEHtBKiSlPc4ts/yVelMkGtg5yDxsI201aJFVDi2gNKDdjVf2DNT5RhCtue7eCXjNstPZPbK9sHZ+M9jkUQu6RmPdNSfRBGBn2+FnDlUutd1aYIVZLO2Oue3i93TtrDmH7gNlFybPXVM+2U0xyoBEva0sIxUktTZhTiZ24v9IOkXffgV1R2VVVggp2AZISWIdl3CuYhFVZefca3SEAeRemC6LBw9PEVmQckexSFyw4llIlRKfA6/7XOsFXGdpyFStMF3sEkfXoX2R93bDugYhyk9/EJluCV5owWjQjvkAfOazhcWu5dZfTtksdcF+xjKdecLIGY6lL1HVpjVyqGl9ZOYShq+zD7bhBI+0jPkzyytrr4vis7XKcADr5USYFW6gvkARF75zBUfyUXbn4r9PF9IyPS01/uiXQVCqFop69H5vHBs892xdYNtaEdOoAcSLZIlSwYcN+pZndwZAN/MCsb8eRS4lPp5Ehm92+MU+ExM4ZtgBoNPPwisf+zq0/KnvcOrNl+8yuDVyWhu8q1YjIGM2xPQzIw93zzzawuQauPxmw=");
+        return new PlayerSkin("eyJ0aW1lc3RhbXAiOjE1MDEwMjE3MTkyMDgsInByb2ZpbGVJZCI6IjQ4N2RiNmNmZWViMzRhMjE4MjM3YzAzNDhhMjg1NjY2IiwicHJvZmlsZU5hbWUiOiJhdXNkZXJmdXR1cmUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzY3N2E3YWI4OTljNTYyYTBkNWVkM2Q3N2U5MTlhMWMzMGJhMTM4ZGQ0NDRlNTllZjE1YTFjZDg4ZmJkIn19fQ==",
+                              "mF4I1wt5ftoXNACg5H64hu2gvXA6ZqoNvqcA3hXxvleeWGgg4gLP/ZNK5g/Yk/iK+huDRc1YRkv66sCWahBKzd8SdVhT+pSYxMG3uCS4U30PWqVbad0CUMEqUJS1ifUcEtgFJENT1+zshWlXwWOcpVZq6EX76Z3t35yX6iRNsQd+BPyJanEbm1YcS7FGmjW2swWJQkQVOVc9qqJFYb4R26a03A4PVTlIxtTeAAOD0mKgkhhzLAhy/U+LwASuym7HkU7x9+1rxwh92K3i87g8+wJS0/HNlyaKpDwvB0QuRYwfFsJuJWbru/U3BWqfUXLHErdnnwVlkYlGHfxzhSBhGWdWOroDwnQGgKRu7p50zRSlyH4Iejqu6oQaDpNTBwdgjd2OzMqukAP494wvrjdkw2fYniaiOQaCzVN7LTIUjnfGQFD/VDD9peCuZvU4wH/KOeLLAeLAIOfPhDLezNPfhSyGpwu7/agLv1kCkqGmnOUQHRlsgmmFXIUai87TjPDOD/crE6HbQu0P67gox5twSusUi5csvc3f9abOWjf/02ewOdXPZ+1tw0v8wsV+99qD6cGiaP8Ioeb9Ga92WzAVhNbifm8IwY7fMGT/l0+88lsJdEsVkkxzLlSyxQrUIeKZUcsvEgo7NYPDbp3FvuRJfGWCL90mqjustRewwdhuys8=");
     }
 
 

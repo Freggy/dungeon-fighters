@@ -3,11 +3,11 @@ package de.bergwerklabs.dungeonfighters.game.core.lobby;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.framework.commons.spigot.entity.npc.behavior.LookAtPlayerBehavior;
+import de.bergwerklabs.framework.commons.spigot.entity.npc.event.Action;
+import de.bergwerklabs.framework.commons.spigot.entity.npc.event.NpcInteractEvent;
 import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import de.bergwerklabs.util.entity.NPCInteractEvent;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -94,6 +94,13 @@ public class LobbyEventHandler implements Listener {
     @EventHandler
     public void  onDamage(EntityDamageEvent e) {
         e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInteract(NpcInteractEvent e) {
+        if (e.getNpc().getEntityId() == DungeonFightersPlugin.npc.getEntityId() && e.getAction() == Action.RIGHT_CLICK) {
+            Bukkit.broadcastMessage(e.getPlayer().getName());
+        }
     }
 
 

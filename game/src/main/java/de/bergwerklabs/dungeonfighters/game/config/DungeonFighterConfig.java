@@ -22,6 +22,7 @@ public class DungeonFighterConfig {
     private String cannotConvertMessage;
     private String cannotUseMedPackMessage;
     private String gameCountdownMessage;
+    private String goldAddedMessage;
     private Title intermissionTitle;
     private float explosionRadius;
     private int poisonDuration, fireDuration;
@@ -38,6 +39,7 @@ public class DungeonFighterConfig {
         this.cannotConvertMessage = (String)messages.get("cannot-convert-xp-message");
         this.cannotUseMedPackMessage = (String)messages.get("cannot-use-med-pack-message");
         this.gameCountdownMessage = (String)messages.get("countdown-message");
+        this.goldAddedMessage = (String)messages.get("gold-add-message");
 
         this.maxEmeraldDrop = emeraldSettings.get("max-emerald-drop");
         this.minEmeraldDrop = emeraldSettings.get("min-emerald-drop");
@@ -138,5 +140,9 @@ public class DungeonFighterConfig {
 
     public String getGameCountdownMessage() {
         return gameCountdownMessage;
+    }
+
+    public String getGoldAddedMessage() {
+        return goldAddedMessage;
     }
 }

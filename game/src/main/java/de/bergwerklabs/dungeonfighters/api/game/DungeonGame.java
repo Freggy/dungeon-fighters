@@ -72,4 +72,11 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
         this.fighter = fighter;
     }
 
+    /**
+     * This method is like the {@link JavaPlugin#onEnable()} method.
+     * It gets called when the game is first loaded. In this method, all the necessary things should
+     * done like loading the config. Instead of the {@link JavaPlugin#onEnable()} method, this one should be used.
+     */
+    public abstract void onLoad();
+
 }

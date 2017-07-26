@@ -33,6 +33,7 @@ public class DungeonFighterConfigDeserializer implements JsonDeserializer<Dungeo
         messages.put("cannot-convert-xp-message", messageObject.get("cannot-convert-xp-message").getAsString());
         messages.put("cannot-use-med-pack-message", messageObject.get("cannot-use-med-pack-message").getAsString());
         messages.put("countdown-message", messageObject.get("countdown-message").getAsString());
+        messages.put("gold-add-message", messageObject.get("gold-add-message").getAsString());
 
         HashMap<String, Integer> emeraldSettings = new HashMap<>();
         emeraldSettings.put("max-emerald-drop", emeraldObject.get("max-emerald-drop").getAsInt());

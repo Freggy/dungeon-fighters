@@ -43,14 +43,14 @@ public class StartHandler implements StartTimer.StartHandler {
                 this.displayTitle(new Title("§b" + String.valueOf(timeLeft), null, 0, 0, 60));
             }
             this.broadcastTime(timeLeft);
-            this.playSound(Sound.CLICK, 100);
+            this.playSound(Sound.CLICK, 100, 1);
         }
 
         if (timeLeft == 0) {
             this.removeWall();
             this.unfreeze();
             this.displayTitle(new Title("§9LOS!", null, 20 ,20, 20));
-            this.playSound(Sound.ENDERDRAGON_GROWL, 50);
+            this.playSound(Sound.ENDERDRAGON_GROWL, 1, 50);
         }
     });
 
@@ -106,8 +106,8 @@ public class StartHandler implements StartTimer.StartHandler {
      * @param sound Sound to play.
      * @param pitch Pitch of the given sound.
      */
-    private void playSound(Sound sound, float pitch) {
-        Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getEyeLocation(), sound, 1, pitch));
+    private void playSound(Sound sound, float pitch, float volume) {
+        Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getEyeLocation(), sound, volume, pitch));
     }
 
     /**

@@ -5,9 +5,9 @@ import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
-import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadataDeserializerImpl;
+import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.BattleZoneMechanic;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.EndMechanic;
 import de.bergwerklabs.dungeonfighters.util.Util;
@@ -33,9 +33,16 @@ public class DungeonGameLoader {
     private Dungeon dungeon;
     private BattleZoneMechanic battleZoneMechanic = new BattleZoneMechanic();
     private EndMechanic endMechanic = new EndMechanic();
-    LabsSchematic<ModuleMetadata> end;
+    private LabsSchematic<ModuleMetadata> end;
     private String theme;
 
+    /**
+     *
+     *
+     * @param dungeon
+     * @param players
+     * @param theme
+     */
     public void buildDungeons(Dungeon dungeon, int players, String theme) {
         Random random = new Random();
         SchematicService<StartModuleMetadata> service = new SchematicServiceBuilder<StartModuleMetadata>().setDeserializer(new StartModuleMetadataDeserializerImpl()).build();

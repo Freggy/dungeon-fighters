@@ -113,7 +113,12 @@ public class DungeonSession {
      */
     public void addGold(int amount) {
         Player player = this.fighter.getPlayer();
-        player.sendMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + "§b+" + amount + " §eGold");
+
+        DungeonFightersPlugin plugin = DungeonFightersPlugin.getInstance();
+
+        player.sendMessage(plugin.getChatPrefix() + plugin.getDungeonFighterConfig().getGoldAddedMessage()
+                                                             .replace("{amount}", String.valueOf(amount)));
+
         player.playSound(player.getEyeLocation(), Sound.LEVEL_UP, 100, 1);
 
         this.fighter.getScoreboard().getRowsByContent().get("§7§l" + String.valueOf(this.gold))
