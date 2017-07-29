@@ -7,7 +7,7 @@ Module
 | DungeonUploader            | de.bergwerklabs.dungeonfighters.uploader    | dungeon-uploader            |
 | Game                       | de.bergwerklabs.dungeonfighters             | dungeon-fighters-game       |
 
-Das Modul `DungeonGames` enthält wiederrum andere Module, welche die einzelnen Minigames darstellen.
+Das Modul `DungeonGames` enthält wiederum andere Module, welche die einzelnen Minigames darstellen.
 
 | Name              | Package                                                 | Artifact Id          |
 |-------------------|---------------------------------------------------------|----------------------| 
@@ -21,7 +21,7 @@ Code Konventionen
 
 Variablen
 ---------
-Auf Instanzvariablen soll immer über das this Keyword zugegriffen werden. Dies gilt auch für Instanzmethoden.
+Auf Instanzvariablen soll immer über das `this` Keyword zugegriffen werden. Dies gilt auch für Instanzmethoden.
 
 Benennung der Variablen
 -----------------------
