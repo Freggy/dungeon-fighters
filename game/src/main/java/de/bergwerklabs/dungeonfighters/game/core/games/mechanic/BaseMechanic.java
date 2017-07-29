@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
- * <p>  </p>
+ * <p> Base {@link DungeonMechanicProvider} for the built-in functionality.
  *
  * @author Yannic Rieger
  */

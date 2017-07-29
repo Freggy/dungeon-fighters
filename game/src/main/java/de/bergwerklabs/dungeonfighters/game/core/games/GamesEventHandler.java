@@ -6,7 +6,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 /**
  * Created by Yannic Rieger on 28.06.2017.
- * <p>  </p>
+ * <p> Class containing every event that needs to be handled while the games session.
  *
  * @author Yannic Rieger
  */

@@ -12,7 +12,7 @@ import java.util.Queue;
 
 /**
  * Created by Yannic Rieger on 04.07.2017.
- * <p>  </p>
+ * <p> Session which stores information about the game progress of each individual player.
  *
  * @author Yannic Rieger
  */
@@ -73,43 +73,46 @@ public class DungeonSession {
     }
 
     /**
-     *
+     * Gets the current game the player is playing.
      */
     public DungeonMechanicProvider getCurrentGame() { return this.currentGame; }
 
     /**
-     *
+     * Gets all {@link DungeonMechanicProvider} for the game.
      */
     public Queue<DungeonMechanicProvider> getGames() { return this.games; }
 
     /**
-     *
+     * Gets the current amount of gold the player has.
      */
     public int getGold() { return this.gold; }
 
     /**
-     *
+     * Gets the {@link DungeonFighter} for this session.
      */
     public DungeonFighter getFighter() { return this.fighter; }
 
 
     /**
+     * Sets the games.
      *
-     * @param games
+     * @param games Games for this game session.
      */
     public void setGames(Queue<DungeonMechanicProvider> games) {
         this.games = games;
     }
 
     /**
+     * Sets the current game.
      *
-     * @param provider
+     * @param provider representing a game or a built-in mechanic.
      */
     public void setCurrentGame(DungeonMechanicProvider provider) { this.currentGame = (DungeonMechanicProvider) provider.clone(); }
 
     /**
+     * Adds gold to the player.
      *
-     * @param amount
+     * @param amount Amount of gold to add.
      */
     public void addGold(int amount) {
         Player player = this.fighter.getPlayer();
@@ -126,8 +129,9 @@ public class DungeonSession {
     }
 
     /**
+     * Sets the {@link DungeonFighter} associated with this session.
      *
-     * @param fighter
+     * @param fighter {@link DungeonFighter} associated with this session.
      */
     public void setFighter(DungeonFighter fighter) {
         if (this.fighter == null) this.fighter = fighter;

@@ -11,12 +11,17 @@ import java.util.List;
 
 /**
  * Created by Yannic Rieger on 23.06.2017.
- * <p>
+ * <p> Class which represents a backpack in Minecraft.
  *
  * @author Yannic Rieger
  */
 public class Backpack implements SpecialItem {
 
+    /**
+     * Sets the {@link Inventory}
+     *
+     * @param inventory inventory to set.
+     */
     void setInventory(Inventory inventory) { this.inventory = inventory; }
 
     private Inventory inventory;

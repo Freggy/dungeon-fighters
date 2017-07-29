@@ -11,21 +11,22 @@ import java.util.List;
 
 /**
  * Created by Yannic Rieger on 26.06.2017.
- * <p>  </p>
+ * <p> This class wraps a {@link DungeonGame}. The main purpose of this class is
+ *     to create a {@link DungeonGame} out of the JAR file. It also contains the available modules.
  *
  * @author Yannic Rieger
  */
 public class DungeonGameWrapper {
 
     /**
-     *
+     * Gets the {@link DungeonGame}.
      */
     public DungeonGame getGame() {
         return game;
     }
 
     /**
-     *
+     * Gets all the modules for this {@link DungeonGame}.
      */
     public LabsSchematic<ModuleMetadata> getModule() {
         return module;
@@ -35,9 +36,8 @@ public class DungeonGameWrapper {
     private LabsSchematic<ModuleMetadata> module;
 
     /**
-     *
-     * @param game
-     * @param modules
+     * @param game JAR file representing a {@link DungeonGame}.
+     * @param modules {@link List} containing all the modules for this {@link DungeonGame}.
      */
     public DungeonGameWrapper(File game, String configLocation, List<File> modules) {
         try {

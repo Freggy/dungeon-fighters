@@ -10,12 +10,13 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Yannic Rieger on 23.06.2017.
- * <p>  </p>
+ * <p> Contains logic for poisoned arrows.
  *
  * @author Yannic Rieger
  */
 public class PoisonedArrow extends SpecialArrow {
 
+    @Override
     public void playerHit(Player player) {
         System.out.printf("POISON -> PLAYER");
         new PotionEffect(PotionEffectType.POISON, 20 * DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getPoisonDuration(), 1).apply(player);

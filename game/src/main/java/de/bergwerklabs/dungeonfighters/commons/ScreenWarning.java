@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.util;
+package de.bergwerklabs.dungeonfighters.commons;
 
 import de.bergwerklabs.framework.commons.spigot.nms.packet.v1_8.WrapperPlayServerWorldBorder;
 import org.bukkit.entity.Player;

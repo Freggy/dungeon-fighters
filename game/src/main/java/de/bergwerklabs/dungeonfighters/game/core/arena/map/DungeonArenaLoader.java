@@ -1,10 +1,10 @@
 package de.bergwerklabs.dungeonfighters.game.core.arena.map;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.commons.DungeonDestructionStrategy;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.GridCoordinate;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
-import de.bergwerklabs.dungeonfighters.util.DungeonDestructionStrategy;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;

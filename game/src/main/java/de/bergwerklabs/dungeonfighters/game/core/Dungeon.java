@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by Yannic Rieger on 30.05.2017.
- * <p>  </p>
+ * <p> Class containing information about the dungeon that will be played.
  *
  * @author Yannic Rieger
  */

@@ -1,6 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail;
 
-import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
+import de.bergwerklabs.dungeonfighters.commons.ParticleUtil;
 import de.bergwerklabs.util.effect.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Yannic Rieger on 24.06.2017.
- * <p>  </p>
+ * <p> Task that displays the arrow trails particles.
  *
  * @author Yannic Rieger
  */

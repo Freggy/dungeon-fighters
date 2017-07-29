@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.util;
+package de.bergwerklabs.dungeonfighters.commons;
 
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;

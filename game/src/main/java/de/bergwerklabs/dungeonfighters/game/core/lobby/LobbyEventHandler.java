@@ -6,7 +6,6 @@ import de.bergwerklabs.framework.commons.spigot.entity.npc.behavior.LookAtPlayer
 import de.bergwerklabs.framework.commons.spigot.entity.npc.event.Action;
 import de.bergwerklabs.framework.commons.spigot.entity.npc.event.NpcInteractEvent;
 import de.bergwerklabs.framework.commons.spigot.general.LabsTabList;
-import de.bergwerklabs.util.entity.NPCInteractEvent;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -25,7 +24,7 @@ import java.security.SecureRandom;
 
 /**
  * Created by Yannic Rieger on 19.07.2017.
- * <p>  </p>
+ * <p> Class which contains Methods for handling events while the players are waiting for the game to start.
  *
  * @author Yannic Rieger
  */

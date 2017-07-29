@@ -2,8 +2,8 @@ package de.bergwerklabs.dungeonfighters.game.core.games;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import de.bergwerklabs.dungeonfighters.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -11,7 +11,8 @@ import java.util.List;
 
 /**
  * Created by Yannic Rieger on 19.07.2017.
- * <p>  </p>
+ * <p> This task updates the game and checks whether or not the player is in another module.
+ *     If so, the task will start the game.
  *
  * @author Yannic Rieger
  */
@@ -44,10 +45,11 @@ public class GameUpdateTask implements Runnable {
     }
 
     /**
+     * Initializes the {@link de.bergwerklabs.dungeonfighters.api.game.DungeonGame} for the player.
      *
-     * @param fighter
-     * @param provider
-     * @param chunkCoord
+     * @param fighter Player that entered a new area.
+     * @param provider {@link DungeonMechanicProvider} represents a new game.
+     * @param chunkCoord String representing the XZ coordinates of a {@link org.bukkit.Chunk}.
      */
     private void initGame(DungeonFighter fighter, DungeonMechanicProvider provider, String chunkCoord) {
         fighter.getSession().getCurrentGame().stop();
@@ -61,21 +63,13 @@ public class GameUpdateTask implements Runnable {
     }
 
     /**
+     * Closes the module behind the player.
      *
-     * @param player
-     * @param coords
+     * @param player player who left the module.
+     * @param coords String representing the XZ coordinates of a {@link org.bukkit.Chunk}.
      */
     private void close(Player player, String coords) {
         List<Location> blocks = DungeonFightersPlugin.game.getModules().get(coords).getBlockLocations();
         Util.closeEntrance(player, blocks);
     }
-
-    /**
-     *
-     */
-    private void updateScoreboard() {
-
-    }
-
-
 }

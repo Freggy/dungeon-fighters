@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
-import de.bergwerklabs.dungeonfighters.util.Util;
+import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

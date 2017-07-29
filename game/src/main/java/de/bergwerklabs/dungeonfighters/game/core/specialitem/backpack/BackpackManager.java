@@ -8,12 +8,18 @@ import java.util.UUID;
 
 /**
  * Created by Yannic Rieger on 24.06.2017.
- * <p>  </p>
+ * <p> Manages every {@link Backpack} instance.
  *
  * @author Yannic Rieger
  */
 public class BackpackManager {
 
+    /**
+     * Gets the {@link Backpack} associated with a player, {@code null} if the player has no {@link Backpack}.
+     *
+     * @param player Player that might have a backpack.
+     * @return a {@link Backpack}
+     */
     public static Backpack getBackPack(Player player) {
         Backpack backpack = backpacks.get(player.getUniqueId());
 

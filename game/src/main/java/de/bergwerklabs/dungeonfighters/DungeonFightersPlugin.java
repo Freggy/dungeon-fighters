@@ -2,6 +2,8 @@ package de.bergwerklabs.dungeonfighters;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.bergwerklabs.dungeonfighters.commons.animation.TitleAnimation;
+import de.bergwerklabs.dungeonfighters.commons.animation.TitleAnimationDeserializer;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfigDeserializer;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighters;
@@ -9,8 +11,6 @@ import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.games.GamesEventHandler;
 import de.bergwerklabs.dungeonfighters.game.core.lobby.LobbyEventHandler;
 import de.bergwerklabs.dungeonfighters.game.core.lobby.StartHandler;
-import de.bergwerklabs.dungeonfighters.util.animation.TitleAnimation;
-import de.bergwerklabs.dungeonfighters.util.animation.TitleAnimationDeserializer;
 import de.bergwerklabs.framework.commons.spigot.entity.npc.GlobalNpc;
 import de.bergwerklabs.framework.commons.spigot.entity.npc.PlayerSkin;
 import de.bergwerklabs.util.GameState;

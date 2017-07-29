@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.util;
+package de.bergwerklabs.dungeonfighters.commons;
 
 import de.bergwerklabs.util.effect.Particle;
 import org.bukkit.Bukkit;

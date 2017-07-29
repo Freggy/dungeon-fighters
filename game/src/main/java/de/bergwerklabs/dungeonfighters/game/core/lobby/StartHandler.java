@@ -1,11 +1,11 @@
 package de.bergwerklabs.dungeonfighters.game.core.lobby;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.games.GameUpdateTask;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameLoader;
-import de.bergwerklabs.dungeonfighters.util.Util;
 import de.bergwerklabs.framework.commons.spigot.game.LabsPlayer;
 import de.bergwerklabs.framework.commons.spigot.general.timer.LabsTimer;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
@@ -26,7 +26,7 @@ import java.util.UUID;
 
 /**
  * Created by Yannic Rieger on 19.07.2017.
- * <p>  </p>
+ * <p> This class contains a methods that will be executed when the {@link StartTimer} hits zero.
  *
  * @author Yannic Rieger
  */

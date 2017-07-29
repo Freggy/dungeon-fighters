@@ -4,7 +4,7 @@ import de.bergwerklabs.util.effect.Particle;
 
 /**
  * Created by Yannic Rieger on 24.06.2017.
- * <p>  </p>
+ * <p> Enum contains every arrow trail available.
  *
  * @author Yannic Rieger
  */
@@ -16,7 +16,7 @@ public enum TrailType {
     HEART(new TrailInfo(Particle.ParticleEffect.HEART, 0.0F, 0.0F, 0.0F, 0, 1));
 
     /**
-     *
+     * Gets information about the arrow trail.
      */
     public TrailInfo getInfo() {
         return info;
@@ -24,6 +24,9 @@ public enum TrailType {
 
     private TrailInfo info;
 
+    /**
+     * @param info Information about the arrow trail.
+     */
     TrailType(TrailInfo info) {
         this.info = info;
     }

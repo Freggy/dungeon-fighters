@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
-import de.bergwerklabs.dungeonfighters.util.ParticleUtil;
+import de.bergwerklabs.dungeonfighters.commons.ParticleUtil;
 import de.bergwerklabs.util.effect.Particle;
 import org.bukkit.Material;
 import org.bukkit.Sound;

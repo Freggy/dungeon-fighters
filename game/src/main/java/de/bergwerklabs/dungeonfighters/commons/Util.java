@@ -1,8 +1,11 @@
-package de.bergwerklabs.dungeonfighters.util;
+package de.bergwerklabs.dungeonfighters.commons;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.util.effect.Particle;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -18,8 +21,6 @@ import java.util.List;
 public class Util {
 
     public static final String name = "§eKnockback-Stick §6❘ §eAufladung:§b {percentage}%";
-    private static final World gameWorld = Bukkit.getWorld("spawn");
-
 
     public static int getPower(String s) {
        return Integer.valueOf(s.split(":")[1].replace("%", "")

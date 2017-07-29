@@ -9,7 +9,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Yannic Rieger on 23.06.2017.
- * <p>  </p>
+ * <p> Contains explosive arrow logic.
  *
  * @author Yannic Rieger
  */

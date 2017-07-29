@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
- * <p>  </p>
+ * <p> Mechanic that will be triggered when a player enters the end module.
  *
  * @author Yannic Rieger
  */

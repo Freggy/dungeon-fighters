@@ -11,33 +11,33 @@ import java.util.Optional;
 
 /**
  * Created by Yannic Rieger on 04.07.2017.
- * <p>  </p>
+ * <p> Wraps a battle zone.
  *
  * @author Yannic Rieger
  */
 public class BattleZone {
 
     /**
-     *
+     * Contains all available parts.
      */
     public enum Part { START, MIDDLE, END }
 
     /**
-     *
+     * Gets the start module of this {@code BattleZone}.
      */
     public LabsSchematic<ModuleMetadata> getStart() {
         return start;
     }
 
     /**
-     *
+     * Gets the middle module.
      */
     public LabsSchematic<ModuleMetadata> getMiddle() {
         return middle;
     }
 
     /**
-     *
+     * Gets the end module.
      */
     public LabsSchematic<ModuleMetadata> getEnd() {
         return end;
@@ -46,7 +46,7 @@ public class BattleZone {
     private LabsSchematic<ModuleMetadata> start, middle, end;
 
     /**
-     * @param folder
+     * @param folder Folder which contains subfolders that contains the modules.
      */
     public BattleZone(File folder) {
         SchematicService<ModuleMetadata> service = ModuleMetadata.getService();
@@ -57,9 +57,10 @@ public class BattleZone {
     }
 
     /**
+     * Gets the module if present.
      *
-     * @param optional
-     * @return
+     * @param optional {@link Optional<File>}
+     * @return {@link LabsSchematic}, null if not present
      */
     private LabsSchematic<ModuleMetadata> getIfPresent(Optional<File> optional, SchematicService<ModuleMetadata> service) {
         if (optional.isPresent()) {

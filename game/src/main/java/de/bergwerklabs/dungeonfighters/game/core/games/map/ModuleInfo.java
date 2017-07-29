@@ -7,25 +7,35 @@ import java.util.List;
 
 /**
  * Created by Yannic Rieger on 18.07.2017.
- * <p>  </p>
+ * <p> Class contains basic info about a Module of a {@link de.bergwerklabs.dungeonfighters.api.game.DungeonGame}.
  *
  * @author Yannic Rieger
  */
 public class ModuleInfo {
 
-    private List<Location> blockLocations;
-    private LabsSchematic schematic;
-
-    public ModuleInfo(List<Location> blockLocations, LabsSchematic schematic) {
-        this.blockLocations = blockLocations;
-        this.schematic = schematic;
-    }
-
+    /**
+     * Gets the locations where to close the module.
+     */
     public List<Location> getBlockLocations() {
         return blockLocations;
     }
 
+    /**
+     * Gets the {@link LabsSchematic} that represents the module.
+     */
     public LabsSchematic getSchematic() {
         return schematic;
+    }
+
+    private List<Location> blockLocations;
+    private LabsSchematic schematic;
+
+    /**
+     * @param blockLocations Locations where to close the module.
+     * @param schematic {@link LabsSchematic} that represents the module.
+     */
+    public ModuleInfo(List<Location> blockLocations, LabsSchematic schematic) {
+        this.blockLocations = blockLocations;
+        this.schematic = schematic;
     }
 }

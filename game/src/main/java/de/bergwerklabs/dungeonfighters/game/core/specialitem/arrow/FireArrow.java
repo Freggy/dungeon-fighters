@@ -8,11 +8,13 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Yannic Rieger on 23.06.2017.
- * <p>  </p>
+ * <p> Contains logic for fire arrows.
  *
  * @author Yannic Rieger
  */
 public class FireArrow extends SpecialArrow {
+
+    @Override
     public void playerHit(Player player) {
         System.out.printf("FIRE -> PLAYER");
         player.setFireTicks(20 * DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getFireDuration());

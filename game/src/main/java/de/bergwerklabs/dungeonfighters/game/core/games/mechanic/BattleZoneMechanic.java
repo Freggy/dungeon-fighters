@@ -6,7 +6,8 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
- * <p>  </p>
+ * <p> Mechanic for the {@link de.bergwerklabs.dungeonfighters.game.core.games.map.BattleZone}.
+ *     this gets triggered when a player enters the zone.
  *
  * @author Yannic Rieger
  */

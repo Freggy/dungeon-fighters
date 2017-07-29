@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.util.animation;
+package de.bergwerklabs.dungeonfighters.commons.animation;
 
 import com.google.gson.*;
 import de.bergwerklabs.framework.commons.spigot.json.JsonUtil;

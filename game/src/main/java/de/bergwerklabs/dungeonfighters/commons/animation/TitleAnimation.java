@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.util.animation;
+package de.bergwerklabs.dungeonfighters.commons.animation;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.framework.commons.spigot.title.Title;
