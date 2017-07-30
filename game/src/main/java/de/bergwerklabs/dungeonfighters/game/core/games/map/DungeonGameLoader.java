@@ -5,6 +5,7 @@ import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
+import de.bergwerklabs.dungeonfighters.commons.ListUtil;
 import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadata;
@@ -18,8 +19,8 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.security.SecureRandom;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Yannic Rieger on 26.06.2017.
@@ -35,6 +36,7 @@ public class DungeonGameLoader {
     private EndMechanic endMechanic = new EndMechanic();
     private LabsSchematic<ModuleMetadata> end;
     private String theme;
+    private Iterator<LabsSchematic<ModuleMetadata>> connections;
 
     /**
      * Builds the path that every player has to go through.
@@ -49,11 +51,13 @@ public class DungeonGameLoader {
         LabsSchematic<StartModuleMetadata> startPoint = this.determineSchematic(dungeon.getStartPoints(), service, random);
         List<Location> startLocations = new ArrayList<>();
         Location newLocation = this.start.getChunk().getBlock(0, 69, 0).getLocation().clone();
+
         this.dungeon = dungeon;
         this.theme = theme;
         this.end = this.determineSchematic(this.dungeon.getEndPoints(), ModuleMetadata.getService(), random);
+        this.connections = Iterables.cycle(this.determineConnections(DungeonFightersPlugin.getInstance().getThemedConnections(this.theme))).iterator();
 
-        for (int x = 0; x < players; x++) {
+        for (int x = 0; x < players; x++) { // TODO: in methode stopfen
             this.buildStartPoints(startPoint, newLocation);
             Location end = newLocation.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3,0, -1)));
 
@@ -200,6 +204,28 @@ public class DungeonGameLoader {
     }
 
     /**
+     * Places the end module
+     *
+     * @param to {@link Location} where to place the module.
+     */
+    private void buildEnd(Location to) {
+        DungeonFightersPlugin.game.getDungeon().getGamePositions().put(Util.getChunkCoordinateString(to.getChunk()), this.endMechanic);
+        this.placeModule(this.end, to);
+    }
+
+    /**
+     * Builds the connection between two modules.
+     *
+     * @param to The {@link Location} where to build.
+     * @return the {@link Location} where the next module will be built.
+     */
+    private Location buildConnection(Location to) {
+        LabsSchematic<ModuleMetadata> connection = this.connections.next();
+        // TODO: put in map
+        return this.placeModule(connection, to);
+    }
+
+    /**
      * Places a {@link LabsSchematic} to the specified {@link Location}.
      *
      * @param schematic Module that will be placed.
@@ -233,6 +259,7 @@ public class DungeonGameLoader {
         return service.createSchematic(schematics.get(random.nextInt(schematics.size())));
     }
 
+
     /**
      * Determines a {@link List} of {@link DungeonGame}s randomly from a list that contains every available.
      *
@@ -240,29 +267,19 @@ public class DungeonGameLoader {
      * @return {@link List} of randomly chosen {@link DungeonGame}s.
      */
     private List<DungeonGameWrapper> determineGames(List<DungeonGameWrapper> availableGames) {
-        SecureRandom random = new SecureRandom();
-        List<DungeonGameWrapper> chosenGames = new ArrayList<>();
-
-        for (int i = 0; i < 8; i++) { // TODO: make game size configurable
-            if (availableGames.size() == 0) break; // Only for test purposes
-
-            int index = random.nextInt(availableGames.size());
-            DungeonGameWrapper game = availableGames.get(index);
-            chosenGames.add(game);
-            availableGames.remove(index);
-        }
-        return chosenGames;
+        return ListUtil.createRandomItemList(availableGames, 9);
     }
 
-
     /**
-     * Places the end module
+     * Determines a {@link List} of connections randomly.
      *
-     * @param to {@link Location} where to place the module.
+     * @param connections {@link List} containing all available connections.
+     * @return a new {@link List} with no duplicate connections.
      */
-    private void buildEnd(Location to) {
-        DungeonFightersPlugin.game.getDungeon().getGamePositions().put(Util.getChunkCoordinateString(to.getChunk()), this.endMechanic);
-        this.placeModule(this.end, to);
+    private List<LabsSchematic<ModuleMetadata>> determineConnections(List<File> connections) {
+        return ListUtil.createRandomItemList(connections.stream().map(file -> {
+            return ModuleMetadata.getService().createSchematic(file);
+        }).collect(Collectors.toList()), 13);
     }
 
     /**

@@ -60,6 +60,11 @@ public class DungeonFightersPlugin extends LABSGameMode
         return Arrays.asList(new File(themeFolder + "/" + theme + "/end_points").listFiles());
     }
 
+    public List<File> getThemedConnections(String theme) {
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/connections").listFiles());
+    }
+
+
     public File getThemedBattleZoneFolder(String theme) {
         return new File(themeFolder + "/" + theme + "/battle_zone");
     }
