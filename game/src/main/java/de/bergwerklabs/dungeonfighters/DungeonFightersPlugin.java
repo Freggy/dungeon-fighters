@@ -98,7 +98,7 @@ public class DungeonFightersPlugin extends LABSGameMode
         animation = this.readTitleAnimation();
 
         arenaWorld = this.createFlatWorld("arena");
-        moduleWorld = Bukkit.getWorld("module");//this.createFlatWorld("module");
+        moduleWorld = this.createFlatWorld("module");
         spawnWorld = Bukkit.getWorld("spawn");
 
         this.getGameStateManager().setState(GameState.PREPARING);

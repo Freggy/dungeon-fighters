@@ -1,11 +1,9 @@
 package de.bergwerklabs.dungeonfighters.game.core.lobby;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
-import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import de.bergwerklabs.dungeonfighters.game.core.games.GameUpdateTask;
-import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameLoader;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPathLoader;
 import de.bergwerklabs.framework.commons.spigot.game.LabsPlayer;
 import de.bergwerklabs.framework.commons.spigot.general.timer.LabsTimer;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
@@ -47,7 +45,7 @@ public class StartHandler implements StartTimer.StartHandler {
         }
 
         if (timeLeft == 0) {
-            this.removeWall();
+            //this.removeWall();
             this.unfreeze();
             this.displayTitle(new Title("§9LOS!", null, 20 ,20, 20));
             this.playSound(Sound.ENDERDRAGON_GROWL, 1, 50);
@@ -56,16 +54,17 @@ public class StartHandler implements StartTimer.StartHandler {
 
     @Override
     public void handle(Player[] players) {
-        new DungeonGameLoader().buildDungeons(DungeonFightersPlugin.game.getDungeon(), Bukkit.getOnlinePlayers().size(), "temple");
+        new DungeonPathLoader().buildDungeons(DungeonFightersPlugin.game.getDungeon(), Bukkit.getOnlinePlayers().size(), "temple");
         Iterator<Location> spawns = DungeonFightersPlugin.game.getSpawns().iterator();
         this.displayTitle(DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getIntermissionTitle());
 
         Bukkit.getScheduler().runTaskLater(DungeonFightersPlugin.getInstance(), () -> {
-            for (Player player : players) {
-                this.createScoreBoard(player);
+            for (DungeonFighter fighter : DungeonFightersPlugin.game.getPlayerManager().getPlayers().values()) {
+                this.createScoreBoard(fighter.getPlayer());
                 if (spawns.hasNext()) {
-                    LabsPlayer.freeze(player);
-                    player.teleport(spawns.next());
+                    LabsPlayer.freeze(fighter.getPlayer());
+                    fighter.getPlayer().teleport(spawns.next());
+                    fighter.getSession().getGames().addAll(DungeonFightersPlugin.game.getGames());
                 }
             }
         }, 20 * 3);
@@ -79,7 +78,7 @@ public class StartHandler implements StartTimer.StartHandler {
 
         HandlerList.unregisterAll(DungeonFightersPlugin.lobbyListener);
         Bukkit.getServer().getPluginManager().registerEvents( DungeonFightersPlugin.moduleEventHandler, DungeonFightersPlugin.getInstance());
-        Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), new GameUpdateTask(), 0, 20L);
+        //Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), new GameUpdateTask(), 0, 20L);
     }
 
     /**
@@ -95,9 +94,6 @@ public class StartHandler implements StartTimer.StartHandler {
      * Removes the wall in front of the players.
      */
     private void removeWall() {
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            Util.openEntrance(player, DungeonFightersPlugin.game.getModules().get(Util.getChunkCoordinateString(player.getLocation().getChunk())).getBlockLocations());
-        });
     }
 
     /**

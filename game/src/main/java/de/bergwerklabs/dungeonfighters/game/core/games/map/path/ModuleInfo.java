@@ -1,8 +1,10 @@
-package de.bergwerklabs.dungeonfighters.game.core.games.map;
+package de.bergwerklabs.dungeonfighters.game.core.games.map.path;
 
+import de.bergwerklabs.framework.commons.spigot.general.Tuple;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Location;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -27,15 +29,22 @@ public class ModuleInfo {
         return schematic;
     }
 
+    /**
+     *
+     */
+    public HashSet<Tuple<Integer, Integer>> getActivationLine() { return this.activationLine; }
+
     private List<Location> blockLocations;
+    private HashSet<Tuple<Integer, Integer>> activationLine;
     private LabsSchematic schematic;
 
     /**
      * @param blockLocations Locations where to close the module.
      * @param schematic {@link LabsSchematic} that represents the module.
      */
-    public ModuleInfo(List<Location> blockLocations, LabsSchematic schematic) {
+    public ModuleInfo(List<Location> blockLocations, LabsSchematic schematic, HashSet<Tuple<Integer, Integer>> activationLine) {
         this.blockLocations = blockLocations;
         this.schematic = schematic;
+        this.activationLine = activationLine;
     }
 }

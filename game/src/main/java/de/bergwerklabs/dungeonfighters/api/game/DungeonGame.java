@@ -2,11 +2,10 @@ package de.bergwerklabs.dungeonfighters.api.game;
 
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.ActivationLine;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.HashSet;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
@@ -18,8 +17,8 @@ import java.util.HashSet;
 public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicProvider {
 
     @Override
-    public HashSet<String> getChunks() {
-        return this.chunks;
+    public ActivationLine getNextLine() {
+        return this.nextLine;
     }
 
     @Override
@@ -56,7 +55,7 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
      */
     public void setConfigLocation(String configLocation) { this.configLocation = configLocation; }
 
-    protected HashSet<String> chunks = new HashSet<>();
+    protected ActivationLine nextLine;
     protected DungeonFighter fighter;
     protected String configLocation;
     protected LabsSchematic module;
@@ -64,8 +63,8 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
     protected Location placeLocation;
 
     @Override
-    public void assignChunks(HashSet<String> chunks) {
-        this.chunks = chunks;
+    public void assignNext(ActivationLine nextLine) {
+        this.nextLine = nextLine;
     }
 
     @Override

@@ -1,9 +1,8 @@
 package de.bergwerklabs.dungeonfighters.api.game;
 
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.ActivationLine;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
-
-import java.util.HashSet;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
@@ -16,7 +15,7 @@ public interface DungeonMechanicProvider extends Cloneable {
     /**
      *
      */
-    HashSet<String> getChunks();
+    ActivationLine getNextLine();
 
     /**
      *
@@ -30,9 +29,9 @@ public interface DungeonMechanicProvider extends Cloneable {
 
     /**
      *
-     * @param chunks
+     * @param info
      */
-    void assignChunks(HashSet<String> chunks);
+    void assignNext(ActivationLine info);
 
     /**
      *

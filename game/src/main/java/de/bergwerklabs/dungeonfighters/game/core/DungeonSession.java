@@ -2,11 +2,11 @@ package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.ActivationLine;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -21,8 +21,8 @@ public class DungeonSession {
     private class DummyGame implements DungeonMechanicProvider {
 
         @Override
-        public HashSet<String> getChunks() {
-            return new HashSet<>();
+        public ActivationLine getNextLine() {
+            return null;
         }
 
         @Override
@@ -32,11 +32,11 @@ public class DungeonSession {
 
         @Override
         public String getId() {
-            return "bla";
+            return null;
         }
 
         @Override
-        public void assignChunks(HashSet<String> chunks) {
+        public void assignNext(ActivationLine info) {
 
         }
 
@@ -66,10 +66,14 @@ public class DungeonSession {
         }
 
         @Override
-        public void stop() {}
+        public void stop() {
+
+        }
 
         @Override
-        public void reset() {}
+        public void reset() {
+
+        }
     }
 
     /**

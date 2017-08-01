@@ -1,13 +1,14 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
-import de.bergwerklabs.dungeonfighters.game.core.games.map.ModuleInfo;
+import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.framework.commons.spigot.game.PlayerManager;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -29,11 +30,9 @@ public class DungeonFighters {
 
     public List<Location> getSpawns() { return this.spawns; }
 
-    public HashMap<String, ModuleInfo> getModules() { return this.modules; }
-
     private static DungeonFighters instance;
     private PlayerManager<DungeonFighter> playerManager = new PlayerManager<>();
-    private HashMap<String, ModuleInfo> modules = new HashMap<>();
+    private Queue<DungeonMechanicProvider> games = new LinkedList<>();
     private List<Location> spawns = new ArrayList<>();
     private Dungeon dungeon;
 

@@ -2,9 +2,8 @@ package de.bergwerklabs.dungeonfighters.game.core.games.mechanic;
 
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.ActivationLine;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
-
-import java.util.HashSet;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
@@ -15,8 +14,8 @@ import java.util.HashSet;
 public abstract class BaseMechanic implements DungeonMechanicProvider {
 
     @Override
-    public HashSet<String> getChunks() {
-        return this.chunks;
+    public ActivationLine getNextLine() {
+        return this.line;
     }
 
     @Override
@@ -24,13 +23,13 @@ public abstract class BaseMechanic implements DungeonMechanicProvider {
         return this.fighter;
     }
 
-    protected HashSet<String> chunks = new HashSet<>();
+    protected ActivationLine line;
     protected DungeonFighter fighter;
     protected LabsSchematic schematic;
 
     @Override
-    public void assignChunks(HashSet<String> chunks) {
-        this.chunks = chunks;
+    public void assignNext(ActivationLine line) {
+        this.line = line;
     }
 
     @Override

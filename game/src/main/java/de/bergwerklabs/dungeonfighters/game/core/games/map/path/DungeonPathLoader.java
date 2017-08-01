@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.games.map;
+package de.bergwerklabs.dungeonfighters.game.core.games.map.path;
 
 import com.google.common.collect.Iterables;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
@@ -8,10 +8,13 @@ import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.commons.ListUtil;
 import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.Dungeon;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameWrapper;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadataDeserializerImpl;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.BattleZoneMechanic;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.EndMechanic;
+import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.StartMechanic;
+import de.bergwerklabs.framework.commons.spigot.general.Tuple;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import de.bergwerklabs.framework.schematicservice.SchematicService;
 import de.bergwerklabs.framework.schematicservice.SchematicServiceBuilder;
@@ -28,12 +31,12 @@ import java.util.stream.Collectors;
  *
  * @author Yannic Rieger
  */
-public class DungeonGameLoader {
+public class DungeonPathLoader {
 
-    private Location start = new Location(DungeonFightersPlugin.moduleWorld, 270, 69, 93); // TODO: change world name
-    private Dungeon dungeon;
+    private Location start = new Location(DungeonFightersPlugin.moduleWorld, 270, 69, 93);
     private BattleZoneMechanic battleZoneMechanic = new BattleZoneMechanic();
     private EndMechanic endMechanic = new EndMechanic();
+    private StartMechanic startMechanic = new StartMechanic();
     private LabsSchematic<ModuleMetadata> end;
     private String theme;
     private Iterator<LabsSchematic<ModuleMetadata>> connections;
@@ -45,68 +48,81 @@ public class DungeonGameLoader {
      * @param players Value indicating how much players are available.
      * @param theme Theme of the modules. For more info have a look in confluence.
      */
-    public void buildDungeons(Dungeon dungeon, int players, String theme) {
+    public Queue<DungeonPath> buildDungeons(Dungeon dungeon, int players, String theme) {
         Random random = new Random();
         SchematicService<StartModuleMetadata> service = new SchematicServiceBuilder<StartModuleMetadata>().setDeserializer(new StartModuleMetadataDeserializerImpl()).build();
         LabsSchematic<StartModuleMetadata> startPoint = this.determineSchematic(dungeon.getStartPoints(), service, random);
-        List<Location> startLocations = new ArrayList<>();
         Location newLocation = this.start.getChunk().getBlock(0, 69, 0).getLocation().clone();
-
-        this.dungeon = dungeon;
         this.theme = theme;
-        this.end = this.determineSchematic(this.dungeon.getEndPoints(), ModuleMetadata.getService(), random);
+        this.end = this.determineSchematic(dungeon.getEndPoints(), ModuleMetadata.getService(), random);
         this.connections = Iterables.cycle(this.determineConnections(DungeonFightersPlugin.getInstance().getThemedConnections(this.theme))).iterator();
 
-        for (int x = 0; x < players; x++) { // TODO: in methode stopfen
-            this.buildStartPoints(startPoint, newLocation);
-            Location end = newLocation.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3,0, -1)));
-
-            newLocation.getChunk().load();
-
-            Location inChunk = end.clone().subtract(0, 0, 1);
-
-            List<Location> blockLoc = this.getWallLocs(inChunk);
-            String coord = Util.getChunkCoordinateString(inChunk.getChunk());
-
-            DungeonFightersPlugin.game.getModules().putIfAbsent(coord, new ModuleInfo(blockLoc, startPoint));
-
-            Util.closeEntrance(null, blockLoc);
-
-            startLocations.add(end);
-            newLocation.add(46, 0 ,0);
-        }
+        List<BuildResult> startResults = this.prepareAndBuildStartPoints(players, newLocation, startPoint);
 
         // Use cycle iterators to avoid the Iterator#hasNext query.
-        this.buildPath(Iterables.cycle(this.determineGames(this.dungeon.getDungeonGames())).iterator(), startLocations);
+        Iterator<BattleZone> battleZones = Iterables.cycle(BattleZone.determineBattleZones(2, DungeonFightersPlugin.getInstance().getThemedBattleZoneFolder(this.theme), random))
+                                                    .iterator();
+
+        Iterator<DungeonGameWrapper> availableGames = Iterables.cycle(this.determineGames(dungeon.getDungeonGames())).iterator();
+
+        // Use cycle iterators to avoid the Iterator#hasNext query.
+        return this.buildPath(availableGames, startResults, battleZones);
     }
 
     /**
      * Builds a whole path for a single player by placing all the required modules.
      *
-     * @param availableGames {@link Iterator<DungeonGameWrapper>} containing all the {@link DungeonGame}sa available.
+     * @param availableGames {@link Iterator< DungeonGameWrapper >} containing all the {@link DungeonGame}sa available.
      * @param starts {@link List<Location>} list containing the locations of the start modules.
      */
-    private void buildPath(Iterator<DungeonGameWrapper> availableGames, List<Location> starts) {
-        Random random =  new Random();
+    private Queue<DungeonPath> buildPath(Iterator<DungeonGameWrapper> availableGames, List<BuildResult> starts, Iterator<BattleZone> battleZones) {
+        Queue<DungeonPath> paths = new LinkedList<>();
+        for (int pathPosition = 0; pathPosition < starts.size(); pathPosition++) {
+            DungeonPath path = new DungeonPath();
+            Location start = starts.get(pathPosition).getNextBuildLocation();
+            path.getGames().add(this.startMechanic);
+            ActivationLine nextLine = this.createActivationLine(start.subtract(0, 0, -1));
 
-        // Use cycle iterators to avoid the Iterator#hasNext query.
-        Iterator<BattleZone> battleZones = Iterables.cycle(this.determineBattleZones(2, DungeonFightersPlugin.getInstance().getThemedBattleZoneFolder(this.theme), random))
-                                                    .iterator();
-
-        for (int path = 0; path < starts.size(); path++) {
-            Location start = starts.get(path);
             for (int position = 1; position < 13; position++) {
                 if (position % 4 == 0 && position != 1 && position != 12) {
-                    start = this.buildBattleZonePart(start, battleZones.next(), this.getPartByPosition(path, starts.size() - 1)).add(new Vector(0, 0, 1));
+                    BuildResult result = this.buildBattleZonePart(start, nextLine, battleZones.next(), BattleZone.getPartByPosition(pathPosition, starts.size() - 1));
+                    Location toPlace = result.getNextBuildLocation().add(new Vector(0, 0, 1));
+                    path.getGames().add(result.getProvider());
+
+                    nextLine = this.createActivationLine(start);
+                    start = this.buildConnection(toPlace).getNextBuildLocation().add(new Vector(0, 0, 1));
                 }
                 else if (position == 12) { // end has been reached
                     this.buildEnd(start);
                 }
                 else {
-                   start = this.buildGame(availableGames.next(), start, position).add(new Vector(0, 0, 1));
+                   BuildResult result = this.buildGame(availableGames.next(), nextLine, start, position);
+                   Location nextLoc = result.getNextBuildLocation().add(new Vector(0, 0, 1));
+                   path.getGames().add(result.getProvider());
+
+                   nextLine = this.createActivationLine(start);
+                   start = this.buildConnection(nextLoc).getNextBuildLocation().add(new Vector(0, 0, 1));
                 }
             }
+            paths.add(path);
         }
+        return paths;
+    }
+
+    private List<BuildResult> prepareAndBuildStartPoints(int players, Location location, LabsSchematic<StartModuleMetadata> startPoint) {
+        List<BuildResult> locations = new ArrayList<>();
+
+        for (int x = 0; x < players; x++) {
+            this.buildStartPoints(startPoint, location);
+            Location end = location.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3,0, -1)));
+
+            BuildResult result = this.buildConnection(end);
+            result.getNextBuildLocation().add(0, 0, 1);
+
+            locations.add(result);
+            location.add(46, 0 ,0);
+        }
+        return locations;
     }
 
     /**
@@ -123,44 +139,6 @@ public class DungeonGameLoader {
     }
 
     /**
-     * Randomly picks {@link BattleZone}s that will be generated.
-     *
-     * @param count Number of {@link BattleZone}s in the path.
-     * @param battleZones Folder containing a list of all available {@link BattleZone}s of a specific theme.
-     * @param random Used for randomness.
-     * @return a List of {@link BattleZone}s that will be generated in the path.
-     */
-    private List<BattleZone> determineBattleZones(int count, File battleZones, Random random) {
-        List<BattleZone> pickedZones = new ArrayList<>();
-
-        // adding this to a ArrayList object, if I would do
-        // List<File> zones = Arrays.asList(battleZones.listFiles());
-        // a UnsupportedOperationException is thrown.
-        List<File> zones = new ArrayList<>(Arrays.asList(battleZones.listFiles()));
-
-        for (int i = 0; i < count; i++) {
-            if (zones.size() == 0) break; // Only for test purposes
-            int randomIndex = random.nextInt(zones.size());
-            pickedZones.add(new BattleZone(zones.get(randomIndex)));
-            zones.remove(randomIndex);
-        }
-        return pickedZones;
-    }
-
-    /**
-     * Gets the {@link BattleZone.Part} based on the current position.
-     *
-     * @param currentPosition Current position in the path.
-     * @param endIndex Index where the end module will be placed.
-     * @return the fitting {@link BattleZone.Part}
-     */
-    private BattleZone.Part getPartByPosition(int currentPosition, int endIndex) {
-        if (currentPosition == 0) return BattleZone.Part.START;
-        else if (currentPosition == endIndex) return BattleZone.Part.END;
-        else return BattleZone.Part.MIDDLE;
-    }
-
-    /**
      * Places the given {@link BattleZone.Part}.
      *
      * @param toPlace {@link Location} where to place the {@link LabsSchematic}.
@@ -168,15 +146,13 @@ public class DungeonGameLoader {
      * @param part Part to place.
      * @return {@link Location} where the next module has to be placed.
      */
-    private Location buildBattleZonePart(Location toPlace, BattleZone zone, BattleZone.Part part) {
-        String chunkCoords = Util.getChunkCoordinateString(toPlace.getChunk());
-        this.battleZoneMechanic.getChunks().add(chunkCoords);
-        DungeonFightersPlugin.game.getDungeon().getGamePositions().put(chunkCoords, battleZoneMechanic);
+    private BuildResult buildBattleZonePart(Location toPlace, ActivationLine next, BattleZone zone, BattleZone.Part part) {
+        this.battleZoneMechanic.assignNext(next);
 
         switch (part) {
-            case START:  return this.placeModule(zone.getStart(), toPlace);
-            case MIDDLE: return this.placeModule(zone.getMiddle(), toPlace);
-            case END:    return this.placeModule(zone.getEnd(), toPlace);
+            case START:  return new BuildResult(this.battleZoneMechanic,  this.placeModule(zone.getStart(), toPlace));
+            case MIDDLE: return new BuildResult(this.battleZoneMechanic, this.placeModule(zone.getMiddle(), toPlace));
+            case END:    return new BuildResult(this.battleZoneMechanic, this.placeModule(zone.getEnd(), toPlace));
             default: return null;
         }
     }
@@ -189,18 +165,12 @@ public class DungeonGameLoader {
      * @param position Value needed for determining the {@link StageTier}.
      * @return {@link Location} where the next module has to be placed.
      */
-    private Location buildGame(DungeonGameWrapper game, Location start, int position) {
+    private BuildResult buildGame(DungeonGameWrapper game, ActivationLine nextLine, Location start, int position) {
         DungeonGame dungeonGame = (DungeonGame) game.getGame().clone();
-        String chunkCoord = Util.getChunkCoordinateString(start.getChunk());
-
-        System.out.println(StageTier.getStageTierByPosition(position));
-
+        // TODO: load module metadata
         dungeonGame.setStageTier(StageTier.getStageTierByPosition(position));
-
-        DungeonFightersPlugin.game.getDungeon().getGamePositions().put(chunkCoord, dungeonGame);
-        dungeonGame.getChunks().add(chunkCoord);
-
-        return this.placeModule(game.getModule(), start);
+        dungeonGame.assignNext(nextLine);
+        return new BuildResult(dungeonGame, this.placeModule(game.getModule(), start));
     }
 
     /**
@@ -219,10 +189,12 @@ public class DungeonGameLoader {
      * @param to The {@link Location} where to build.
      * @return the {@link Location} where the next module will be built.
      */
-    private Location buildConnection(Location to) {
+    private BuildResult buildConnection(Location to) {
         LabsSchematic<ModuleMetadata> connection = this.connections.next();
+        System.out.println(this.connections.hasNext());
+        System.out.println(to);
         // TODO: put in map
-        return this.placeModule(connection, to);
+        return new BuildResult(null, this.placeModule(connection, to));
     }
 
     /**
@@ -236,12 +208,8 @@ public class DungeonGameLoader {
     private <T extends ModuleMetadata> Location placeModule(LabsSchematic<T> schematic, Location to) {
         schematic.pasteAsync(DungeonFightersPlugin.moduleWorld.getName(), to.toVector());
 
-        to.getChunk().load();
-
         if (schematic.hasMetadata()) {
             Location endLocation = to.clone().subtract(schematic.getMetadata().getEnd());
-            DungeonFightersPlugin.game.getModules().putIfAbsent(Util.getChunkCoordinateString(to.getChunk()),
-                                                                new ModuleInfo(this.getWallLocs(to.clone()), schematic));
             return endLocation;
         }
         else
@@ -282,15 +250,11 @@ public class DungeonGameLoader {
         }).collect(Collectors.toList()), 13);
     }
 
-    /**
-     * Gets the locations where to put the blocks.
-     *
-     * @param end End location of the module.
-     * @return the locations where to put the blocks.
-     */
-    private List<Location> getWallLocs(Location end) {
-        Location min = end.add(0, 1, 0);
-        Location max = min.clone().add(3, 3, 0);
-        return Util.getDoorLocations(min, max);
+    private ActivationLine createActivationLine(Location end) {
+        HashSet<Tuple<Integer, Integer>> activationLine = new HashSet<>();
+        activationLine.add(new Tuple<>(end.getBlockX(), end.getBlockZ()));
+        activationLine.add(new Tuple<>(end.getBlockX() + 1, end.getBlockZ() + 1));
+        activationLine.add(new Tuple<>(end.getBlockX() + 2, end.getBlockZ() + 2));
+        return new ActivationLine(activationLine);
     }
 }

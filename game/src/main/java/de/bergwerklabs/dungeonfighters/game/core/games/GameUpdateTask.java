@@ -2,12 +2,9 @@ package de.bergwerklabs.dungeonfighters.game.core.games;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
-import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import org.bukkit.Location;
+import de.bergwerklabs.dungeonfighters.game.core.DungeonSession;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 /**
  * Created by Yannic Rieger on 19.07.2017.
@@ -22,6 +19,24 @@ public class GameUpdateTask implements Runnable {
     public void run() {
         DungeonFightersPlugin.game.getPlayerManager().getPlayers().values().forEach(fighter -> {
 
+            DungeonSession session = fighter.getSession();
+            DungeonMechanicProvider currentGame = session.getCurrentGame();
+
+            if (currentGame.getNextLine().activated(fighter.getPlayer().getLocation())) {
+
+                System.out.println("next");
+
+
+                /*
+                session.getCurrentGame().stop();
+                session.setCurrentGame(session.getGames().poll());
+                session.getCurrentGame().assignPlayer(fighter);
+                session.getCurrentGame().assignModule(null);
+                session.getCurrentGame().start(); */
+            }
+
+            /*
+
             // TODO: update scoreboard time
 
             String chunkCoordinates = Util.getChunkCoordinateString(fighter.getPlayer().getLocation().getChunk());
@@ -30,19 +45,21 @@ public class GameUpdateTask implements Runnable {
             DungeonMechanicProvider currentGame = fighter.getSession().getCurrentGame();
 
             if (gameToPlay != null) {
-                if (gameToPlay.getId().contains("built-in") && currentGame.getChunks().contains(chunkCoordinates)) {
+                if (gameToPlay.getId().contains("built-in") && currentGame.getNexInfo().contains(chunkCoordinates)) {
                     this.initGame(fighter, gameToPlay, chunkCoordinates);
                 }
                 else if (!currentGame.getId().equals(gameToPlay.getId())) {
                     this.initGame(fighter, gameToPlay, chunkCoordinates);
                 }
-                else if (currentGame.getChunks().contains(chunkCoordinates)) {
+                else if (currentGame.getNexInfo().contains(chunkCoordinates)) {
                     this.close(fighter.getPlayer(), chunkCoordinates);
                     this.initGame(fighter, gameToPlay, chunkCoordinates);
                 }
-            }
+            } */
         });
     }
+
+
 
     /**
      * Initializes the {@link de.bergwerklabs.dungeonfighters.api.game.DungeonGame} for the player.
@@ -56,9 +73,9 @@ public class GameUpdateTask implements Runnable {
         this.close(fighter.getPlayer(), chunkCoord);
         fighter.getSession().setCurrentGame(provider);
         DungeonFightersPlugin.game.getDungeon().getGamePositions().remove(chunkCoord);
-        fighter.getSession().getCurrentGame().getChunks().remove(chunkCoord);
+        //fighter.getSession().getCurrentGame().getNexInfo().remove(chunkCoord);
         fighter.getSession().getCurrentGame().assignPlayer(fighter);
-        fighter.getSession().getCurrentGame().assignModule(DungeonFightersPlugin.game.getModules().get(chunkCoord).getSchematic());
+        //fighter.getSession().getCurrentGame().assignModule(DungeonFightersPlugin.game.getModules().get(chunkCoord).getSchematic());
         fighter.getSession().getCurrentGame().start();
     }
 
@@ -69,7 +86,8 @@ public class GameUpdateTask implements Runnable {
      * @param coords String representing the XZ coordinates of a {@link org.bukkit.Chunk}.
      */
     private void close(Player player, String coords) {
-        List<Location> blocks = DungeonFightersPlugin.game.getModules().get(coords).getBlockLocations();
-        Util.closeEntrance(player, blocks);
+        //List<Location> blocks = DungeonFightersPlugin.game.getModules().get(coords).getBlockLocations();
+        //Util.closeEntrance(player, blocks);
     }
+
 }
