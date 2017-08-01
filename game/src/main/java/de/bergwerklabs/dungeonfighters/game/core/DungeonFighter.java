@@ -20,13 +20,6 @@ public class DungeonFighter extends LabsPlayer {
     }
 
     /**
-     * Gets the Bukkit player object.
-     */
-    public Player getPlayer() {
-        return player;
-    }
-
-    /**
      *
      */
     public DungeonSession getSession() { return this.session; }
@@ -54,7 +47,6 @@ public class DungeonFighter extends LabsPlayer {
     }
 
     private double emeralds = 0.0;
-    private Player player;
     private boolean canFireBow = true;
     private LabsScoreboard scoreboard;
     private DungeonSession session;
@@ -63,7 +55,7 @@ public class DungeonFighter extends LabsPlayer {
      * @param p Player representing the new DungeonFighter
      */
     public DungeonFighter(Player p) {
-        this.player = p;
+        super(p);
         this.session = new DungeonSession();
         this.session.setFighter(this);
     }

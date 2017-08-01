@@ -3,6 +3,7 @@ package de.bergwerklabs.dungeonfighters.game.core.lobby;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPath;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPathLoader;
 import de.bergwerklabs.framework.commons.spigot.game.LabsPlayer;
 import de.bergwerklabs.framework.commons.spigot.general.timer.LabsTimer;
@@ -20,6 +21,7 @@ import org.bukkit.event.HandlerList;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Queue;
 import java.util.UUID;
 
 /**
@@ -54,18 +56,21 @@ public class StartHandler implements StartTimer.StartHandler {
 
     @Override
     public void handle(Player[] players) {
-        new DungeonPathLoader().buildDungeons(DungeonFightersPlugin.game.getDungeon(), Bukkit.getOnlinePlayers().size(), "temple");
+        Queue<DungeonPath> paths = new DungeonPathLoader().buildDungeons(DungeonFightersPlugin.game.getDungeon(), Bukkit.getOnlinePlayers().size(), "temple");
         Iterator<Location> spawns = DungeonFightersPlugin.game.getSpawns().iterator();
         this.displayTitle(DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getIntermissionTitle());
 
         Bukkit.getScheduler().runTaskLater(DungeonFightersPlugin.getInstance(), () -> {
             for (DungeonFighter fighter : DungeonFightersPlugin.game.getPlayerManager().getPlayers().values()) {
+                DungeonPath path = paths.poll();
                 this.createScoreBoard(fighter.getPlayer());
-                if (spawns.hasNext()) {
-                    LabsPlayer.freeze(fighter.getPlayer());
+                fighter.getPlayer().teleport(path.getSpawn());
+                fighter.freeze();
+
+                if (spawns.hasNext())
                     fighter.getPlayer().teleport(spawns.next());
-                    fighter.getSession().getGames().addAll(DungeonFightersPlugin.game.getGames());
-                }
+
+                fighter.getSession().getGames().addAll(path.getGames());
             }
         }, 20 * 3);
 
@@ -110,7 +115,7 @@ public class StartHandler implements StartTimer.StartHandler {
      * Unfreezes all players.
      */
     private void unfreeze() {
-        Bukkit.getOnlinePlayers().forEach(LabsPlayer::unfreeze);
+        DungeonFightersPlugin.game.getPlayerManager().getPlayers().values().forEach(LabsPlayer::unfreeze);
     }
 
     /**

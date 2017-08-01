@@ -1,7 +1,9 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path;
 
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import org.bukkit.Location;
 
+import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -18,5 +20,14 @@ public class DungeonPath {
      */
     public Queue<DungeonMechanicProvider> getGames() { return this.games; }
 
-    private Queue<DungeonMechanicProvider> games;
+    public Location getSpawn() {
+        return spawn;
+    }
+
+    public void setSpawn(Location location) { this.spawn = location; }
+
+
+    private Queue<DungeonMechanicProvider> games = new LinkedList<>();
+    private Location spawn;
+
 }
