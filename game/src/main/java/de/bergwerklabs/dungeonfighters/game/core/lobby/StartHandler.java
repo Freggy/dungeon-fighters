@@ -3,6 +3,7 @@ package de.bergwerklabs.dungeonfighters.game.core.lobby;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
+import de.bergwerklabs.dungeonfighters.game.core.games.GameUpdateTask;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPath;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPathLoader;
 import de.bergwerklabs.framework.commons.spigot.game.LabsPlayer;
@@ -65,6 +66,7 @@ public class StartHandler implements StartTimer.StartHandler {
                 DungeonPath path = paths.poll();
                 this.createScoreBoard(fighter.getPlayer());
                 fighter.getPlayer().teleport(path.getSpawn());
+                fighter.getSession().setCurrentGame(path.getGames().poll());
                 fighter.freeze();
 
                 if (spawns.hasNext())
@@ -83,7 +85,7 @@ public class StartHandler implements StartTimer.StartHandler {
 
         HandlerList.unregisterAll(DungeonFightersPlugin.lobbyListener);
         Bukkit.getServer().getPluginManager().registerEvents( DungeonFightersPlugin.moduleEventHandler, DungeonFightersPlugin.getInstance());
-        //Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), new GameUpdateTask(), 0, 20L);
+        Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), new GameUpdateTask(), 0, 20L);
     }
 
     /**

@@ -19,5 +19,6 @@ public class EndMechanic extends BaseMechanic {
     @Override
     public void start() {
         Bukkit.broadcastMessage(DungeonFightersPlugin.getInstance().getChatPrefix() + "ENE :)");
+        this.hasStarted = true;
     }
 }

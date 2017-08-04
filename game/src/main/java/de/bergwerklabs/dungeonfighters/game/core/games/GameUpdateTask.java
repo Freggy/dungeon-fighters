@@ -22,17 +22,17 @@ public class GameUpdateTask implements Runnable {
             DungeonSession session = fighter.getSession();
             DungeonMechanicProvider currentGame = session.getCurrentGame();
 
+            System.out.println(currentGame.getId());
+
             if (currentGame.getNextLine().activated(fighter.getPlayer().getLocation())) {
+                DungeonMechanicProvider nextGame = session.getGames().poll();
 
-                System.out.println("next");
-
-
-                /*
                 session.getCurrentGame().stop();
-                session.setCurrentGame(session.getGames().poll());
+                session.setCurrentGame(nextGame);
                 session.getCurrentGame().assignPlayer(fighter);
                 session.getCurrentGame().assignModule(null);
-                session.getCurrentGame().start(); */
+                session.getCurrentGame().start();
+
             }
 
             /*

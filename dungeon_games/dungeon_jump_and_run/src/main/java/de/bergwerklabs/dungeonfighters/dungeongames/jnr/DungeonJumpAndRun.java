@@ -4,7 +4,6 @@ import com.google.gson.GsonBuilder;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.game.config.BaseConfigDeserializer;
 import de.bergwerklabs.dungeonfighters.dungeongames.jnr.config.JnrConfig;
-import de.bergwerklabs.framework.schematicservice.NbtUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -31,23 +30,25 @@ public class DungeonJumpAndRun extends DungeonGame {
 
     @Override
     public void start() {
-
+        System.out.println("start");
+        this.hasStarted = true;
     }
 
     @Override
     public void stop() {
-
+        System.out.println("stop");
+        this.hasStarted = false;
     }
 
     @Override
     public void reset() {
-
+        System.out.println("reset");
     }
 
     @Override
     public void onLoad() {
-        this.loadConfig();
-        NbtUtil.vectorFromNbt(NbtUtil.readCompoundTag(this.module.getSchematicFile()));
+        //this.loadConfig();
+        //NbtUtil.vectorFromNbt(NbtUtil.readCompoundTag(this.module.getSchematicFile()));
     }
 
     /**

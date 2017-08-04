@@ -56,6 +56,11 @@ public interface DungeonMechanicProvider extends Cloneable {
      */
     void start();
 
+    /**
+     *
+     */
+    boolean hasStarted();
+
     Object clone();
 
     /**

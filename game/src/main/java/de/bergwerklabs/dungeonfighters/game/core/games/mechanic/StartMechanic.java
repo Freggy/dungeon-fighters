@@ -14,6 +14,6 @@ public class StartMechanic extends BaseMechanic {
 
     @Override
     public void start() {
-
+        this.hasStarted = true;
     }
 }

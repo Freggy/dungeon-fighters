@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
+import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.commons.ListUtil;
 import de.bergwerklabs.dungeonfighters.commons.Util;
@@ -14,7 +15,6 @@ import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleM
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.BattleZoneMechanic;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.EndMechanic;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.StartMechanic;
-import de.bergwerklabs.framework.commons.spigot.general.Tuple;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import de.bergwerklabs.framework.schematicservice.SchematicService;
 import de.bergwerklabs.framework.schematicservice.SchematicServiceBuilder;
@@ -36,7 +36,6 @@ public class DungeonPathLoader {
     private Location start = new Location(DungeonFightersPlugin.moduleWorld, 270, 69, 93);
     private BattleZoneMechanic battleZoneMechanic = new BattleZoneMechanic();
     private EndMechanic endMechanic = new EndMechanic();
-    private StartMechanic startMechanic = new StartMechanic();
     private LabsSchematic<ModuleMetadata> end;
     private String theme;
     private Iterator<LabsSchematic<ModuleMetadata>> connections;
@@ -78,9 +77,13 @@ public class DungeonPathLoader {
         for (int pathPosition = 0; pathPosition < players; pathPosition++) {
 
             DungeonPath path = new DungeonPath();
-            Location start = this.prepareAndBuildStartPoints(path, newLocation, startModule).getNextBuildLocation();
-            path.getGames().add(this.startMechanic);
-            ActivationLine nextLine = this.createActivationLine(start.clone().subtract(0, 0, -1));
+            BuildResult r = this.prepareAndBuildStartPoints(path, newLocation, startModule);
+            Location start = r.getNextBuildLocation();
+            DungeonMechanicProvider p = (DungeonMechanicProvider)r.getProvider().clone();
+
+            ActivationLine nextLine = this.createActivationLine(start.clone().subtract(0, 0, 2));
+            p.assignNext(nextLine);
+            path.getGames().add(p);
 
             newLocation.add(46, 0 ,0);
 
@@ -88,10 +91,13 @@ public class DungeonPathLoader {
                 if (position % 4 == 0 && position != 1 && position != 12) {
                     BuildResult result = this.buildBattleZonePart(start, nextLine, battleZones.next(), BattleZone.getPartByPosition(pathPosition, players - 1));
                     Location toPlace = result.getNextBuildLocation().add(new Vector(0, 0, 1));
-                    path.getGames().add(result.getProvider());
+                    //DungeonMechanicProvider provider = (DungeonMechanicProvider) result.getProvider().clone();
+                    //provider.assignNext(nextLine);
+                    //path.getGames().add(result.getProvider());
 
-                    nextLine = this.createActivationLine(start);
+
                     start = this.buildConnection(toPlace).getNextBuildLocation().add(new Vector(0, 0, 1));
+                    nextLine = this.createActivationLine(start);
                 }
                 else if (position == 12) { // end has been reached
                     this.buildEnd(start);
@@ -99,13 +105,18 @@ public class DungeonPathLoader {
                 else {
                    BuildResult result = this.buildGame(availableGames.next(), nextLine, start, position);
                    Location nextLoc = result.getNextBuildLocation().add(new Vector(0, 0, 1));
-                   path.getGames().add(result.getProvider());
+                    DungeonMechanicProvider provider = (DungeonMechanicProvider)result.getProvider().clone();
+                    provider.assignNext(nextLine);
+                    path.getGames().add(provider);
 
-                   nextLine = this.createActivationLine(start);
-                   start = this.buildConnection(nextLoc).getNextBuildLocation().add(new Vector(0, 0, 1));
+                    start = this.buildConnection(nextLoc).getNextBuildLocation().add(new Vector(0, 0, 1));
+                    nextLine = this.createActivationLine(start);
                 }
             }
             paths.add(path);
+
+            paths.forEach(pt -> pt.getGames().forEach(System.out::println));
+
         }
         return paths;
     }
@@ -123,7 +134,8 @@ public class DungeonPathLoader {
         Location end = location.clone().subtract(startPoint.getMetadata().getEnd().clone().add(new Vector(3,0, -1)));
 
         BuildResult result = this.buildConnection(end);
-        return new BuildResult(this.startMechanic, result.getNextBuildLocation().add(0, 0, 1));
+
+        return new BuildResult(new StartMechanic(), result.getNextBuildLocation().add(0, 0, 1));
     }
 
     /**
@@ -254,10 +266,6 @@ public class DungeonPathLoader {
      * @return
      */
     private ActivationLine createActivationLine(Location end) {
-        HashSet<Tuple<Integer, Integer>> activationLine = new HashSet<>();
-        activationLine.add(new Tuple<>(end.getBlockX(), end.getBlockZ()));
-        activationLine.add(new Tuple<>(end.getBlockX() + 1, end.getBlockZ() + 1));
-        activationLine.add(new Tuple<>(end.getBlockX() + 2, end.getBlockZ() + 2));
-        return new ActivationLine(activationLine);
+        return new ActivationLine(end.getBlockZ());
     }
 }

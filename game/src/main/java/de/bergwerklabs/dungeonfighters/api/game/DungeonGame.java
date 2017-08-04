@@ -29,6 +29,9 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
     @Override
     public LabsSchematic getModule() { return this.module; }
 
+    @Override
+    public boolean hasStarted() { return this.hasStarted; }
+
     /**
      * Gets the location where the {@link LabsSchematic} got placed to.
      */
@@ -61,6 +64,7 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
     protected LabsSchematic module;
     protected StageTier tier;
     protected Location placeLocation;
+    protected boolean hasStarted;
 
     @Override
     public void assignNext(ActivationLine nextLine) {

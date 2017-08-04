@@ -22,5 +22,6 @@ public class BattleZoneMechanic extends BaseMechanic {
     @Override
     public void start() {
         this.fighter.getPlayer().setItemInHand(new ItemStack(Material.WOOD_SWORD));
+        this.hasStarted = true;
     }
 }

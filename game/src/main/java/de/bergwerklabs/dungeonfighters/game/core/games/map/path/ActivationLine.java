@@ -1,9 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path;
 
-import de.bergwerklabs.framework.commons.spigot.general.Tuple;
 import org.bukkit.Location;
-
-import java.util.HashSet;
 
 /**
  * Created by Yannic Rieger on 01.08.2017.
@@ -13,10 +10,12 @@ import java.util.HashSet;
  */
 public class ActivationLine {
 
-    private HashSet<Tuple<Integer, Integer>> line;
+    public int getZValue() { return this.zValue; }
 
-    public ActivationLine(HashSet<Tuple<Integer, Integer>> line) {
-        this.line = line;
+    private int zValue;
+
+    public ActivationLine(int zValue) {
+        this.zValue = zValue;
     }
 
     /**
@@ -25,7 +24,6 @@ public class ActivationLine {
      * @return
      */
     public boolean activated(Location playerLocation) {
-        Tuple<Integer, Integer> tuple = new Tuple<>(playerLocation.getBlockX(), playerLocation.getBlockZ());
-        return this.line.contains(tuple);
+        return playerLocation.getBlockZ() - this.zValue >= 2;
     }
 }

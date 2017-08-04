@@ -23,9 +23,15 @@ public abstract class BaseMechanic implements DungeonMechanicProvider {
         return this.fighter;
     }
 
+    @Override
+    public boolean hasStarted() {
+        return this.hasStarted;
+    }
+
     protected ActivationLine line;
     protected DungeonFighter fighter;
     protected LabsSchematic schematic;
+    protected boolean hasStarted;
 
     @Override
     public void assignNext(ActivationLine line) {
@@ -38,7 +44,7 @@ public abstract class BaseMechanic implements DungeonMechanicProvider {
     }
 
     @Override
-    public void stop() {}
+    public void stop() { this.hasStarted = false; }
 
     @Override
     public void reset() {}

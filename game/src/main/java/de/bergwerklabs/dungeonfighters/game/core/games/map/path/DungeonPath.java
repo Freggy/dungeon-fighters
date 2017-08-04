@@ -26,7 +26,6 @@ public class DungeonPath {
 
     public void setSpawn(Location location) { this.spawn = location; }
 
-
     private Queue<DungeonMechanicProvider> games = new LinkedList<>();
     private Location spawn;
 
