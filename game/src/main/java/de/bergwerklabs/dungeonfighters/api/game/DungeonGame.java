@@ -2,7 +2,7 @@ package de.bergwerklabs.dungeonfighters.api.game;
 
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import de.bergwerklabs.dungeonfighters.game.core.games.map.path.ActivationLine;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;

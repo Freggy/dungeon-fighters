@@ -1,7 +1,8 @@
 package de.bergwerklabs.dungeonfighters.api.game;
 
+import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import de.bergwerklabs.dungeonfighters.game.core.games.map.path.ActivationLine;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 
 /**
@@ -49,7 +50,7 @@ public interface DungeonMechanicProvider extends Cloneable {
      *
      * @return
      */
-    LabsSchematic getModule();
+    <T extends ModuleMetadata> LabsSchematic<T> getModule();
 
     /**
      *

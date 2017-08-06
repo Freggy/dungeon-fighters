@@ -18,7 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Yannic Rieger on 24.06.2017.
- * <p>  </p>
+ * <p>
+ * Knockbackstick that fills up power over time. If someone is hit, the power is calculated based on the loading percentage.
  *
  * @author Yannic Rieger
  */
@@ -42,7 +43,7 @@ public class KnockbackStick implements LoadableItem {
 
         cancelTask = Bukkit.getScheduler().runTaskTimerAsynchronously(DungeonFightersPlugin.getInstance(), () -> {
             if (player.getItemInHand().getType() != Material.BLAZE_ROD) {
-                System.out.println("canceling due item switch");
+                System.out.println("canceling due to item switch");
                 this.cancelAndRemove(player.getUniqueId());
             }
             if (System.currentTimeMillis() - loading.get(player.getUniqueId()) > 500) {
@@ -57,8 +58,8 @@ public class KnockbackStick implements LoadableItem {
                     ItemStackUtil.setName(player.getItemInHand(), Util.name.replace("{percentage}", String.valueOf(currentPower + 10)));
                 }
                 else this.cancelAndRemove(player.getUniqueId());
-    }, 40L, 40L);
-}
+        }, 40L, 40L);
+    }
 
     @Override
     public void use(Player player) {
@@ -76,8 +77,9 @@ public class KnockbackStick implements LoadableItem {
     }
 
     /**
+     * Cancels and removes the player that stopped loading the Stick.
      *
-     * @param uuid
+     * @param uuid {@link UUID} of the player.
      */
     private void cancelAndRemove(UUID uuid) {
         loadingTask.cancel();

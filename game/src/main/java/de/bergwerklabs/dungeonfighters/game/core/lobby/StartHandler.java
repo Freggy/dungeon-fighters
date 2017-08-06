@@ -3,9 +3,7 @@ package de.bergwerklabs.dungeonfighters.game.core.lobby;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
-import de.bergwerklabs.dungeonfighters.game.core.games.GameUpdateTask;
-import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPath;
-import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPathLoader;
+import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.StartMechanic;
 import de.bergwerklabs.framework.commons.spigot.game.LabsPlayer;
 import de.bergwerklabs.framework.commons.spigot.general.timer.LabsTimer;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
@@ -22,7 +20,6 @@ import org.bukkit.event.HandlerList;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Queue;
 import java.util.UUID;
 
 /**
@@ -44,7 +41,7 @@ public class StartHandler implements StartTimer.StartHandler {
                 this.displayTitle(new Title("§b" + String.valueOf(timeLeft), null, 0, 0, 60));
             }
             this.broadcastTime(timeLeft);
-            this.playSound(Sound.CLICK, 100, 1);
+            this.playSound(Sound.CLICK, 50, 1);
         }
 
         if (timeLeft == 0) {
@@ -57,22 +54,17 @@ public class StartHandler implements StartTimer.StartHandler {
 
     @Override
     public void handle(Player[] players) {
-        Queue<DungeonPath> paths = new DungeonPathLoader().buildDungeons(DungeonFightersPlugin.game.getDungeon(), Bukkit.getOnlinePlayers().size(), "temple");
-        Iterator<Location> spawns = DungeonFightersPlugin.game.getSpawns().iterator();
+        Iterator<Location> spawns = DungeonFightersPlugin.game.getPath().getSpawns().iterator();
         this.displayTitle(DungeonFightersPlugin.getInstance().getDungeonFighterConfig().getIntermissionTitle());
 
         Bukkit.getScheduler().runTaskLater(DungeonFightersPlugin.getInstance(), () -> {
             for (DungeonFighter fighter : DungeonFightersPlugin.game.getPlayerManager().getPlayers().values()) {
-                DungeonPath path = paths.poll();
                 this.createScoreBoard(fighter.getPlayer());
-                fighter.getPlayer().teleport(path.getSpawn());
-                fighter.getSession().setCurrentGame(path.getGames().poll());
+                fighter.getSession().setCurrentGame(new StartMechanic());
                 fighter.freeze();
 
                 if (spawns.hasNext())
                     fighter.getPlayer().teleport(spawns.next());
-
-                fighter.getSession().getGames().addAll(path.getGames());
             }
         }, 20 * 3);
 
@@ -85,7 +77,7 @@ public class StartHandler implements StartTimer.StartHandler {
 
         HandlerList.unregisterAll(DungeonFightersPlugin.lobbyListener);
         Bukkit.getServer().getPluginManager().registerEvents( DungeonFightersPlugin.moduleEventHandler, DungeonFightersPlugin.getInstance());
-        Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), new GameUpdateTask(), 0, 20L);
+        //Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), new GameUpdateTask(), 0, 20L);
     }
 
     /**

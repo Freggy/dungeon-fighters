@@ -21,6 +21,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +29,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -91,6 +91,8 @@ public class DungeonFightersPlugin extends LABSGameMode
 
     // TODO: put tasks in list an cancle them if needed.
 
+    private BukkitTask task;
+
     @Override
     public void labsEnable() {
         instance = this;
@@ -114,7 +116,8 @@ public class DungeonFightersPlugin extends LABSGameMode
         npc = new GlobalNpc(npcSpawn, getSkin(), "Itemhändler", "Gib einfach Coins aus");
         npc.spawn();
 
-        new StartTimer(this, 1, 4, new StartHandler()).launch();
+        StartTimer timer = new StartTimer(this, 1, 4, new StartHandler());
+        timer.launch();
 
         Bukkit.getPluginManager().registerEvents(lobbyListener, this);
 
@@ -128,7 +131,17 @@ public class DungeonFightersPlugin extends LABSGameMode
             e.printStackTrace();
         }
 
-        game.determineDungeon();
+         task = Bukkit.getScheduler().runTaskTimer(this, () -> {
+             if (timer.getTicksLeft() == 20 * 10) {
+                game.buildDungeonPath();
+            }
+            else if (timer.getTicksLeft() == 0) this.task.cancel();
+        }, 0, 1);
+
+
+
+
+
     }
 
     @Override
@@ -144,16 +157,6 @@ public class DungeonFightersPlugin extends LABSGameMode
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
-         /* just for demonstration purposes */
-        if (commandLabel.equalsIgnoreCase("money")) {
-            Iterator<Location> it = game.getSpawns().iterator();
-
-            Bukkit.getOnlinePlayers().forEach(player -> {
-                if (it.hasNext())
-                    player.teleport(it.next());
-            });
-            return true;
-        }
         return false;
     }
 
@@ -202,7 +205,6 @@ public class DungeonFightersPlugin extends LABSGameMode
         return new PlayerSkin("eyJ0aW1lc3RhbXAiOjE1MDEwMjE3MTkyMDgsInByb2ZpbGVJZCI6IjQ4N2RiNmNmZWViMzRhMjE4MjM3YzAzNDhhMjg1NjY2IiwicHJvZmlsZU5hbWUiOiJhdXNkZXJmdXR1cmUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzY3N2E3YWI4OTljNTYyYTBkNWVkM2Q3N2U5MTlhMWMzMGJhMTM4ZGQ0NDRlNTllZjE1YTFjZDg4ZmJkIn19fQ==",
                               "mF4I1wt5ftoXNACg5H64hu2gvXA6ZqoNvqcA3hXxvleeWGgg4gLP/ZNK5g/Yk/iK+huDRc1YRkv66sCWahBKzd8SdVhT+pSYxMG3uCS4U30PWqVbad0CUMEqUJS1ifUcEtgFJENT1+zshWlXwWOcpVZq6EX76Z3t35yX6iRNsQd+BPyJanEbm1YcS7FGmjW2swWJQkQVOVc9qqJFYb4R26a03A4PVTlIxtTeAAOD0mKgkhhzLAhy/U+LwASuym7HkU7x9+1rxwh92K3i87g8+wJS0/HNlyaKpDwvB0QuRYwfFsJuJWbru/U3BWqfUXLHErdnnwVlkYlGHfxzhSBhGWdWOroDwnQGgKRu7p50zRSlyH4Iejqu6oQaDpNTBwdgjd2OzMqukAP494wvrjdkw2fYniaiOQaCzVN7LTIUjnfGQFD/VDD9peCuZvU4wH/KOeLLAeLAIOfPhDLezNPfhSyGpwu7/agLv1kCkqGmnOUQHRlsgmmFXIUai87TjPDOD/crE6HbQu0P67gox5twSusUi5csvc3f9abOWjf/02ewOdXPZ+1tw0v8wsV+99qD6cGiaP8Ioeb9Ga92WzAVhNbifm8IwY7fMGT/l0+88lsJdEsVkkxzLlSyxQrUIeKZUcsvEgo7NYPDbp3FvuRJfGWCL90mqjustRewwdhuys8=");
     }
-
 
     /**
      *

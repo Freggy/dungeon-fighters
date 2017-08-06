@@ -1,14 +1,8 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
-import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonPathLoader;
 import de.bergwerklabs.framework.commons.spigot.game.PlayerManager;
-import org.bukkit.Location;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 /**
  * Created by Yannic Rieger on 01.05.2017.
@@ -24,17 +18,16 @@ public class DungeonFighters {
         return playerManager;
     }
 
-    public Dungeon getDungeon() {
-        return dungeon;
+    /**
+     *
+     */
+    public DungeonPath getPath() {
+        return path;
     }
-
-    public List<Location> getSpawns() { return this.spawns; }
 
     private static DungeonFighters instance;
     private PlayerManager<DungeonFighter> playerManager = new PlayerManager<>();
-    private Queue<DungeonMechanicProvider> games = new LinkedList<>();
-    private List<Location> spawns = new ArrayList<>();
-    private Dungeon dungeon;
+    private DungeonPath path;
 
     public DungeonFighters() {
         if (instance == null) {
@@ -43,19 +36,30 @@ public class DungeonFighters {
     }
 
     /**
+     *
+     */
+    public void buildDungeonPath() {
+        this.path = new DungeonPathLoader().buildDungeons(this.determineDungeon(), "temple"); // TODO: determine theme randomly
+    }
+
+    public void generateDeathmatch() {
+
+    }
+
+    /**
      * Randomly determines the map that will be played
      *
      * @return Folder containing the module schematics.
      */
-    public Dungeon determineDungeon() {
+    private Dungeon determineDungeon() {
         //File[] maps = new File(this.getDataFolder() + "/maps").listFiles();
 
         //TileType[] grid = Generator.generateMap(10); // TODO: make confiurable
         //this.generateAndSaveImage(grid, 10);
         //SecureRandom random = new SecureRandom();
 
-        return this.dungeon = new Dungeon(DungeonFightersPlugin.getInstance().getThemedGameFolder("temple"),
-                                          DungeonFightersPlugin.getInstance().getThemedStartPoints("temple"),
-                                          DungeonFightersPlugin.getInstance().getThemedEndPoints("temple"), null);
+        return new Dungeon(DungeonFightersPlugin.getInstance().getThemedGameFolder("temple"),
+                           DungeonFightersPlugin.getInstance().getThemedStartPoints("temple"),
+                           DungeonFightersPlugin.getInstance().getThemedEndPoints("temple"), null);
     }
 }

@@ -1,6 +1,8 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path;
 
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
+import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Location;
 
 /**
@@ -9,7 +11,7 @@ import org.bukkit.Location;
  *
  * @author Yannic Rieger
  */
-public class BuildResult {
+public class BuildResult<T extends ModuleMetadata> {
 
     /**
      *
@@ -18,22 +20,26 @@ public class BuildResult {
         return provider;
     }
 
-    /**
-     *
-     */
-    public Location getNextBuildLocation() {
-        return nextBuildLocation;
-    }
 
     private DungeonMechanicProvider provider;
-    private Location nextBuildLocation;
+    private Location thisBuildLocation;
+    private LabsSchematic<T> module;
 
     /**
      * @param provider
-     * @param nextBuildLocation
+     * @param thisBuildLocation
      */
-    public BuildResult(DungeonMechanicProvider provider, Location nextBuildLocation) {
+    public BuildResult(DungeonMechanicProvider provider, Location thisBuildLocation, LabsSchematic<T> module) {
         this.provider = provider;
-        this.nextBuildLocation = nextBuildLocation;
+        this.thisBuildLocation = thisBuildLocation;
+        this.module = module;
+    }
+
+    public Location getBuildLocation() {
+        return thisBuildLocation;
+    }
+
+    public LabsSchematic<T> getModule() {
+        return module;
     }
 }

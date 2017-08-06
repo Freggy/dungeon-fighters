@@ -62,24 +62,6 @@ public class GameUpdateTask implements Runnable {
 
 
     /**
-     * Initializes the {@link de.bergwerklabs.dungeonfighters.api.game.DungeonGame} for the player.
-     *
-     * @param fighter Player that entered a new area.
-     * @param provider {@link DungeonMechanicProvider} represents a new game.
-     * @param chunkCoord String representing the XZ coordinates of a {@link org.bukkit.Chunk}.
-     */
-    private void initGame(DungeonFighter fighter, DungeonMechanicProvider provider, String chunkCoord) {
-        fighter.getSession().getCurrentGame().stop();
-        this.close(fighter.getPlayer(), chunkCoord);
-        fighter.getSession().setCurrentGame(provider);
-        DungeonFightersPlugin.game.getDungeon().getGamePositions().remove(chunkCoord);
-        //fighter.getSession().getCurrentGame().getNexInfo().remove(chunkCoord);
-        fighter.getSession().getCurrentGame().assignPlayer(fighter);
-        //fighter.getSession().getCurrentGame().assignModule(DungeonFightersPlugin.game.getModules().get(chunkCoord).getSchematic());
-        fighter.getSession().getCurrentGame().start();
-    }
-
-    /**
      * Closes the module behind the player.
      *
      * @param player player who left the module.
