@@ -14,6 +14,8 @@ import java.util.UUID;
  */
 public class BackpackManager {
 
+    private static HashMap<UUID, Backpack> backpacks = new HashMap<>();
+
     /**
      * Gets the {@link Backpack} associated with a player, {@code null} if the player has no {@link Backpack}.
      *
@@ -33,6 +35,4 @@ public class BackpackManager {
             return backpacks.get(player.getUniqueId());
         }
     }
-
-    private static HashMap<UUID, Backpack> backpacks = new HashMap<>();
 }

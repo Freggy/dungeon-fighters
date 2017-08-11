@@ -41,6 +41,7 @@ public class GameUpdateTask implements Runnable {
                     if (!nextLine.isModuleBuilt()) nextLine.buildAssociatedGame();
                     this.lines.remove(line);
                     Util.closeEntrance(fighter.getPlayer(), info.getProviderResult().getBuildLocation(), DungeonModuleConstructor.getBarrierWalls());
+                    fighter.getPlayer().getInventory().clear();
 
                     session.getCurrentGame().stop();
                     session.setCurrentGame(info.getProvider());

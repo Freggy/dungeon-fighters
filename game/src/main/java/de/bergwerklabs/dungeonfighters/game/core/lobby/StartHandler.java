@@ -26,7 +26,8 @@ import java.util.UUID;
 
 /**
  * Created by Yannic Rieger on 19.07.2017.
- * <p> This class contains a methods that will be executed when the {@link StartTimer} hits zero.
+ * <p>
+ * This class contains a methods that will be executed when the {@link StartTimer} hits zero.
  *
  * @author Yannic Rieger
  */
@@ -116,6 +117,7 @@ public class StartHandler implements StartTimer.StartHandler {
     private void createScoreBoard(Player player) {
         LabsScoreboard scoreboard = new LabsScoreboard("§eDungeonFighters §6❘ §b{time}", "module");
 
+        // TODO: make configurable
         scoreboard.addRow(100, new Row(scoreboard, "§e§e§e"))
                   .addRow(99, new Row(scoreboard, "§e§lServer-IP:"))
                   .addRow(98, new Row(scoreboard, "bergwerkLABS.de"))

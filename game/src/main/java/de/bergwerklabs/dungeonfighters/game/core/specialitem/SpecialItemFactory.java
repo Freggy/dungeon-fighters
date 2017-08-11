@@ -1,7 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem;
 
-import de.bergwerklabs.dungeonfighters.game.core.specialitem.backpack.BackpackManager;
-import org.bukkit.entity.Player;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.backpack.Backpack;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.knockback.KnockbackStick;
 
 /**
  * Created by Yannic Rieger on 23.06.2017.
@@ -14,20 +14,18 @@ public class SpecialItemFactory {
     /**
      * Returns the {@link SpecialItem} based on the name of the {@link org.bukkit.inventory.ItemStack}.
      *
-     * @param name Name of the item.
-     * @param player Only needed if a instance of {@link de.bergwerklabs.dungeonfighters.game.core.specialitem.backpack.Backpack} will be created.
+     * @param type Type of the special item
      * @return returns the {@link SpecialItem} based on the name of the {@link org.bukkit.inventory.ItemStack}.
      */
-    public static SpecialItem createItem(String name, Player player) {
-        if (name == null) return null;
+    public static SpecialItem createItem(SpecialItemType type) {
 
-        if (name.equals("§c✚ §fMediPack")) {
+        if (type == SpecialItemType.MED_PACK) {
             return new MedPack();
         }
-        else if (name.equals("Backpack")) {
-            return BackpackManager.getBackPack(player);
+        else if (type == SpecialItemType.BACKPACK) {
+            return new Backpack();
         }
-        else if (name.contains("Aufladung")) {
+        else if (type == SpecialItemType.KNOCKBACK) {
             return new KnockbackStick();
         }
         else return null;
