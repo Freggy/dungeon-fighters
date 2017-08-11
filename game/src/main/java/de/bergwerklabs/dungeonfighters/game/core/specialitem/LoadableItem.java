@@ -4,7 +4,8 @@ import org.bukkit.entity.Player;
 
 /**
  * Created by Yannic Rieger on 24.06.2017.
- * <p> Should be implemented by {@link SpecialItem}s that have a loading mechanism.
+ * <p>
+ * Should be implemented by {@link SpecialItem}s that have a loading mechanism.
  *
  * @author Yannic Rieger
  */

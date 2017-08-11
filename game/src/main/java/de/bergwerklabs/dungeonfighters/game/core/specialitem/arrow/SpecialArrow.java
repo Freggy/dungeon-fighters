@@ -1,4 +1,4 @@
-package de.bergwerklabs.dungeonfighters.game.core.specialitem;
+package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

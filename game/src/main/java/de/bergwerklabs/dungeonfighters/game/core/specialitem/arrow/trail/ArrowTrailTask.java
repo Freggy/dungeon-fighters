@@ -2,7 +2,7 @@ package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail;
 
 import de.bergwerklabs.dungeonfighters.commons.ParticleUtil;
 import de.bergwerklabs.util.effect.Particle;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Projectile;
 
 import java.util.List;
@@ -10,7 +10,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Yannic Rieger on 24.06.2017.
- * <p> Task that displays the arrow trails particles.
+ * <p>
+ * Task that displays the arrow trails particles.
  *
  * @author Yannic Rieger
  */
@@ -28,11 +29,7 @@ public class ArrowTrailTask implements Runnable {
                                                             trailInfo.getdX(), trailInfo.getdY(), trailInfo.getdZ(),
                                                             trailInfo.getSpeed(), trailInfo.getCount());
 
-            projectile.getNearbyEntities(100, 100, 100).forEach(entity -> {
-                if (entity instanceof Player) {
-                    ParticleUtil.sendParticleToPlayer(particle, (Player) entity);
-                }
-            });
+            Bukkit.getOnlinePlayers().forEach(player -> ParticleUtil.sendParticleToPlayer(particle, player));
         });
     }
 }

@@ -1,7 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
-import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialArrow;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;

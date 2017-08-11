@@ -7,7 +7,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * Created by Yannic Rieger on 23.06.2017.
- * <p> Handles arrow metadata which is mostly arrow trails.
+ * <p>
+ * Handles arrow metadata which is mostly arrow trails.
  *
  * @author Yannic Rieger
  */

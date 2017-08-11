@@ -5,7 +5,8 @@ import de.bergwerklabs.dungeonfighters.game.core.specialitem.knockback.Knockback
 
 /**
  * Created by Yannic Rieger on 23.06.2017.
- * <p> Factory used for creating {@link SpecialItem}s.
+ * <p>
+ * Factory used for creating {@link SpecialItem}s.
  *
  * @author Yannic Rieger
  */
@@ -15,10 +16,9 @@ public class SpecialItemFactory {
      * Returns the {@link SpecialItem} based on the name of the {@link org.bukkit.inventory.ItemStack}.
      *
      * @param type Type of the special item
-     * @return returns the {@link SpecialItem} based on the name of the {@link org.bukkit.inventory.ItemStack}.
+     * @return returns the {@link SpecialItem} based on the name of the {@link org.bukkit.inventory.ItemStack}, null if no item matches.
      */
     public static SpecialItem createItem(SpecialItemType type) {
-
         if (type == SpecialItemType.MED_PACK) {
             return new MedPack();
         }
@@ -30,5 +30,4 @@ public class SpecialItemFactory {
         }
         else return null;
     }
-
 }
