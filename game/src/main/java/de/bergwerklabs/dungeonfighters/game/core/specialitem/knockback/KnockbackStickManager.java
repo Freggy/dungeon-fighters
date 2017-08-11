@@ -2,7 +2,6 @@ package de.bergwerklabs.dungeonfighters.game.core.specialitem.knockback;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.commons.Util;
-import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,7 +44,7 @@ public class KnockbackStickManager {
                     String itemName = p.getItemInHand().getItemMeta().getDisplayName();
                     int currentPower = Integer.valueOf(Pattern.compile("\\d+%").matcher(itemName).group(0));
                     if (currentPower < 100) {
-                        ItemStackUtil.setName(p.getItemInHand(), itemName.replace("\\d+%", String.valueOf(currentPower)));
+                        KnockbackStick.setPower(p);
                     }
                     else cancelAndRemove(p);
                 });

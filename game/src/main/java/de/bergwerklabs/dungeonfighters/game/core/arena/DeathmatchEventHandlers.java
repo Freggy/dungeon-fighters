@@ -3,7 +3,6 @@ package de.bergwerklabs.dungeonfighters.game.core.arena;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.commons.ParticleUtil;
 import de.bergwerklabs.dungeonfighters.commons.RoundSummaryMapRenderer;
-import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.LoadableItem;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialItem;
@@ -12,7 +11,7 @@ import de.bergwerklabs.dungeonfighters.game.core.specialitem.SpecialItemType;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.ArrowMetadataHandler;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.SpecialArrow;
 import de.bergwerklabs.dungeonfighters.game.core.specialitem.arrow.trail.ArrowTrailTask;
-import de.bergwerklabs.framework.commons.spigot.item.ItemStackUtil;
+import de.bergwerklabs.dungeonfighters.game.core.specialitem.knockback.KnockbackStick;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
 import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboardFactory;
 import de.bergwerklabs.util.effect.Particle;
@@ -156,7 +155,7 @@ public class DeathmatchEventHandlers implements Listener {
     public void onItemInteract(PlayerInteractEvent e) {
         if (e.getItem() == null) return;
 
-        SpecialItem item = SpecialItemFactory.createItem(e.getItem().getItemMeta().getDisplayName(), e.getPlayer());
+        SpecialItem item = SpecialItemFactory.createItem(SpecialItemType.getItemByDisplayName(e.getItem().getItemMeta().getDisplayName()));
         Material material = e.getItem().getType();
 
         if (item != null && material != Material.BOW) {
@@ -215,9 +214,10 @@ public class DeathmatchEventHandlers implements Listener {
             Player player = (Player)damager;
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BLAZE_ROD) {
-                double modifier = 0.1 * Util.getPower(player.getItemInHand().getItemMeta().getDisplayName());
+                String itemName = player.getItemInHand().getItemMeta().getDisplayName();
+                double modifier = 0.1 * KnockbackStick.getPower(itemName);
                 e.getEntity().setVelocity(player.getLocation().getDirection().multiply(modifier));
-                ItemStackUtil.setName(item, Util.name.replace("{percentage}", "0"));
+                KnockbackStick.setPower(player);
             }
         }
     }
