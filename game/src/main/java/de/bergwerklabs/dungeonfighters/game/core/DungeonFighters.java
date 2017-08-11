@@ -1,6 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPath;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonPathLoader;
 import de.bergwerklabs.framework.commons.spigot.game.PlayerManager;
 
@@ -18,21 +19,27 @@ public class DungeonFighters {
         return playerManager;
     }
 
-    /**
-     *
-     */
     public DungeonPath getPath() {
         return path;
+    }
+
+    public String getTheme() {
+        return theme;
     }
 
     private static DungeonFighters instance;
     private PlayerManager<DungeonFighter> playerManager = new PlayerManager<>();
     private DungeonPath path;
+    private String theme;
 
+    /**
+     *
+     */
     public DungeonFighters() {
         if (instance == null) {
             instance = this;
         }
+        this.theme = "temple"; // TODO: determine randomly
     }
 
     /**
@@ -40,10 +47,6 @@ public class DungeonFighters {
      */
     public void buildDungeonPath() {
         this.path = new DungeonPathLoader().buildDungeons(this.determineDungeon(), "temple"); // TODO: determine theme randomly
-    }
-
-    public void generateDeathmatch() {
-
     }
 
     /**
@@ -58,8 +61,8 @@ public class DungeonFighters {
         //this.generateAndSaveImage(grid, 10);
         //SecureRandom random = new SecureRandom();
 
-        return new Dungeon(DungeonFightersPlugin.getInstance().getThemedGameFolder("temple"),
-                           DungeonFightersPlugin.getInstance().getThemedStartPoints("temple"),
-                           DungeonFightersPlugin.getInstance().getThemedEndPoints("temple"), null);
+        return new Dungeon(DungeonFightersPlugin.getInstance().getThemedGameFolder(this.theme),
+                           DungeonFightersPlugin.getInstance().getThemedStartPoints(this.theme),
+                           DungeonFightersPlugin.getInstance().getThemedEndPoints(this.theme), null);
     }
 }

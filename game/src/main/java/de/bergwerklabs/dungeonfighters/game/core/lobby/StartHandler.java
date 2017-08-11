@@ -1,8 +1,10 @@
 package de.bergwerklabs.dungeonfighters.game.core.lobby;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.config.DungeonFighterConfig;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
+import de.bergwerklabs.dungeonfighters.game.core.games.GameUpdateTask;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.StartMechanic;
 import de.bergwerklabs.framework.commons.spigot.game.LabsPlayer;
 import de.bergwerklabs.framework.commons.spigot.general.timer.LabsTimer;
@@ -45,7 +47,7 @@ public class StartHandler implements StartTimer.StartHandler {
         }
 
         if (timeLeft == 0) {
-            //this.removeWall();
+            Util.openEntrances();
             this.unfreeze();
             this.displayTitle(new Title("§9LOS!", null, 20 ,20, 20));
             this.playSound(Sound.ENDERDRAGON_GROWL, 1, 50);
@@ -66,10 +68,10 @@ public class StartHandler implements StartTimer.StartHandler {
                 if (spawns.hasNext())
                     fighter.getPlayer().teleport(spawns.next());
             }
-        }, 20 * 3);
+        }, 20 * 2);
 
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(DungeonFightersPlugin.getInstance(), () -> DungeonFightersPlugin.animation.play(), 90L);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(DungeonFightersPlugin.getInstance(), () -> DungeonFightersPlugin.animation.play(), 90);
         Bukkit.getScheduler().runTaskLater(DungeonFightersPlugin.getInstance(), () -> {
             this.broadcastTime(10);
             timer.start();
@@ -77,7 +79,7 @@ public class StartHandler implements StartTimer.StartHandler {
 
         HandlerList.unregisterAll(DungeonFightersPlugin.lobbyListener);
         Bukkit.getServer().getPluginManager().registerEvents( DungeonFightersPlugin.moduleEventHandler, DungeonFightersPlugin.getInstance());
-        //Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), new GameUpdateTask(), 0, 20L);
+        Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), new GameUpdateTask(), 0, 1L);
     }
 
     /**
@@ -120,13 +122,13 @@ public class StartHandler implements StartTimer.StartHandler {
     private void createScoreBoard(Player player) {
         LabsScoreboard scoreboard = new LabsScoreboard("§eDungeonFighters §6❘ §b{time}", "module");
 
-        scoreboard.addRow(101, new Row(scoreboard, "§e§e§e"))
-                  .addRow(100, new Row(scoreboard, "§e§lServer-IP:"))
-                  .addRow(99, new Row(scoreboard, "bergwerkLABS.de"))
-                  .addRow(98, new Row(scoreboard, "§e"))
-                  .addRow(97, new Row(scoreboard, "§e§lGold:"))
-                  .addRow(96, new Row(scoreboard, "§7§l0"))
-                  .addRow(95, new Row(scoreboard, "§e§e"));
+        scoreboard.addRow(100, new Row(scoreboard, "§e§e§e"))
+                  .addRow(99, new Row(scoreboard, "§e§lServer-IP:"))
+                  .addRow(98, new Row(scoreboard, "bergwerkLABS.de"))
+                  .addRow(97, new Row(scoreboard, "§e"))
+                  .addRow(96, new Row(scoreboard, "§e§lGold:"))
+                  .addRow(95, new Row(scoreboard, "§7§l0"))
+                  .addRow(94, new Row(scoreboard, "§e§e"));
 
         HashMap<UUID, DungeonFighter> players = DungeonFightersPlugin.game.getPlayerManager().getPlayers();
 

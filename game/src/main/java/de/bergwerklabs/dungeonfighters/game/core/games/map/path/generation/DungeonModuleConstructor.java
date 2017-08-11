@@ -1,18 +1,47 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation;
 
+import com.google.common.collect.Iterables;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
+import de.bergwerklabs.dungeonfighters.commons.ListUtil;
+import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameWrapper;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BattleZone;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BuildResult;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPath;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationInfo;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.BattleZoneMechanic;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Location;
-import java.util.Iterator;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DungeonModuleConstructor {
+
+    /**
+     *
+     */
+    public static List<Location> getStartWallBlockLocations() { return startWallBlockLocations; }
+
+    public static Iterator<LabsSchematic<ModuleMetadata>> getBarrierWalls() {
+        return barrierWalls;
+    }
+
+    private static List<Location> startWallBlockLocations = new ArrayList<>();
+    private static Iterator<LabsSchematic<ModuleMetadata>> barrierWalls;
+
+
+    static {
+        List<LabsSchematic<ModuleMetadata>> barrierFiles = DungeonFightersPlugin.getInstance().getThemedBarrierWalls(DungeonFightersPlugin.game.getTheme()).stream()
+                                                                                .map(ModuleMetadata.getService()::createSchematic)
+                                                                                .collect(Collectors.toList());
+        barrierWalls = Iterables.cycle(ListUtil.createRandomItemList(barrierFiles, 9)).iterator();
+    }
 
     /**
      * Places the given {@link BattleZone.Part}.
@@ -90,7 +119,64 @@ public class DungeonModuleConstructor {
             Location endLocation = to.clone().subtract(schematic.getMetadata().getEnd());
             return endLocation.add(0, 0, 1);
         }
-        else
-            return null;
+        else return null;
     }
+
+    public static ActivationLine createActivationLine(BuildResult gameResult, BuildResult connectionResult, Location end) {
+        ActivationInfo info = new ActivationInfo(gameResult.getProvider(), connectionResult, gameResult);
+        return new ActivationLine(info, end.getBlockZ(), new HashSet<>(Arrays.asList(end.getBlockX() + 1, end.getBlockX() + 2, end.getBlockX() + 3, end.getBlockX() + 4)));
+    }
+
+
+    public static List<Location> placeSpawns(DungeonPath path, LabsSchematic<StartModuleMetadata> module, Iterator<LabsSchematic<ModuleMetadata>> connections, Location start) {
+        List<Location> buildLocations = new ArrayList<>();
+
+        // TODO: refactor
+        for (int players = 0; players < 12; players++) {
+            DungeonModuleConstructor.placeModule(module, start);
+            Location connLoc = DungeonModuleConstructor.getNextBuildLocation(module, start);
+            startWallBlockLocations.addAll(Util.getDoorLocations(connLoc.clone().add(-1, 1, 0), connLoc.clone().add(-3, 4, 0)));
+            barrierWalls.next().pasteAsync(start.getWorld().getName(), connLoc.clone().add(-3, 1, 0).toVector());
+
+            Location spawn = start.clone().subtract(module.getMetadata().getSpawn().clone()).add(0, 1, 0.9);
+            spawn.setPitch(0);
+            spawn.setYaw(0);
+            path.getSpawns().add(spawn);
+
+            Location nextBuildLoc = placeConnection(connections, connLoc.clone().subtract(3, 0, 0));
+
+            // TODO: place wall at start from connection.
+            buildLocations.add(nextBuildLoc);
+            start.add(46, 0, 0);
+        }
+        return buildLocations;
+    }
+
+    /**
+     *
+     * @param toPlace
+     * @param zone
+     * @param currentPos
+     * @param lasPos
+     * @return
+     */
+    public static Location placeBattleZonePart(Location toPlace, BattleZone zone, int currentPos, int lasPos) {
+        BuildResult result = DungeonModuleConstructor.buildBattleZonePart(toPlace, zone, BattleZone.getPartByPosition(currentPos, lasPos));
+        LabsSchematic module = result.getModule();
+        DungeonModuleConstructor.placeModule(module, toPlace);
+        return DungeonModuleConstructor.getNextBuildLocation(module, toPlace);
+    }
+
+    /**
+     *
+     * @param connections
+     * @param toPlace
+     * @return
+     */
+    public static Location placeConnection(Iterator<LabsSchematic<ModuleMetadata>> connections, Location toPlace) {
+        BuildResult connResult = DungeonModuleConstructor.buildConnection(connections, toPlace);
+        DungeonModuleConstructor.placeModule(connResult.getModule(), connResult.getBuildLocation());
+        return DungeonModuleConstructor.getNextBuildLocation(connResult.getModule(), connResult.getBuildLocation());
+    }
+
 }

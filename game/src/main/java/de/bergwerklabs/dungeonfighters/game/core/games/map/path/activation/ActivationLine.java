@@ -1,6 +1,5 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation;
 
-import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BuildResult;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonModuleConstructor;
 import org.bukkit.Location;
@@ -15,14 +14,24 @@ import java.util.Set;
  */
 public class ActivationLine {
 
-    public int getzValue() { return this.zValue; }
+    /**
+     *
+     * @return
+     */
+    public ActivationInfo getInfo() { return this.info; }
 
     private int zValue;
     private Set<Integer> xValues;
     private ActivationInfo info;
+    private ActivationLine nextLine;
+    private boolean moduleBuilt = false;
 
-
-    public <T extends ModuleMetadata> ActivationLine(ActivationInfo<T> info, int zValue, Set<Integer> xValues) {
+    /**
+     * @param info
+     * @param zValue
+     * @param xValues
+     */
+    public ActivationLine(ActivationInfo info, int zValue, Set<Integer> xValues) {
         this.zValue = zValue;
         this.xValues = xValues;
         this.info = info;
@@ -40,11 +49,25 @@ public class ActivationLine {
     /**
      *
      */
-    public void buildAssociatedGame() {
-        BuildResult<ModuleMetadata> providerResult = this.info.getProviderResult();
-        BuildResult<ModuleMetadata> connectionResult = this.info.getConnectionResult();
+    public BuildResult buildAssociatedGame() {
+        BuildResult providerResult = this.info.getProviderResult();
+        BuildResult connectionResult = this.info.getConnectionResult();
 
         DungeonModuleConstructor.placeModule(providerResult.getModule(), providerResult.getBuildLocation());
         DungeonModuleConstructor.placeModule(connectionResult.getModule(), connectionResult.getBuildLocation());
+        this.moduleBuilt = true;
+        return providerResult;
+    }
+
+    public ActivationLine getNextLine() {
+        return nextLine;
+    }
+
+    public void setNextLine(ActivationLine nextLine) {
+        this.nextLine = nextLine;
+    }
+
+    public boolean isModuleBuilt() {
+        return moduleBuilt;
     }
 }

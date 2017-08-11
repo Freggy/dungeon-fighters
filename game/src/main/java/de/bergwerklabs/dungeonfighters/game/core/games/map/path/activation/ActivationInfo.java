@@ -1,27 +1,27 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation;
 
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
-import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BuildResult;
 
-public class ActivationInfo<T extends ModuleMetadata> {
+public class ActivationInfo {
 
     private DungeonMechanicProvider provider;
-    private BuildResult<T> connection;
-    private BuildResult<T> providerModule;
+    private BuildResult connection;
+    private BuildResult providerModule;
+    public int id; // FOR TESTING
 
-    public ActivationInfo(DungeonMechanicProvider provider, BuildResult<T> connection, BuildResult<T> providerModule) {
+    public ActivationInfo(DungeonMechanicProvider provider, BuildResult connection, BuildResult providerModule) {
         this.provider = provider;
         this.connection = connection;
         this.providerModule = providerModule;
     }
 
 
-    public BuildResult<T> getProviderResult() {
+    public BuildResult getProviderResult() {
         return providerModule;
     }
 
-    public BuildResult<T> getConnectionResult() {
+    public BuildResult getConnectionResult() {
         return connection;
     }
 

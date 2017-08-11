@@ -29,7 +29,6 @@ public class ListUtil {
 
         for (int i = 0; i < maxItems - 1; i++) { // TODO: make game size configurable
             if (list.size() == 0) break; // Only for test purposes
-
             int index = random.nextInt(list.size());
             T game = list.get(index);
             chosen.add(game);

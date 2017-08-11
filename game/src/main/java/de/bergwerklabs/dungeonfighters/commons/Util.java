@@ -1,15 +1,16 @@
 package de.bergwerklabs.dungeonfighters.commons;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonModuleConstructor;
+import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import de.bergwerklabs.util.effect.Particle;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -41,20 +42,23 @@ public class Util {
         return locations;
     }
 
-    public static void openEntrance(Player player, List<Location> locations) {
-        locations.forEach(location -> {
+    public static void openEntrances() {
+       DungeonModuleConstructor.getStartWallBlockLocations().forEach(location -> {
             location.getBlock().setType(Material.AIR);
-            Particle.sendParticle(player, Particle.ParticleEffect.CLOUD, location.add(0, 0, 1), 0.2F, 0.2F, 0.2F, 0, 3);
+            Particle.broadcastParticle(Bukkit.getOnlinePlayers(), Particle.ParticleEffect.CLOUD, location.add(0, 0, 1), 0.2F, 0.2F, 0.2F, 0, 3);
         });
     }
 
-    public static void closeEntrance(Player player, List<Location> locations) {
+    public static void closeEntrance(Player player, Location toPlace, Iterator<LabsSchematic<ModuleMetadata>> barrierWalls) {
         Bukkit.getScheduler().runTaskLater(DungeonFightersPlugin.getInstance(), () -> {
-            locations.forEach(location -> {
-                location.getBlock().setType(Material.SMOOTH_BRICK);
-                if (player != null)
-                    Particle.sendParticle(player, Particle.ParticleEffect.CLOUD, location.add(0, 0, 1), 0.2F, 0.2F, 0.2F, 0, 3);
-            });
+            Location to = toPlace.clone().add(0, 1, -1);
+            barrierWalls.next().pasteAsync(DungeonFightersPlugin.moduleWorld.getName(), to.toVector());
+            player.playSound(player.getEyeLocation(), Sound.ANVIL_LAND, 100, 100);
+            ParticleUtil.sendParticleToPlayer(ParticleUtil.createParticle(Particle.ParticleEffect.CLOUD, to.clone().add(2, 2, 1), 2F, 1.5F, 2F, 0, 30), player);
         }, 10L);
     }
+
+
+
+
 }

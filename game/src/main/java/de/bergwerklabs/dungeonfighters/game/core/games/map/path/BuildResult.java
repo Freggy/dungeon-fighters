@@ -11,7 +11,7 @@ import org.bukkit.Location;
  *
  * @author Yannic Rieger
  */
-public class BuildResult<T extends ModuleMetadata> {
+public class BuildResult {
 
     /**
      *
@@ -23,13 +23,13 @@ public class BuildResult<T extends ModuleMetadata> {
 
     private DungeonMechanicProvider provider;
     private Location thisBuildLocation;
-    private LabsSchematic<T> module;
+    private LabsSchematic<ModuleMetadata> module;
 
     /**
      * @param provider
      * @param thisBuildLocation
      */
-    public BuildResult(DungeonMechanicProvider provider, Location thisBuildLocation, LabsSchematic<T> module) {
+    public BuildResult(DungeonMechanicProvider provider, Location thisBuildLocation, LabsSchematic<ModuleMetadata> module) {
         this.provider = provider;
         this.thisBuildLocation = thisBuildLocation;
         this.module = module;
@@ -39,7 +39,7 @@ public class BuildResult<T extends ModuleMetadata> {
         return thisBuildLocation;
     }
 
-    public LabsSchematic<T> getModule() {
+    public LabsSchematic<ModuleMetadata> getModule() {
         return module;
     }
 }

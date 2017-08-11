@@ -20,8 +20,9 @@ import de.bergwerklabs.util.mechanic.StartTimer;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,7 +34,8 @@ import java.util.List;
 
 /**
  * Created by Yannic Rieger on 25.04.2017.
- * <p> DungeonFightersPlugin class for the DungeonFighter minigame. </p>
+ * <p>
+ * DungeonFightersPlugin class for the DungeonFighter minigame.
  * @author Yannic Rieger
  */
 public class DungeonFightersPlugin extends LABSGameMode
@@ -64,6 +66,10 @@ public class DungeonFightersPlugin extends LABSGameMode
         return Arrays.asList(new File(themeFolder + "/" + theme + "/connections").listFiles());
     }
 
+    public List<File> getThemedBarrierWalls(String theme) {
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/barrier_walls").listFiles());
+    }
+
 
     public File getThemedBattleZoneFolder(String theme) {
         return new File(themeFolder + "/" + theme + "/battle_zone");
@@ -89,9 +95,9 @@ public class DungeonFightersPlugin extends LABSGameMode
     private String themeFolder;
     private DungeonFighterConfig config;
 
-    // TODO: put tasks in list an cancle them if needed.
+    // TODO: put tasks in list an cancel them if needed.
 
-    private BukkitTask task;
+    private boolean canJoin = false;
 
     @Override
     public void labsEnable() {
@@ -104,7 +110,6 @@ public class DungeonFightersPlugin extends LABSGameMode
         spawnWorld = Bukkit.getWorld("spawn");
 
         this.getGameStateManager().setState(GameState.PREPARING);
-
         this.prepareSpawn(spawnWorld);
         this.prepareWorld(moduleWorld);
         this.prepareWorld(arenaWorld);
@@ -120,6 +125,7 @@ public class DungeonFightersPlugin extends LABSGameMode
         timer.launch();
 
         Bukkit.getPluginManager().registerEvents(lobbyListener, this);
+        Bukkit.getPluginManager().registerEvents(this, this);
 
         try {
             this.config = new GsonBuilder().registerTypeAdapter(DungeonFighterConfig.class, new DungeonFighterConfigDeserializer())
@@ -131,16 +137,22 @@ public class DungeonFightersPlugin extends LABSGameMode
             e.printStackTrace();
         }
 
-         task = Bukkit.getScheduler().runTaskTimer(this, () -> {
-             if (timer.getTicksLeft() == 20 * 10) {
-                game.buildDungeonPath();
-            }
-            else if (timer.getTicksLeft() == 0) this.task.cancel();
-        }, 0, 1);
+        game.buildDungeonPath();
 
 
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-
+        /*
+        // wait 20 seconds before letting players join, so chunks won't load that long
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            this.canJoin = true;
+            System.out.println("LUL");
+        }, 20 * 30); */
 
     }
 
@@ -205,6 +217,16 @@ public class DungeonFightersPlugin extends LABSGameMode
         return new PlayerSkin("eyJ0aW1lc3RhbXAiOjE1MDEwMjE3MTkyMDgsInByb2ZpbGVJZCI6IjQ4N2RiNmNmZWViMzRhMjE4MjM3YzAzNDhhMjg1NjY2IiwicHJvZmlsZU5hbWUiOiJhdXNkZXJmdXR1cmUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzY3N2E3YWI4OTljNTYyYTBkNWVkM2Q3N2U5MTlhMWMzMGJhMTM4ZGQ0NDRlNTllZjE1YTFjZDg4ZmJkIn19fQ==",
                               "mF4I1wt5ftoXNACg5H64hu2gvXA6ZqoNvqcA3hXxvleeWGgg4gLP/ZNK5g/Yk/iK+huDRc1YRkv66sCWahBKzd8SdVhT+pSYxMG3uCS4U30PWqVbad0CUMEqUJS1ifUcEtgFJENT1+zshWlXwWOcpVZq6EX76Z3t35yX6iRNsQd+BPyJanEbm1YcS7FGmjW2swWJQkQVOVc9qqJFYb4R26a03A4PVTlIxtTeAAOD0mKgkhhzLAhy/U+LwASuym7HkU7x9+1rxwh92K3i87g8+wJS0/HNlyaKpDwvB0QuRYwfFsJuJWbru/U3BWqfUXLHErdnnwVlkYlGHfxzhSBhGWdWOroDwnQGgKRu7p50zRSlyH4Iejqu6oQaDpNTBwdgjd2OzMqukAP494wvrjdkw2fYniaiOQaCzVN7LTIUjnfGQFD/VDD9peCuZvU4wH/KOeLLAeLAIOfPhDLezNPfhSyGpwu7/agLv1kCkqGmnOUQHRlsgmmFXIUai87TjPDOD/crE6HbQu0P67gox5twSusUi5csvc3f9abOWjf/02ewOdXPZ+1tw0v8wsV+99qD6cGiaP8Ioeb9Ga92WzAVhNbifm8IwY7fMGT/l0+88lsJdEsVkkxzLlSyxQrUIeKZUcsvEgo7NYPDbp3FvuRJfGWCL90mqjustRewwdhuys8=");
     }
+
+
+
+
+    @EventHandler
+    private void onPlayerJoin(PlayerLoginEvent e) {
+        //if (!canJoin) e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§6>> §eHide and Seek §6| §bMap is generating");
+    }
+
+
 
     /**
      *
