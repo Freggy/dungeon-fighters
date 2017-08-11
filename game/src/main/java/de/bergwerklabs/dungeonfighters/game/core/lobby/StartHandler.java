@@ -92,12 +92,6 @@ public class StartHandler implements StartTimer.StartHandler {
     }
 
     /**
-     * Removes the wall in front of the players.
-     */
-    private void removeWall() {
-    }
-
-    /**
      * Plays a {@link Sound} to all players with a given pitch.
      *
      * @param sound Sound to play.
@@ -144,7 +138,6 @@ public class StartHandler implements StartTimer.StartHandler {
         });
         players.get(player.getUniqueId()).setScoreboard(scoreboard);
     }
-
 
     /**
      * Broadcasts the given time to all players in a format defined in {@link DungeonFighterConfig#getGameCountdownMessage()}.

@@ -135,7 +135,7 @@ public class DungeonModuleConstructor {
         for (int players = 0; players < 12; players++) {
             DungeonModuleConstructor.placeModule(module, start);
             Location connLoc = DungeonModuleConstructor.getNextBuildLocation(module, start);
-            startWallBlockLocations.addAll(Util.getDoorLocations(connLoc.clone().add(-1, 1, 0), connLoc.clone().add(-3, 4, 0)));
+            startWallBlockLocations.addAll(Util.getDoorLocations(connLoc.clone().add(-3, 1, 0), connLoc.clone().add(0, 4, 0)));
             barrierWalls.next().pasteAsync(start.getWorld().getName(), connLoc.clone().add(-3, 1, 0).toVector());
 
             Location spawn = start.clone().subtract(module.getMetadata().getSpawn().clone()).add(0, 1, 0.9);
