@@ -1,6 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation;
 
 import com.google.common.collect.Iterables;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
@@ -26,13 +27,13 @@ public class DungeonModuleConstructor {
     /**
      *
      */
-    public static List<Location> getStartWallBlockLocations() { return startWallBlockLocations; }
+    public static List<CuboidRegion> getStartWallBlockLocations() { return startWallBlockLocations; }
 
     public static Iterator<LabsSchematic<ModuleMetadata>> getBarrierWalls() {
         return barrierWalls;
     }
 
-    private static List<Location> startWallBlockLocations = new ArrayList<>();
+    private static List<CuboidRegion> startWallBlockLocations = new ArrayList<>();
     private static Iterator<LabsSchematic<ModuleMetadata>> barrierWalls;
 
 
@@ -105,6 +106,7 @@ public class DungeonModuleConstructor {
      */
     public static <T extends ModuleMetadata> void placeModule(LabsSchematic<T> schematic, Location to) {
         schematic.pasteAsync(DungeonFightersPlugin.moduleWorld.getName(), to.toVector());
+        to.getChunk().load();
     }
 
     /**
@@ -135,7 +137,7 @@ public class DungeonModuleConstructor {
         for (int players = 0; players < 12; players++) {
             DungeonModuleConstructor.placeModule(module, start);
             Location connLoc = DungeonModuleConstructor.getNextBuildLocation(module, start);
-            startWallBlockLocations.addAll(Util.getDoorLocations(connLoc.clone().add(-3, 1, 0), connLoc.clone().add(0, 4, 0)));
+            startWallBlockLocations.add(Util.getDoorLocations(connLoc.clone().add(-3, 1, 0), connLoc.clone().add(0, 4, 0)));
             barrierWalls.next().pasteAsync(start.getWorld().getName(), connLoc.clone().add(-3, 1, 0).toVector());
 
             Location spawn = start.clone().subtract(module.getMetadata().getSpawn().clone()).add(0, 1, 0.9);
@@ -178,5 +180,4 @@ public class DungeonModuleConstructor {
         DungeonModuleConstructor.placeModule(connResult.getModule(), connResult.getBuildLocation());
         return DungeonModuleConstructor.getNextBuildLocation(connResult.getModule(), connResult.getBuildLocation());
     }
-
 }

@@ -38,6 +38,14 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
     public Location getPlaceLocation() { return this.placeLocation; }
 
     /**
+     *
+     * @return
+     */
+    public StageTier getTier() {
+        return tier;
+    }
+
+    /**
      * Sets the {@link StageTier} for this {@code DungeonGame}.
      *
      * @param tier Tier of the current stage.

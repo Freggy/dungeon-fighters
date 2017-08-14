@@ -60,7 +60,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
+                            <classpathPrefix>../../../../../../plugins</classpathPrefix>
                         </manifest>
                     </archive>
                     <outputDirectory>${deploymentPath}</outputDirectory>

@@ -12,7 +12,6 @@ import java.lang.reflect.Type;
  */
 public class BaseConfigDeserializer implements JsonDeserializer<BaseDungeonGameConfig> {
 
-
     @Override
     public BaseDungeonGameConfig deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject json = jsonElement.getAsJsonObject();

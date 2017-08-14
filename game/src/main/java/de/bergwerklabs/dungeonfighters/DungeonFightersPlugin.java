@@ -137,6 +137,8 @@ public class DungeonFightersPlugin extends LABSGameMode
             e.printStackTrace();
         }
 
+        timer.shortenTime();
+
         game.buildDungeonPath();
 
 

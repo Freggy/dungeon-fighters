@@ -1,21 +1,26 @@
 package de.bergwerklabs.dungeonfighters.commons;
 
+import com.boydti.fawe.FaweAPI;
+import com.boydti.fawe.util.EditSessionBuilder;
+import com.boydti.fawe.util.TaskManager;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonModuleConstructor;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
+import de.bergwerklabs.util.effect.HoverText;
 import de.bergwerklabs.util.effect.Particle;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by Yannic Rieger on 24.06.2017.
@@ -25,20 +30,23 @@ import java.util.List;
  */
 public class Util {
 
-    public static List<Location> getDoorLocations(Location min, Location max) {
-        ArrayList<Location> locations = new ArrayList<>();
-        for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
-            for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
-                locations.add(new Location(DungeonFightersPlugin.moduleWorld, x, y, min.getBlockZ()));
-            }
-        }
-        return locations;
+    public static CuboidRegion getDoorLocations(Location point1, Location point2) {
+        return new CuboidRegion(new Vector(point1.getX(), point1.getY(), point1.getZ()),
+                                new Vector(point2.getX(), point2.getY(), point2.getZ()));
+    }
+
+    public static void openEntrance(String world, CuboidRegion region) {
+        TaskManager.IMP.async(() -> {
+            EditSession session = new EditSessionBuilder(FaweAPI.getWorld(world)).fastmode(true).checkMemory(true).build();
+            session.setBlocks(region, new BaseBlock(0, 0));
+            session.flushQueue();
+        });
     }
 
     public static void openEntrances() {
-       DungeonModuleConstructor.getStartWallBlockLocations().forEach(location -> {
-            location.getBlock().setType(Material.AIR);
-            Particle.broadcastParticle(Bukkit.getOnlinePlayers(), Particle.ParticleEffect.CLOUD, location.add(0, 0, 1), 0.2F, 0.2F, 0.2F, 0, 3);
+       DungeonModuleConstructor.getStartWallBlockLocations().forEach(region -> {
+           openEntrance("module", region);
+           //Particle.broadcastParticle(Bukkit.getOnlinePlayers(), Particle.ParticleEffect.CLOUD, location.add(0, 0, 1), 0.2F, 0.2F, 0.2F, 0, 3);
         });
     }
 
@@ -67,7 +75,13 @@ public class Util {
         };
     }
 
-
-
-
+    /**
+     *
+     * @param player
+     * @param text
+     * @param time
+     */
+    public static void sendTimerHoverText(Player player, String text, int time) {
+        HoverText.sendHoverTextUpdate(player, String.format(text, time / 60, time % 60));
+    }
 }

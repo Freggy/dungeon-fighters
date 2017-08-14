@@ -1,6 +1,5 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
-import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.game.core.arena.fubar.TileType;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.DungeonGameWrapper;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
@@ -25,8 +24,6 @@ public class Dungeon {
      */
     public HashMap<TileType, List<LabsSchematic>> getModules() { return this.modules; }
 
-    public HashMap<String, DungeonMechanicProvider> getGamePositions() { return this.gamePositions; }
-
     /**
      * Gets the list of available {@link DungeonGameWrapper}s.
      */
@@ -50,7 +47,6 @@ public class Dungeon {
     }
 
     private HashMap<TileType, List<LabsSchematic>> modules = new HashMap<>();
-    private HashMap<String, DungeonMechanicProvider> gamePositions = new HashMap<>();
     private List<DungeonGameWrapper> dungeonGames = new ArrayList<>();
     private List<File> startPoints;
     private List<File> endPoints;
@@ -101,8 +97,6 @@ public class Dungeon {
        for (File gameFolder : gamesFolder) {
            dungeonGames.add(this.createGame(gameFolder));
        }
-
-
        this.startPoints = startPoints;
        this.endPoints = endPoints;
     }
@@ -115,7 +109,7 @@ public class Dungeon {
      */
     private DungeonGameWrapper createGame(File gameFolder) {
         String path = gameFolder.getPath() + "/";
-        return new DungeonGameWrapper(new File(path + gameFolder.getName() + ".jar"),
+        return new DungeonGameWrapper(gameFolder.listFiles(file -> file.getName().endsWith(".jar"))[0],
                                       gameFolder.getPath() + "/config.json",
                                       Arrays.asList(new File(path + "modules").listFiles()));
     }

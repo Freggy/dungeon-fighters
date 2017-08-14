@@ -11,8 +11,9 @@ import java.util.List;
 
 /**
  * Created by Yannic Rieger on 26.06.2017.
- * <p> This class wraps a {@link DungeonGame}. The main purpose of this class is
- *     to create a {@link DungeonGame} out of the JAR file. It also contains the available modules.
+ * <p>
+ * This class wraps a {@link DungeonGame}. The main purpose of this class is
+ * to create a {@link DungeonGame} out of the JAR file. It also contains the available modules.
  *
  * @author Yannic Rieger
  */
@@ -44,7 +45,7 @@ public class DungeonGameWrapper {
             this.game = (DungeonGame)Bukkit.getServer().getPluginManager().loadPlugin(game);
             this.module = ModuleMetadata.getService().createSchematic(modules.get(new SecureRandom().nextInt(modules.size())));
             this.game.setConfigLocation(configLocation);
-            //this.game.onLoad();
+            this.game.onLoad();
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.mechanic;
 
+import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
@@ -48,6 +49,11 @@ public abstract class BaseMechanic implements DungeonMechanicProvider {
 
     @Override
     public void reset() {}
+
+    @Override
+    public StageTier getTier() {
+        return null;
+    }
 
     @Override
     public void assignModule(LabsSchematic schematic) {

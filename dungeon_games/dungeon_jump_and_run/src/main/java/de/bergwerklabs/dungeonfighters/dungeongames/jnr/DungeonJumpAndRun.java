@@ -3,9 +3,12 @@ package de.bergwerklabs.dungeonfighters.dungeongames.jnr;
 import com.google.gson.GsonBuilder;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.game.config.BaseConfigDeserializer;
-import de.bergwerklabs.dungeonfighters.dungeongames.jnr.config.JnrConfig;
+import de.bergwerklabs.dungeonfighters.api.game.config.BaseDungeonGameConfig;
+import de.bergwerklabs.dungeonfighters.commons.ScreenWarning;
+import de.bergwerklabs.dungeonfighters.commons.Util;
+import de.bergwerklabs.framework.commons.spigot.general.timer.LabsTimer;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,14 +17,14 @@ import java.nio.charset.Charset;
 
 /**
  * Created by Yannic Rieger on 26.07.2017.
- * <p>  </p>
+ * <p>
  *
  * @author Yannic Rieger
  */
 public class DungeonJumpAndRun extends DungeonGame {
 
-    private JnrConfig config;
-    private Location spawn;
+    private BaseDungeonGameConfig config;
+    private LabsTimer timer;
 
     @Override
     public String getId() {
@@ -30,13 +33,22 @@ public class DungeonJumpAndRun extends DungeonGame {
 
     @Override
     public void start() {
-        System.out.println("start");
+        Player player = fighter.getPlayer();
+        this.timer = new LabsTimer(this.config.getDuration(), (timeLeft) -> {
+            if (timeLeft == this.config.getWarningTime())
+                ScreenWarning.send(player, true);
+            Util.sendTimerHoverText(player, this.config.getTimerString(), timeLeft);
+        });
+        timer.start();
         this.hasStarted = true;
     }
 
     @Override
     public void stop() {
-        System.out.println("stop");
+        // has to be done before the timer stops because the LabsTimer#timeLeft() could be reseted to a default value
+        // and could therefore lead to a false gold calculation.
+        this.fighter.getSession().addGold(this.tier.calculateGold((double)this.timer.getDuration(), (double)this.timer.timeLeft()));
+        this.timer.stop();
         this.hasStarted = false;
     }
 
@@ -47,7 +59,7 @@ public class DungeonJumpAndRun extends DungeonGame {
 
     @Override
     public void onLoad() {
-        //this.loadConfig();
+        this.loadConfig();
         //NbtUtil.vectorFromNbt(NbtUtil.readCompoundTag(this.module.getSchematicFile()));
     }
 
@@ -56,12 +68,12 @@ public class DungeonJumpAndRun extends DungeonGame {
      */
     private void loadConfig() {
         try {
-            this.config = new GsonBuilder().registerTypeAdapter(JnrConfig.class, new BaseConfigDeserializer()).create()
-                                           .fromJson(new InputStreamReader(new FileInputStream(configLocation), Charset.forName("UTF-8")), JnrConfig.class);
-            System.out.println("Loaded config for " + this.getId());
+            this.config = new GsonBuilder().registerTypeAdapter(BaseDungeonGameConfig.class, new BaseConfigDeserializer()).create()
+                                           .fromJson(new InputStreamReader(new FileInputStream(configLocation), Charset.forName("UTF-8")), BaseDungeonGameConfig.class);
+            Bukkit.getLogger().info("Loaded config for " + this.getId());
         }
         catch (FileNotFoundException e) {
-            Bukkit.getLogger().info("Jnr config file could not be found.");
+            Bukkit.getLogger().info("Config file could not be found.");
         }
     }
 }

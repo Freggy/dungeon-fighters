@@ -1,5 +1,6 @@
 package de.bergwerklabs.dungeonfighters.api.game;
 
+import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
@@ -27,6 +28,12 @@ public interface DungeonMechanicProvider extends Cloneable {
      *
      */
     String getId();
+
+    /**
+     *
+     * @return
+     */
+    StageTier getTier();
 
     /**
      *
@@ -62,6 +69,10 @@ public interface DungeonMechanicProvider extends Cloneable {
      */
     boolean hasStarted();
 
+    /**
+     *
+     * @return
+     */
     Object clone();
 
     /**

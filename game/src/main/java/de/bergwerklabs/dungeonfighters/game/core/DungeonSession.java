@@ -1,6 +1,7 @@
 package de.bergwerklabs.dungeonfighters.game.core;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -36,6 +37,9 @@ public class DungeonSession {
      */
     public DungeonFighter getFighter() { return this.fighter; }
 
+    public StageTier getCurrentTier() {
+        return currentTier;
+    }
 
     /**
      * Sets the games.
@@ -52,6 +56,14 @@ public class DungeonSession {
      * @param provider representing a game or a built-in mechanic.
      */
     public void setCurrentGame(DungeonMechanicProvider provider) { this.currentGame =  provider; }
+
+    /**
+     *
+     * @param currentTier
+     */
+    public void setCurrentTier(StageTier currentTier) {
+        this.currentTier = currentTier;
+    }
 
     /**
      * Adds gold to the player.
@@ -86,4 +98,5 @@ public class DungeonSession {
     private Queue<DungeonMechanicProvider> games = new LinkedList<>();
     private DungeonFighter fighter;
     private int gold = 0;
+    private StageTier currentTier = StageTier.ONE;
 }

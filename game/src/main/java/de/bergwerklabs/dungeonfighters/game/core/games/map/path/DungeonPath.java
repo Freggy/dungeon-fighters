@@ -19,4 +19,5 @@ public class DungeonPath {
 
     private List<ActivationLine> lines = new CopyOnWriteArrayList<>();
     private List<Location> spawns = new ArrayList<>();
+
 }

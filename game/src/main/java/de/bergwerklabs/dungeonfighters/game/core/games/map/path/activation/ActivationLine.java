@@ -1,5 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation;
 
+import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BuildResult;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonModuleConstructor;
 import org.bukkit.Location;
@@ -16,7 +17,6 @@ public class ActivationLine {
 
     /**
      *
-     * @return
      */
     public ActivationInfo getInfo() { return this.info; }
 
@@ -49,14 +49,23 @@ public class ActivationLine {
     /**
      *
      */
-    public BuildResult buildAssociatedGame() {
+    public void buildAssociatedGame(boolean buildConnection) {
         BuildResult providerResult = this.info.getProviderResult();
-        BuildResult connectionResult = this.info.getConnectionResult();
-
         DungeonModuleConstructor.placeModule(providerResult.getModule(), providerResult.getBuildLocation());
-        DungeonModuleConstructor.placeModule(connectionResult.getModule(), connectionResult.getBuildLocation());
+
+        if (buildConnection) {
+            BuildResult connectionResult = this.info.getConnectionResult();
+            DungeonModuleConstructor.placeModule(connectionResult.getModule(), connectionResult.getBuildLocation());
+        }
         this.moduleBuilt = true;
-        return providerResult;
+    }
+
+    public void tryVanishWall(Location playerLocation) {
+        int distance = playerLocation.getBlockZ() - this.zValue;
+        if (distance >= -5 && distance < 0 && this.xValues.contains(playerLocation.getBlockX())) {
+            Util.openEntrance(playerLocation.getWorld().getName(), this.info.getWallRegion());
+            this.info.setHasWall(false);
+        }
     }
 
     public ActivationLine getNextLine() {

@@ -1,5 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.mechanic;
 
+import de.bergwerklabs.dungeonfighters.game.core.DungeonSession;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BattleZone;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +23,8 @@ public class BattleZoneMechanic extends BaseMechanic {
     @Override
     public void start() {
         this.fighter.getPlayer().setItemInHand(new ItemStack(Material.WOOD_SWORD));
+        DungeonSession session = fighter.getSession();
+        session.setCurrentTier(session.getCurrentTier().getNext());
         this.hasStarted = true;
     }
 }

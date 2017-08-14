@@ -2,6 +2,7 @@ package de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation;
 
 import com.google.common.collect.Iterables;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
+import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.dungeonfighters.commons.ListUtil;
@@ -73,6 +74,7 @@ public class DungeonPathLoader {
         for (int pathPosition = 0; pathPosition < buildLocations.size(); pathPosition++) {
             Location start = buildLocations.get(pathPosition);
             Queue<ActivationLine> lineQueue = new LinkedList<>();
+            StageTier currentTier = StageTier.ONE;
 
             for (int position = 1; position < 13; position++) {
                 if (position % 4 == 0 && position != 1 && position != 12) {
@@ -82,13 +84,23 @@ public class DungeonPathLoader {
                     BuildResult connectionResult = DungeonModuleConstructor.buildConnection(connections, connectionBuildLoc);
 
                     ActivationLine line = this.createAndAddLine(battleResult, connectionResult, battleResult.getBuildLocation());
-                    line.buildAssociatedGame();
+                    line.buildAssociatedGame(true);
+
+                    DungeonModuleConstructor.getBarrierWalls().next().pasteAsync(start.getWorld().getName(), start.clone().add(0, 1, -1).toVector());
+                    line.getInfo().createCuboid(start.clone().add(3, 1, -1), start.clone().add(0, 4, -1));
+
                     lineQueue.add(line);
+                    this.path.getLines().add(line);
 
                     start = DungeonModuleConstructor.getNextBuildLocation(connectionResult.getModule(), connectionBuildLoc);
                 }
                 else if (position == 12) { // end has been reached
-                    // TODO: build and place end
+                    BuildResult endResult = DungeonModuleConstructor.buildEnd(start, this.end);
+
+                    ActivationLine line = this.createAndAddLine(endResult, null, start);
+                    line.buildAssociatedGame(false);
+                    lineQueue.add(line);
+                    this.path.getLines().add(line);
                 }
                 else {
                     BuildResult gameResult = DungeonModuleConstructor.buildGame(availableGames.next(), start, position);
@@ -98,14 +110,22 @@ public class DungeonPathLoader {
                     if (position == 1) {
                         DungeonModuleConstructor.placeModule(gameResult.getModule(), gameResult.getBuildLocation());
                         DungeonModuleConstructor.placeModule(connectionResult.getModule(), connectionResult.getBuildLocation());
-                        lineQueue.add(this.createAndAddLine(gameResult, connectionResult, start));
+                        ActivationLine line = this.createAndAddLine(gameResult, connectionResult, start);
+                        lineQueue.add(line);
+                        this.path.getLines().add(line);
                     }
                     else if (position == 5 || position == 9) {
                         DungeonModuleConstructor.placeModule(gameResult.getModule(), gameResult.getBuildLocation());
                         DungeonModuleConstructor.placeModule(connectionResult.getModule(), connectionResult.getBuildLocation());
-                        lineQueue.add(this.createAndAddLine(gameResult, connectionResult, start));
+                        ActivationLine line = this.createAndAddLine(gameResult, connectionResult, start);
+                        lineQueue.add(line);
+                        this.path.getLines().add(line);
                     }
-                    else lineQueue.add(this.createAndAddLine(gameResult, connectionResult, start));
+                    else {
+                        ActivationLine line = this.createAndAddLine(gameResult, connectionResult, start);
+                        lineQueue.add(line);
+                        this.path.getLines().add(line);
+                    }
                     start = DungeonModuleConstructor.getNextBuildLocation(connectionResult.getModule(), connectionLoc);
                 }
             }
@@ -114,13 +134,8 @@ public class DungeonPathLoader {
         return path;
     }
 
-    private int counter = 0;
-
     private ActivationLine createAndAddLine(BuildResult gameResult, BuildResult connectionResult, Location lineLocation) {
-        ActivationLine line = DungeonModuleConstructor.createActivationLine(gameResult, connectionResult, lineLocation);
-        line.getInfo().id = counter++;
-        this.path.getLines().add(line);
-        return line;
+        return DungeonModuleConstructor.createActivationLine(gameResult, connectionResult, lineLocation);
     }
 
     /**
