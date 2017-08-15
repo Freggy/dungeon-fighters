@@ -25,9 +25,6 @@ public class GameUpdateTask implements Runnable {
 
     private List<ActivationLine> lines;
 
-    /**
-     *
-     */
     public GameUpdateTask() {
         this.lines = DungeonFightersPlugin.game.getPath().getLines();
     }

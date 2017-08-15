@@ -17,8 +17,31 @@ public class ActivationLine {
 
     /**
      *
+     * @return
+     */
+    public ActivationLine getNextLine() {
+        return nextLine;
+    }
+
+    /**
+     *
+     */
+    public boolean isModuleBuilt() {
+        return moduleBuilt;
+    }
+
+    /**
+     *
      */
     public ActivationInfo getInfo() { return this.info; }
+
+    /**
+     *
+     * @param nextLine
+     */
+    public void setNextLine(ActivationLine nextLine) {
+        this.nextLine = nextLine;
+    }
 
     private int zValue;
     private Set<Integer> xValues;
@@ -60,23 +83,15 @@ public class ActivationLine {
         this.moduleBuilt = true;
     }
 
+    /**
+     *
+     * @param playerLocation
+     */
     public void tryVanishWall(Location playerLocation) {
         int distance = playerLocation.getBlockZ() - this.zValue;
         if (distance >= -5 && distance < 0 && this.xValues.contains(playerLocation.getBlockX())) {
             Util.openEntrance(playerLocation.getWorld().getName(), this.info.getWallRegion());
             this.info.setHasWall(false);
         }
-    }
-
-    public ActivationLine getNextLine() {
-        return nextLine;
-    }
-
-    public void setNextLine(ActivationLine nextLine) {
-        this.nextLine = nextLine;
-    }
-
-    public boolean isModuleBuilt() {
-        return moduleBuilt;
     }
 }

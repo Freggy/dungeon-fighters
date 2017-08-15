@@ -3,6 +3,7 @@ package de.bergwerklabs.dungeonfighters.game.core;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -42,6 +43,13 @@ public class DungeonSession {
     }
 
     /**
+     *
+     */
+    public int getCompletedModules() {
+        return this.completedModules;
+    }
+
+    /**
      * Sets the games.
      *
      * @param games Games for this game session.
@@ -63,6 +71,14 @@ public class DungeonSession {
      */
     public void setCurrentTier(StageTier currentTier) {
         this.currentTier = currentTier;
+    }
+
+    /**
+     *
+     */
+    public void incrementCompletedModules() {
+        this.fighter.getScoreboard().getRowsByContent()
+                    .get(ChatColor.UNDERLINE + this.fighter.getPlayer().getDisplayName()).setScore(completedModules++);
     }
 
     /**
@@ -97,6 +113,6 @@ public class DungeonSession {
     private DungeonMechanicProvider currentGame;
     private Queue<DungeonMechanicProvider> games = new LinkedList<>();
     private DungeonFighter fighter;
-    private int gold = 0;
+    private int gold = 0, completedModules = 0;
     private StageTier currentTier = StageTier.ONE;
 }
