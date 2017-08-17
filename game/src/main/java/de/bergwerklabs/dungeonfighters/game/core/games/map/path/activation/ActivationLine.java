@@ -1,9 +1,9 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation;
 
-import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BuildResult;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonModuleConstructor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.Set;
 
@@ -85,12 +85,13 @@ public class ActivationLine {
 
     /**
      *
-     * @param playerLocation
+     * @param player
      */
-    public void tryVanishWall(Location playerLocation) {
+    public void tryVanishWall(Player player) {
+        Location playerLocation = player.getLocation();
         int distance = playerLocation.getBlockZ() - this.zValue;
         if (distance >= -5 && distance < 0 && this.xValues.contains(playerLocation.getBlockX())) {
-            Util.openEntrance(playerLocation.getWorld().getName(), this.info.getWallRegion());
+            this.info.getWall().open();
             this.info.setHasWall(false);
         }
     }

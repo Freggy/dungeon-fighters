@@ -45,4 +45,7 @@ public class ParticleUtil {
         }
     }
 
+    public static void broadcastParticle(Particle particle) {
+        Bukkit.getOnlinePlayers().forEach(player -> sendParticleToPlayer(particle, player));
+    }
 }

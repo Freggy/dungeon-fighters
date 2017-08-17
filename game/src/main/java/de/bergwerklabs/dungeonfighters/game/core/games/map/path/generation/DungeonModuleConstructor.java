@@ -1,7 +1,6 @@
 package de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation;
 
 import com.google.common.collect.Iterables;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
@@ -13,6 +12,7 @@ import de.bergwerklabs.dungeonfighters.game.core.games.map.metadata.StartModuleM
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BattleZone;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.BuildResult;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonPath;
+import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonWall;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationInfo;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.BattleZoneMechanic;
@@ -27,13 +27,13 @@ public class DungeonModuleConstructor {
     /**
      *
      */
-    public static List<CuboidRegion> getStartWallBlockLocations() { return startWallBlockLocations; }
+    public static List<DungeonWall> getDungeonStartWalls() { return dungeonStartWalls; }
 
     public static Iterator<LabsSchematic<ModuleMetadata>> getBarrierWalls() {
         return barrierWalls;
     }
 
-    private static List<CuboidRegion> startWallBlockLocations = new ArrayList<>();
+    private static List<DungeonWall> dungeonStartWalls = new ArrayList<>();
     private static Iterator<LabsSchematic<ModuleMetadata>> barrierWalls;
 
 
@@ -137,8 +137,11 @@ public class DungeonModuleConstructor {
         for (int players = 0; players < 12; players++) {
             DungeonModuleConstructor.placeModule(module, start);
             Location connLoc = DungeonModuleConstructor.getNextBuildLocation(module, start);
-            startWallBlockLocations.add(Util.getDoorLocations(connLoc.clone().add(-3, 1, 0), connLoc.clone().add(0, 4, 0)));
-            barrierWalls.next().pasteAsync(start.getWorld().getName(), connLoc.clone().add(-3, 1, 0).toVector());
+            Location connDownLeft = connLoc.clone().add(-3, 1, 0);
+
+            DungeonWall wall = new DungeonWall(Util.getDoorLocations(connDownLeft, connLoc.clone().add(0, 4, 0)), connDownLeft, connDownLeft);
+            dungeonStartWalls.add(wall);
+            wall.close();
 
             Location spawn = start.clone().subtract(module.getMetadata().getSpawn().clone()).add(0, 1, 0.9);
             spawn.setPitch(0);

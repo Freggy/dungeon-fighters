@@ -11,7 +11,7 @@ import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.Activ
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonModuleConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.List;
@@ -37,11 +37,12 @@ public class GameUpdateTask implements Runnable {
         for (DungeonFighter fighter : DungeonFightersPlugin.game.getPlayerManager().getPlayers().values()) {
             for (ActivationLine line : this.lines) {
                 DungeonSession session = fighter.getSession();
-                Location playerLocation = fighter.getPlayer().getLocation();
-                if (line != null) {
-                    if (line.getInfo().hasWall()) line.tryVanishWall(playerLocation);
+                Player player = fighter.getPlayer();
 
-                    if (line.shouldActivate(playerLocation)) {
+                if (line != null) {
+                    if (line.getInfo().hasWall()) line.tryVanishWall(player);
+
+                    if (line.shouldActivate(player.getLocation())) {
                         StageTier tier = line.getInfo().getProvider().getTier();
                         if (this.checkPreconditions(session, tier)) continue;
 
@@ -51,8 +52,8 @@ public class GameUpdateTask implements Runnable {
                         if (!nextLine.isModuleBuilt()) nextLine.buildAssociatedGame(true);
 
                         this.lines.remove(line);
-                        Util.closeEntrance(fighter.getPlayer(), info.getProviderResult().getBuildLocation(), DungeonModuleConstructor.getBarrierWalls());
-                        fighter.getPlayer().getInventory().clear();
+                        Util.closeEntrance(player, info.getProviderResult().getBuildLocation(), DungeonModuleConstructor.getBarrierWalls());
+                        player.getInventory().clear();
                         DungeonMechanicProvider provider = info.getProvider();
                         session.getCurrentGame().stop();
 

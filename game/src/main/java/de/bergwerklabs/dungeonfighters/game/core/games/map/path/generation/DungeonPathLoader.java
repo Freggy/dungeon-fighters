@@ -87,7 +87,10 @@ public class DungeonPathLoader {
                     line.buildAssociatedGame(true);
 
                     DungeonModuleConstructor.getBarrierWalls().next().pasteAsync(start.getWorld().getName(), start.clone().add(0, 1, -1).toVector());
-                    line.getInfo().createCuboid(start.clone().add(3, 1, -1), start.clone().add(0, 4, -1));
+                    Location wallPlaceLoaction = start.clone().add(3, 1, -1);
+
+
+                    line.getInfo().createWall(wallPlaceLoaction, start.clone().add(0, 4, -1),  start.clone().add(0, 1, -1));
 
                     lineQueue.add(line);
                     this.path.getLines().add(line);

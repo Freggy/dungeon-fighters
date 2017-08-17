@@ -35,8 +35,7 @@ public class DungeonJumpAndRun extends DungeonGame {
 
     private BaseDungeonGameConfig config;
     private LabsTimer timer;
-    private int tries;
-    private long previousUse = 0;
+    private int tries = 0;
     private boolean cooldown = false;
 
     @Override
@@ -48,7 +47,7 @@ public class DungeonJumpAndRun extends DungeonGame {
     public void start() {
         Player player = fighter.getPlayer();
         player.getInventory().setItem(4, new ItemStackBuilder(Material.INK_SACK)
-              .setData((byte)1).setName("§c§lInstant-Tod™ §7§o<Rechtsklick>").create());
+              .setData((byte)1).setName("§c§lInstant-Tod(TM) §7§o<Rechtsklick>").create());
 
         this.timer = new LabsTimer(this.config.getDuration(), (timeLeft) -> {
             if (timeLeft == this.config.getWarningTime())
@@ -104,13 +103,14 @@ public class DungeonJumpAndRun extends DungeonGame {
     private void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (player.getUniqueId().equals(this.fighter.getPlayer().getUniqueId())) {
+            System.out.println("1");
             Action action = e.getAction();
             if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
                 if (!cooldown) {
-                    // TODO: implement cooldown because it gets executed twice
                     ItemStack item = player.getItemInHand();
                     if (item != null && item.getType() == Material.INK_SACK) {
                         cooldown = true;
+                        System.out.println("2");
                         Bukkit.getPluginManager().callEvent(new GameFailEvent(this.fighter, this, tries++));
                         Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> cooldown = false, 25L);
                         e.setCancelled(true);
