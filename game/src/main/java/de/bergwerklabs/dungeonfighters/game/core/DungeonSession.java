@@ -12,7 +12,8 @@ import java.util.Queue;
 
 /**
  * Created by Yannic Rieger on 04.07.2017.
- * <p> Session which stores information about the game progress of each individual player.
+ * <p>
+ * Session which stores information about the game progress of each individual player.
  *
  * @author Yannic Rieger
  */

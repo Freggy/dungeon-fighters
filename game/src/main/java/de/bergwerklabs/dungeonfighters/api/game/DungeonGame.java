@@ -4,17 +4,20 @@ import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
- * <p> This is a base class for a DungeonGame. A DungeonGame is a game within the DungeonFighters mini game.
- *     As the name suggests, this class provides basic functionality for such games. Every
+ * <p>
+ * This is a base class for a DungeonGame. A DungeonGame is a game within the DungeonFighters mini game.
+ * As the name suggests, this class provides basic functionality for such games. Every
  *
  * @author Yannic Rieger
  */
-public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicProvider {
+public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicProvider, Listener {
 
     @Override
     public ActivationLine getNextLine() {
@@ -82,6 +85,11 @@ public abstract class DungeonGame extends JavaPlugin implements DungeonMechanicP
     @Override
     public void assignModule(LabsSchematic module) {
         this.module = module;
+    }
+
+    @Override
+    public void onEnable() {
+        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     @Override

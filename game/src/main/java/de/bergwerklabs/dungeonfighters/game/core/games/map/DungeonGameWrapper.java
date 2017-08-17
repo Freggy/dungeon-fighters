@@ -4,6 +4,7 @@ import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.module.ModuleMetadata;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
 import java.security.SecureRandom;
@@ -41,8 +42,9 @@ public class DungeonGameWrapper {
      * @param modules {@link List} containing all the modules for this {@link DungeonGame}.
      */
     public DungeonGameWrapper(File game, String configLocation, List<File> modules) {
+        PluginManager manager = Bukkit.getPluginManager();
         try {
-            this.game = (DungeonGame)Bukkit.getServer().getPluginManager().loadPlugin(game);
+            this.game = (DungeonGame)manager.loadPlugin(game);
             this.module = ModuleMetadata.getService().createSchematic(modules.get(new SecureRandom().nextInt(modules.size())));
             this.game.setConfigLocation(configLocation);
             this.game.onLoad();

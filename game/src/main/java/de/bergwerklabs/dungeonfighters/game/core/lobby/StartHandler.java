@@ -66,8 +66,11 @@ public class StartHandler implements StartTimer.StartHandler {
                 fighter.getSession().setCurrentGame(new StartMechanic());
                 fighter.freeze();
 
-                if (spawns.hasNext())
-                    fighter.getPlayer().teleport(spawns.next());
+                if (spawns.hasNext()) {
+                    Player player = fighter.getPlayer();
+                    player.setMaxHealth(6); // display only 3 hearts
+                    player.teleport(spawns.next());
+                }
             }
         }, 20 * 2);
 

@@ -2,14 +2,17 @@ package de.bergwerklabs.dungeonfighters.game.core.games;
 
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
-import de.bergwerklabs.dungeonfighters.commons.ScreenWarning;
+import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
+import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
 import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonSession;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationInfo;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.generation.DungeonModuleConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.plugin.PluginManager;
 
 import java.util.List;
 
@@ -50,10 +53,17 @@ public class GameUpdateTask implements Runnable {
                         this.lines.remove(line);
                         Util.closeEntrance(fighter.getPlayer(), info.getProviderResult().getBuildLocation(), DungeonModuleConstructor.getBarrierWalls());
                         fighter.getPlayer().getInventory().clear();
-
-                        ScreenWarning.send(fighter.getPlayer(), false); // remove red screen border from last minigame, if there is one.
+                        DungeonMechanicProvider provider = info.getProvider();
                         session.getCurrentGame().stop();
-                        session.setCurrentGame(info.getProvider());
+
+                        if (provider instanceof DungeonGame) {
+                            DungeonGame game = (DungeonGame)provider;
+                            PluginManager manager =  Bukkit.getPluginManager();
+                            manager.enablePlugin(game);
+                            manager.registerEvents(game, game);
+                        }
+
+                        session.setCurrentGame(provider);
                         session.getCurrentGame().assignPlayer(fighter);
                         session.getCurrentGame().assignModule(info.getProviderResult().getModule());
                         session.getCurrentGame().start();

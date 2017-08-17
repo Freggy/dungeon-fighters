@@ -32,7 +32,6 @@ public class LobbyEventHandler implements Listener {
 
     private SecureRandom random = new SecureRandom();
     private LabsTabList tabList = new LabsTabList(new String[] {"Hallo", "Header"}, new String[] { "Hallo", "Footer" });
-    private float yaw  = 0;
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -44,6 +43,7 @@ public class LobbyEventHandler implements Listener {
         // DEBUG START
         player.setWalkSpeed(0.2F);
         player.removePotionEffect(PotionEffectType.JUMP);
+        player.removePotionEffect(PotionEffectType.ABSORPTION);
         // DEBUG END
 
         player.setGameMode(GameMode.ADVENTURE);
@@ -62,10 +62,6 @@ public class LobbyEventHandler implements Listener {
         DungeonFightersPlugin.game.getPlayerManager().getPlayers().put(player.getUniqueId(), new DungeonFighter(e.getPlayer()));
 
     }
-    public int getFixLocation(double pos) {
-        return (int) Math.floor(pos * 32.0D);
-    }
-
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent e) {
@@ -77,9 +73,9 @@ public class LobbyEventHandler implements Listener {
         Player player = e.getPlayer();
 
         if(player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.QUARTZ_BLOCK)) {
-            Vector doublejump = player.getEyeLocation().getDirection().normalize();
-            doublejump.multiply(6);
-            player.setVelocity(new Vector(doublejump.getX(), 1, doublejump.getZ()));
+            Vector boost = player.getEyeLocation().getDirection().normalize();
+            boost.multiply(6);
+            player.setVelocity(new Vector(boost.getX(), 1, boost.getZ()));
             player.playSound(player.getEyeLocation(), Sound.ENDERDRAGON_WINGS, 2, 2);
         }
     }
@@ -101,6 +97,4 @@ public class LobbyEventHandler implements Listener {
             Bukkit.broadcastMessage(e.getPlayer().getName());
         }
     }
-
-
 }

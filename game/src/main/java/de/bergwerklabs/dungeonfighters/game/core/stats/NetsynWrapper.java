@@ -2,7 +2,7 @@ package de.bergwerklabs.dungeonfighters.game.core.stats;
 
 import org.bukkit.entity.Player;
 
-public class NetSynWrapper {
+public class NetsynWrapper {
 
     /**
      *

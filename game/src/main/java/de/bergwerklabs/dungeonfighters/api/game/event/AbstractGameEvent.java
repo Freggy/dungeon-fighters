@@ -10,7 +10,7 @@ import de.bergwerklabs.framework.commons.spigot.general.LabsEvent;
  *
  * @author Yannic Rieger
  */
-abstract class AbstractGameEvent extends LabsEvent {
+public abstract class AbstractGameEvent extends LabsEvent {
     /**
      * Gets the game that the player did not finish successfully.
      */

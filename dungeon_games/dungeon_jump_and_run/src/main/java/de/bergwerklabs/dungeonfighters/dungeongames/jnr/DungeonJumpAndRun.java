@@ -4,11 +4,21 @@ import com.google.gson.GsonBuilder;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.game.config.BaseConfigDeserializer;
 import de.bergwerklabs.dungeonfighters.api.game.config.BaseDungeonGameConfig;
+import de.bergwerklabs.dungeonfighters.api.game.event.GameFailEvent;
 import de.bergwerklabs.dungeonfighters.commons.ScreenWarning;
 import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.framework.commons.spigot.general.timer.LabsTimer;
+import de.bergwerklabs.framework.commons.spigot.item.ItemStackBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,6 +35,9 @@ public class DungeonJumpAndRun extends DungeonGame {
 
     private BaseDungeonGameConfig config;
     private LabsTimer timer;
+    private int tries;
+    private long previousUse = 0;
+    private boolean cooldown = false;
 
     @Override
     public String getId() {
@@ -34,11 +47,15 @@ public class DungeonJumpAndRun extends DungeonGame {
     @Override
     public void start() {
         Player player = fighter.getPlayer();
+        player.getInventory().setItem(4, new ItemStackBuilder(Material.INK_SACK)
+              .setData((byte)1).setName("§c§lInstant-Tod™ §7§o<Rechtsklick>").create());
+
         this.timer = new LabsTimer(this.config.getDuration(), (timeLeft) -> {
             if (timeLeft == this.config.getWarningTime())
                 ScreenWarning.send(player, true);
             Util.sendTimerHoverText(player, this.config.getTimerString(), timeLeft);
         });
+
         timer.start();
         this.hasStarted = true;
     }
@@ -50,6 +67,7 @@ public class DungeonJumpAndRun extends DungeonGame {
         this.fighter.getSession().addGold(this.tier.calculateGold((double)this.timer.getDuration(), (double)this.timer.timeLeft()));
         this.timer.stop();
         this.hasStarted = false;
+        HandlerList.unregisterAll((Listener) this);
     }
 
     @Override
@@ -73,7 +91,32 @@ public class DungeonJumpAndRun extends DungeonGame {
             Bukkit.getLogger().info("Loaded config for " + this.getId());
         }
         catch (FileNotFoundException e) {
-            Bukkit.getLogger().info("Config file could not be found.");
+            Bukkit.getLogger().info("Config file " + this.getId() + " could not be found.");
+        }
+    }
+
+    @EventHandler
+    private void onDamage(EntityDamageEvent e) {
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    private void onPlayerInteract(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        if (player.getUniqueId().equals(this.fighter.getPlayer().getUniqueId())) {
+            Action action = e.getAction();
+            if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+                if (!cooldown) {
+                    // TODO: implement cooldown because it gets executed twice
+                    ItemStack item = player.getItemInHand();
+                    if (item != null && item.getType() == Material.INK_SACK) {
+                        cooldown = true;
+                        Bukkit.getPluginManager().callEvent(new GameFailEvent(this.fighter, this, tries++));
+                        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> cooldown = false, 25L);
+                        e.setCancelled(true);
+                    }
+                }
+            }
         }
     }
 }

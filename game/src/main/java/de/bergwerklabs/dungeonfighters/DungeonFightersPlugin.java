@@ -141,20 +141,13 @@ public class DungeonFightersPlugin extends LABSGameMode
 
         game.buildDungeonPath();
 
-
+        // Somehow, this fixes the TPS issue at the beginning
         try {
             Thread.sleep(1000 * 5);
         }
         catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        /*
-        // wait 20 seconds before letting players join, so chunks won't load that long
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            this.canJoin = true;
-            System.out.println("LUL");
-        }, 20 * 30); */
 
     }
 
@@ -171,6 +164,9 @@ public class DungeonFightersPlugin extends LABSGameMode
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
+        if (commandLabel.equalsIgnoreCase("money")) {
+
+        }
         return false;
     }
 
@@ -192,7 +188,6 @@ public class DungeonFightersPlugin extends LABSGameMode
         return null;
     }
 
-
     private void prepareSpawn(World world) {
         this.prepareWorld(world);
         world.setPVP(false);
@@ -202,6 +197,7 @@ public class DungeonFightersPlugin extends LABSGameMode
 
     private void prepareWorld(World world) {
         world.setTime(0);
+        world.setDifficulty(Difficulty.PEACEFUL);
         world.setStorm(false);
         world.setThundering(false);
         world.setGameRuleValue("doDaylightCycle","false");

@@ -16,9 +16,9 @@ public class ScreenWarning {
      * @param player
      * @param display
      */
-    public static void send(Player player, boolean display) {
+    public static void send(Player player, Boolean display) {
         WrapperPlayServerWorldBorder worldBorderPacket = new WrapperPlayServerWorldBorder();
-        worldBorderPacket.setWarningDistance(display ? 1000000000 : 0);
+        worldBorderPacket.setWarningDistance(display ? 0 : 1000000000);
         worldBorderPacket.sendPacket(player);
     }
 }
