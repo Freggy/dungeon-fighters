@@ -8,8 +8,9 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by Yannic Rieger on 11.07.2017.
- * <p> Mechanic for the {@link BattleZone}.
- *     this gets triggered when a player enters the zone.
+ * <p>
+ * Mechanic for the {@link BattleZone}.
+ * this gets triggered when a player enters the zone.
  *
  * @author Yannic Rieger
  */

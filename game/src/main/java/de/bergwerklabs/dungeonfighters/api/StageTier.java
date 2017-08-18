@@ -13,8 +13,8 @@ import java.util.Arrays;
 public enum StageTier {
 
     ONE(200, 1, Range.closed(1, 4)),
-    TWO(300, 2, Range.closed(5, 8)),
-    THREE(400, 3, Range.closed(9, 11)),
+    TWO(300, 2, Range.closed(4, 8)),
+    THREE(400, 3, Range.closed(8, 11)),
     END(0, 4, null);
 
     /**
@@ -26,7 +26,7 @@ public enum StageTier {
     }
 
     public StageTier getNext() {
-        return this.next = Arrays.stream(StageTier.values()).filter(tier -> tier.tierValue == tierValue)
+        return this.next = Arrays.stream(StageTier.values()).filter(tier -> tier.tierValue == this.tierValue + 1)
                                  .findFirst().orElse(null);
     }
 
@@ -68,11 +68,7 @@ public enum StageTier {
         else return 0;
     }
 
-    public boolean isHigherTier(StageTier tier) {
-        return this.tierValue > tier.tierValue;
-    }
-
-    public boolean isLowerTier(StageTier tier) {
-        return !this.isHigherTier(tier);
+    public boolean isLowerTierThan(StageTier tier) {
+        return this.tierValue < tier.tierValue;
     }
 }

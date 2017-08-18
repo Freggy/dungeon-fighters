@@ -103,15 +103,13 @@ public class DungeonJumpAndRun extends DungeonGame {
     private void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (player.getUniqueId().equals(this.fighter.getPlayer().getUniqueId())) {
-            System.out.println("1");
             Action action = e.getAction();
             if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
                 if (!cooldown) {
                     ItemStack item = player.getItemInHand();
                     if (item != null && item.getType() == Material.INK_SACK) {
                         cooldown = true;
-                        System.out.println("2");
-                        Bukkit.getPluginManager().callEvent(new GameFailEvent(this.fighter, this, tries++));
+                        Bukkit.getPluginManager().callEvent(new GameFailEvent(this.fighter, this, ++this.tries));
                         Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> cooldown = false, 25L);
                         e.setCancelled(true);
                     }

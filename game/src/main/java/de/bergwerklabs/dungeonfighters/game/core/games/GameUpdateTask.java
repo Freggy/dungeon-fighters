@@ -4,6 +4,7 @@ import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonGame;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import de.bergwerklabs.dungeonfighters.api.game.event.GameFinishedEvent;
 import de.bergwerklabs.dungeonfighters.commons.Util;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonFighter;
 import de.bergwerklabs.dungeonfighters.game.core.DungeonSession;
@@ -44,25 +45,30 @@ public class GameUpdateTask implements Runnable {
 
                     if (line.shouldActivate(player.getLocation())) {
                         StageTier tier = line.getInfo().getProvider().getTier();
+
                         if (this.checkPreconditions(session, tier)) continue;
 
                         ActivationLine nextLine = line.getNextLine();
                         ActivationInfo info = line.getInfo();
 
-                        if (!nextLine.isModuleBuilt()) nextLine.buildAssociatedGame(true);
+                        // nextLine is null when the last module is activated.
+                        if (nextLine != null && !nextLine.isModuleBuilt()) nextLine.buildAssociatedGame(true);
 
                         this.lines.remove(line);
                         Util.closeEntrance(player, info.getProviderResult().getBuildLocation(), DungeonModuleConstructor.getBarrierWalls());
                         player.getInventory().clear();
                         DungeonMechanicProvider provider = info.getProvider();
+                        PluginManager manager = Bukkit.getPluginManager();
                         session.getCurrentGame().stop();
 
                         if (provider instanceof DungeonGame) {
                             DungeonGame game = (DungeonGame)provider;
-                            PluginManager manager =  Bukkit.getPluginManager();
                             manager.enablePlugin(game);
                             manager.registerEvents(game, game);
                         }
+
+                        if (session.getCurrentGame() instanceof DungeonGame)
+                            manager.callEvent(new GameFinishedEvent(fighter, (DungeonGame) session.getCurrentGame()));
 
                         session.setCurrentGame(provider);
                         session.getCurrentGame().assignPlayer(fighter);
@@ -77,6 +83,6 @@ public class GameUpdateTask implements Runnable {
     // Prevent players that are already in a battle zone from activating others lines.
     private boolean checkPreconditions(DungeonSession session, StageTier gameTier) {
         return (session.getCurrentGame().getId().equals("battleZone-built-in") && gameTier == null) ||
-               (session.getCurrentGame().getId().equals("battleZone-built-in") && gameTier.isLowerTier(session.getCurrentTier()));
+               (session.getCurrentGame().getId().equals("battleZone-built-in") && gameTier.isLowerTierThan(session.getCurrentTier()));
     }
 }

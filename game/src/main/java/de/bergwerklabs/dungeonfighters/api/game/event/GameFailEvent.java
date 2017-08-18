@@ -20,5 +20,6 @@ public class GameFailEvent extends AbstractGameEvent {
      */
     public GameFailEvent(DungeonFighter fighter, DungeonGame game, int tries) {
         super(fighter, game);
+        this.tries = tries;
     }
 }

@@ -33,7 +33,7 @@ public class GamesEventHandler implements Listener {
     public void onGameFinished(GameFinishedEvent e) {
         DungeonFighter fighter = e.getFighter();
         DungeonSession session = fighter.getSession();
-        ScreenWarning.send(fighter.getPlayer(), false); // remove red screen border from last minigame, if there is one.
+        //ScreenWarning.send(fighter.getPlayer(), false); // remove red screen border from last minigame, if there is one.
         session.incrementCompletedModules();
         NetsynWrapper.saveStatistic(Statistic.COMPLETED_MODULES, fighter.getPlayer(), session.getCompletedModules());
     }

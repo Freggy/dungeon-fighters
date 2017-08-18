@@ -74,7 +74,6 @@ public class DungeonPathLoader {
         for (int pathPosition = 0; pathPosition < buildLocations.size(); pathPosition++) {
             Location start = buildLocations.get(pathPosition);
             Queue<ActivationLine> lineQueue = new LinkedList<>();
-            StageTier currentTier = StageTier.ONE;
 
             for (int position = 1; position < 13; position++) {
                 if (position % 4 == 0 && position != 1 && position != 12) {
@@ -87,10 +86,10 @@ public class DungeonPathLoader {
                     line.buildAssociatedGame(true);
 
                     DungeonModuleConstructor.getBarrierWalls().next().pasteAsync(start.getWorld().getName(), start.clone().add(0, 1, -1).toVector());
-                    Location wallPlaceLoaction = start.clone().add(3, 1, -1);
+                    Location wallPlaceLocation = start.clone().add(3, 1, -1);
 
 
-                    line.getInfo().createWall(wallPlaceLoaction, start.clone().add(0, 4, -1),  start.clone().add(0, 1, -1));
+                    line.getInfo().createWall(wallPlaceLocation, start.clone().add(0, 4, -1),  start.clone().add(0, 1, -1));
 
                     lineQueue.add(line);
                     this.path.getLines().add(line);

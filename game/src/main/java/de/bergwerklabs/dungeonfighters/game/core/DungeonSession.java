@@ -3,10 +3,13 @@ package de.bergwerklabs.dungeonfighters.game.core;
 import de.bergwerklabs.dungeonfighters.DungeonFightersPlugin;
 import de.bergwerklabs.dungeonfighters.api.StageTier;
 import de.bergwerklabs.dungeonfighters.api.game.DungeonMechanicProvider;
+import de.bergwerklabs.framework.commons.spigot.scoreboard.LabsScoreboard;
+import de.bergwerklabs.framework.commons.spigot.scoreboard.Row;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -78,8 +81,14 @@ public class DungeonSession {
      *
      */
     public void incrementCompletedModules() {
-        this.fighter.getScoreboard().getRowsByContent()
-                    .get(ChatColor.UNDERLINE + this.fighter.getPlayer().getDisplayName()).setScore(completedModules++);
+        ++this.completedModules;
+        DungeonFightersPlugin.game.getPlayerManager().getPlayers().values().forEach(fighter -> {
+            HashMap<String, Row> rowsByContent = fighter.getScoreboard().getRowsByContent();
+            if (fighter.getPlayer().getUniqueId().equals(this.fighter.getPlayer().getUniqueId())) {
+                rowsByContent.get(ChatColor.UNDERLINE + this.fighter.getPlayer().getDisplayName()).setScore(this.completedModules);
+            }
+            else rowsByContent.get(this.fighter.getPlayer().getDisplayName()).setScore(this.completedModules);
+        });
     }
 
     /**

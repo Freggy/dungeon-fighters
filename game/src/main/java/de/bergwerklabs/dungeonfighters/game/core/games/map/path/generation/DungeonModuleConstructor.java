@@ -16,6 +16,7 @@ import de.bergwerklabs.dungeonfighters.game.core.games.map.path.DungeonWall;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationInfo;
 import de.bergwerklabs.dungeonfighters.game.core.games.map.path.activation.ActivationLine;
 import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.BattleZoneMechanic;
+import de.bergwerklabs.dungeonfighters.game.core.games.mechanic.EndMechanic;
 import de.bergwerklabs.framework.schematicservice.LabsSchematic;
 import org.bukkit.Location;
 
@@ -82,7 +83,7 @@ public class DungeonModuleConstructor {
      * @param to {@link Location} where to place the module.
      */
     public static BuildResult buildEnd(Location to, LabsSchematic<ModuleMetadata> endModule) {
-        return new BuildResult(null, to, endModule);
+        return new BuildResult(new EndMechanic(), to, endModule);
     }
 
     /**
