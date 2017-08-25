@@ -36,6 +36,7 @@ import java.util.List;
  * Created by Yannic Rieger on 25.04.2017.
  * <p>
  * DungeonFightersPlugin class for the DungeonFighter minigame.
+ *
  * @author Yannic Rieger
  */
 public class DungeonFightersPlugin extends LABSGameMode
@@ -50,24 +51,27 @@ public class DungeonFightersPlugin extends LABSGameMode
      */
     public DungeonFighterConfig getDungeonFighterConfig() { return this.config; }
 
+
+    // TODO: refactor to different class
+
     public List<File> getThemedGameFolder(String theme) {
-        return Arrays.asList(new File(themeFolder + "/" + theme + "/games").listFiles());
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/games").listFiles((file) -> file.getName().endsWith(".schematic")));
     }
 
     public List<File> getThemedStartPoints(String theme) {
-        return Arrays.asList(new File(themeFolder + "/" + theme + "/start_points").listFiles());
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/start_points").listFiles((file) -> file.getName().endsWith(".schematic")));
     }
 
     public List<File> getThemedEndPoints(String theme) {
-        return Arrays.asList(new File(themeFolder + "/" + theme + "/end_points").listFiles());
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/end_points").listFiles((file) -> file.getName().endsWith(".schematic")));
     }
 
     public List<File> getThemedConnections(String theme) {
-        return Arrays.asList(new File(themeFolder + "/" + theme + "/connections").listFiles());
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/connections").listFiles((file) -> file.getName().endsWith(".schematic")));
     }
 
     public List<File> getThemedBarrierWalls(String theme) {
-        return Arrays.asList(new File(themeFolder + "/" + theme + "/barrier_walls").listFiles());
+        return Arrays.asList(new File(themeFolder + "/" + theme + "/barrier_walls").listFiles((file) -> file.getName().endsWith(".schematic")));
     }
 
 
@@ -97,8 +101,6 @@ public class DungeonFightersPlugin extends LABSGameMode
 
     // TODO: put tasks in list an cancel them if needed.
 
-    private boolean canJoin = false;
-
     @Override
     public void labsEnable() {
         instance = this;
@@ -114,6 +116,7 @@ public class DungeonFightersPlugin extends LABSGameMode
         this.prepareWorld(moduleWorld);
         this.prepareWorld(arenaWorld);
 
+        // TODO: refactor
         Location npcSpawn = new Location(spawnWorld, 34.5, 95, 101.5);
         npcSpawn.setPitch(0);
         npcSpawn.setYaw(-171);

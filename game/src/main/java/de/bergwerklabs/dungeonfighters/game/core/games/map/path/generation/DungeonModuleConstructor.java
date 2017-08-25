@@ -23,10 +23,13 @@ import org.bukkit.Location;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Provides methods placing modules and determining a modules place location.
+ */
 public class DungeonModuleConstructor {
 
     /**
-     *
+     * Contains all  {@link DungeonWall}s that will be placed at the start.
      */
     public static List<DungeonWall> getDungeonStartWalls() { return dungeonStartWalls; }
 
@@ -36,7 +39,6 @@ public class DungeonModuleConstructor {
 
     private static List<DungeonWall> dungeonStartWalls = new ArrayList<>();
     private static Iterator<LabsSchematic<ModuleMetadata>> barrierWalls;
-
 
     static {
         List<LabsSchematic<ModuleMetadata>> barrierFiles = DungeonFightersPlugin.getInstance().getThemedBarrierWalls(DungeonFightersPlugin.game.getTheme()).stream()
@@ -110,12 +112,14 @@ public class DungeonModuleConstructor {
         to.getChunk().load();
     }
 
+
     /**
+     * Gets the next build location for the given schematic.
      *
-     * @param schematic
-     * @param to
+     * @param schematic {@link LabsSchematic} that will be placed.
+     * @param to {@link Location} where the module will be placed to.
      * @param <T>
-     * @return
+     * @return a {@link Location} indicating where the net module can be build.
      */
     public static <T extends ModuleMetadata> Location getNextBuildLocation(LabsSchematic<T> schematic, Location to) {
         if (schematic.hasMetadata()) {
@@ -125,12 +129,29 @@ public class DungeonModuleConstructor {
         else return null;
     }
 
+    /**
+     * Creates an {@link ActivationLine}.
+     *
+     * @param gameResult {@link BuildResult} of a game module placement.
+     * @param connectionResult {@link BuildResult} of an connection placement.
+     * @param end End of the module
+     * @return an {@link ActivationLine} that will trigger the game activation.
+     */
     public static ActivationLine createActivationLine(BuildResult gameResult, BuildResult connectionResult, Location end) {
         ActivationInfo info = new ActivationInfo(gameResult.getProvider(), connectionResult, gameResult);
         return new ActivationLine(info, end.getBlockZ(), new HashSet<>(Arrays.asList(end.getBlockX() + 1, end.getBlockX() + 2, end.getBlockX() + 3, end.getBlockX() + 4)));
     }
 
 
+    /**
+     *
+     *
+     * @param path
+     * @param module
+     * @param connections
+     * @param start
+     * @return
+     */
     public static List<Location> placeSpawns(DungeonPath path, LabsSchematic<StartModuleMetadata> module, Iterator<LabsSchematic<ModuleMetadata>> connections, Location start) {
         List<Location> buildLocations = new ArrayList<>();
 
@@ -151,7 +172,6 @@ public class DungeonModuleConstructor {
 
             Location nextBuildLoc = placeConnection(connections, connLoc.clone().subtract(3, 0, 0));
 
-            // TODO: place wall at start from connection.
             buildLocations.add(nextBuildLoc);
             start.add(46, 0, 0);
         }

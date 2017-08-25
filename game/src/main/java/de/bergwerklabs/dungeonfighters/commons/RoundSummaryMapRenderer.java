@@ -38,12 +38,6 @@ public class RoundSummaryMapRenderer extends MapRenderer {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
-        for (int x = 0; x < 128; x++) {
-            for (int y = 0; y < 128; y++) {
-                int color = cachedImage.getRGB(x, y);
-                mapCanvas.setPixel(x, y, MapPalette.matchColor(new Color(color)));
-            }
-        }
-       // mapCanvas.drawImage(0, 0, cachedImage);
+       mapCanvas.drawImage(0, 0, cachedImage);
     }
 }

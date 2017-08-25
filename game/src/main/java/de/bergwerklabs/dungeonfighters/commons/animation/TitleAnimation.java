@@ -36,7 +36,7 @@ public class TitleAnimation {
 
     public void play() {
         Iterator<Title> iterator = frames.iterator();
-            this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(DungeonFightersPlugin.getInstance(), () -> {
+            this.task = Bukkit.getScheduler().runTaskTimer(DungeonFightersPlugin.getInstance(), () -> {
                 Bukkit.getOnlinePlayers().forEach(player -> {
                     if (iterator.hasNext()) {
                         iterator.next().display(player);
